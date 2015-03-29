@@ -11,3 +11,5 @@
 /ILTools.MsBuild/obj/Debug
 /ILTools.MsBuild/bin/Debug
 /packages
+/TestRewriter/obj/Debug
+/TestRewriter/bin/Debug

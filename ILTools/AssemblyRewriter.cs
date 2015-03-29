@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Mono.Cecil;
+using Mono.Cecil.Pdb;
 
 namespace ILTools
 {
@@ -15,7 +16,18 @@ namespace ILTools
 
         public AssemblyRewriter(string assemblyPath)
         {
-            assembly = AssemblyDefinition.ReadAssembly(assemblyPath, new ReaderParameters(ReadingMode.Immediate) { ReadSymbols = true });
+            var assemblyResolver = new DefaultAssemblyResolver();
+            assemblyResolver.AddSearchDirectory(assemblyPath);
+
+            var symbolReaderProvider = new PdbReaderProvider();
+
+            var readerParameters = new ReaderParameters(ReadingMode.Immediate)
+            {
+                ReadSymbols = true,
+                AssemblyResolver = assemblyResolver,
+                SymbolReaderProvider = symbolReaderProvider
+            };
+            assembly = AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
         }
 
         public AssemblyDefinition Rewrite()
@@ -36,6 +48,13 @@ namespace ILTools
         public void RewriteAndSave(string rewrittenAssemblyPath)
         {
             var rewrittenAssembly = Rewrite();
+
+            var symbolWriterProvider = new PdbWriterProvider();
+            var writerParameters = new WriterParameters()
+            {
+                WriteSymbols = true,
+                SymbolWriterProvider = symbolWriterProvider
+            };
             rewrittenAssembly.Write(rewrittenAssemblyPath, new WriterParameters() { WriteSymbols = true });
         }
     }
