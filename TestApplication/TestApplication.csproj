@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B8631325-D271-4581-8D79-6C1BBDB83464}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{30EEC409-F411-4D9F-9EA5-593B5C26E697}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ILTools</RootNamespace>
-    <AssemblyName>ILTools</AssemblyName>
+    <RootNamespace>TestApplication</RootNamespace>
+    <AssemblyName>TestApplication</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,18 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,21 +41,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyRewriter.cs" />
-    <Compile Include="Contracts\NotNullAttribute.cs" />
-    <Compile Include="Contracts\NotNullAttributeRewriter.cs" />
-    <Compile Include="IMethodRewriter.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\ILTools.MsBuild\ILTools.MsBuild.csproj">
+      <Project>{83a13b00-286b-41c1-b632-2430dfe62707}</Project>
+      <Name>ILTools.MsBuild</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RunRewrite.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  
+  <!--VS lock loaded assembly, so we need to run the task externaly - this problem only when making changes to ILTools.MsBuild.dll-->
+  <PropertyGroup>
+    <RunRewriteProject>$(ProjectDir)RunRewrite.xml</RunRewriteProject>
+  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <Exec Command="&quot;$(MSBuildToolsPath)\msbuild.exe&quot; &quot;$(RunRewriteProject)&quot; /p:Configuration=$(Configuration);AssemblyPath=&quot;$(ProjectDir)$(OutputPath)$(TargetFileName)&quot;" />
+  </Target>
+  <!--<UsingTask AssemblyFile="bin\$(Configuration)\ILTools.MsBuild.dll" TaskName="ILTools.MsBuild.AssemblyRewrite" />
+  <Target Name="AfterBuild">
+    <AssemblyRewrite AssemblyPath="$(ProjectDir)$(OutputPath)$(TargetFileName)" />
+  </Target>-->
 </Project>

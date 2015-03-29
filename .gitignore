@@ -6,3 +6,8 @@
 /ILTools/bin/Debug
 /ILTools.sln.ide
 *.suo
+/TestApplication/obj/Debug
+/TestApplication/bin/Debug
+/ILTools.MsBuild/obj/Debug
+/ILTools.MsBuild/bin/Debug
+/packages
