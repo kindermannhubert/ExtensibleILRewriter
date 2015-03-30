@@ -54,7 +54,8 @@
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="Contracts\NotNullAttribute.cs" />
     <Compile Include="Contracts\NotNullAttributeRewriter.cs" />
-    <Compile Include="IMethodRewriter.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="IMethodProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

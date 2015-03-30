@@ -18,15 +18,15 @@ namespace ILTools.MsBuild
             return Execute(AssemblyPath);
         }
 
-        public bool Execute(string outputPath)
+        public bool Execute(string outputPath, ILogger logger = null)
         {
             //Log.LogError("AssemblyPath: {0}", AssemblyPath);
 
-            var rewriter = new AssemblyRewriter(AssemblyPath);
+            var rewriter = new AssemblyRewriter(AssemblyPath, logger);
 
-            rewriter.MethodRewriters.Add(new NotNullAttributeRewriter());
+            rewriter.MethodProcessors.Add(new NotNullAttributeRewriter());
 
-            rewriter.RewriteAndSave(outputPath);
+            rewriter.ProcessAssemblyAndSave(outputPath);
 
             return true;
         }

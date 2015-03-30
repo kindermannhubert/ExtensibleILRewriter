@@ -50,6 +50,10 @@
       <Project>{83a13b00-286b-41c1-b632-2430dfe62707}</Project>
       <Name>ILTools.MsBuild</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ILTools\ILTools.csproj">
+      <Project>{b8631325-d271-4581-8d79-6c1bbdb83464}</Project>
+      <Name>ILTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

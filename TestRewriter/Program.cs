@@ -1,4 +1,5 @@
-﻿using ILTools.MsBuild;
+﻿using ILTools;
+using ILTools.MsBuild;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,10 +23,18 @@ namespace TestRewriter
 
             var rewriteTask = new AssemblyRewrite();
             rewriteTask.AssemblyPath = assemblyToRewritePath;
-            rewriteTask.Execute(rewrittenAssemblyPath);
+            rewriteTask.Execute(rewrittenAssemblyPath, new ConsoleLogger());
 
             Console.WriteLine("Done");
             Console.ReadLine();
+        }
+    }
+
+    class ConsoleLogger : ILogger
+    {
+        public void Message(LogLevel level, string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

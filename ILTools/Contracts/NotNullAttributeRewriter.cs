@@ -7,7 +7,7 @@ using Mono.Cecil;
 
 namespace ILTools.Contracts
 {
-    public class NotNullAttributeRewriter : IMethodRewriter
+    public class NotNullAttributeRewriter : IMethodProcessor
     {
         public void Rewrite(MethodDefinition method)
         {
