@@ -12,10 +12,16 @@ namespace TestRewriter
 {
     class Program
     {
+#if DEBUG
+        private const string Configuration = "Debug"; 
+#else
+        private const string Configuration = "Release";
+#endif
+
         static void Main(string[] args)
         {
             var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var assemblyToRewritePath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..\TestRewriter\bin\Debug\", Path.GetFileName(executingAssemblyLocation));
+            var assemblyToRewritePath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..\TestApplication\bin", Configuration, "TestApplication.exe");
             var rewrittenAssemblyPath = Path.Combine(Path.GetDirectoryName(assemblyToRewritePath), Path.GetFileNameWithoutExtension(assemblyToRewritePath) + "_Rewritten" + Path.GetExtension(assemblyToRewritePath));
 
             Console.WriteLine("Rewriting:\t\{assemblyToRewritePath}");

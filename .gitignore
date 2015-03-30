@@ -18,3 +18,8 @@
 /TestRewriter/bin/Release/TestRewriter.vshost.exe.manifest
 /TestRewriter/bin/Release/TestRewriter.vshost.exe
 /TestRewriter/obj/Release
+/ILTools/bin/Release
+/TestApplication/bin/Release
+/ILTools.MsBuild/bin/Release
+/TestRewriter/bin/Release
+/TestApplication/obj/Release

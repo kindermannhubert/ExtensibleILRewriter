@@ -25,6 +25,8 @@ namespace ILTools
         {
             var assembly = LoadAssembly();
 
+            var errors = new List<string>();
+
             logger.Progress("Processing assembly: '\{assembly.FullName}'");
             foreach (var module in assembly.Modules)
             {
@@ -35,7 +37,7 @@ namespace ILTools
                     foreach (var method in type.Methods)
                     {
                         logger.Notice("\t\t\tProcessing method: '\{method.Name}'");
-                        foreach (var rewriter in MethodProcessors) rewriter.Rewrite(method);
+                        foreach (var rewriter in MethodProcessors) rewriter.Rewrite(method, errors);
                     }
                 }
             }
