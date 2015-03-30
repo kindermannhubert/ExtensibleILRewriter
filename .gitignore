@@ -13,3 +13,8 @@
 /packages
 /TestRewriter/obj/Debug
 /TestRewriter/bin/Debug
+/ILTools.MsBuild/obj/Release
+/ILTools/obj/Release
+/TestRewriter/bin/Release/TestRewriter.vshost.exe.manifest
+/TestRewriter/bin/Release/TestRewriter.vshost.exe
+/TestRewriter/obj/Release

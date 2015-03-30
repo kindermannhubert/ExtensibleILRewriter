@@ -10,44 +10,31 @@ namespace ILTools
 {
     public class AssemblyRewriter
     {
+        private readonly string assemblyPath;
         private readonly ILogger logger;
-        private readonly AssemblyDefinition assembly;
 
         public List<IMethodProcessor> MethodProcessors { get; } = new List<IMethodProcessor>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
-            if (logger == null) logger = new DummyLogger();
-
-            var assemblyResolver = new DefaultAssemblyResolver();
-            assemblyResolver.AddSearchDirectory(assemblyPath);
-
-            var symbolReaderProvider = new PdbReaderProvider();
-
-            logger.Progress("Loading assembly: '\{assemblyPath}'");
-            var readerParameters = new ReaderParameters(ReadingMode.Immediate)
-            {
-                ReadSymbols = true,
-                AssemblyResolver = assemblyResolver,
-                SymbolReaderProvider = symbolReaderProvider
-            };
-
-            assembly = AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
-            logger.Progress("Loading assembly done");
+            this.assemblyPath = assemblyPath;
+            this.logger = logger ?? new DummyLogger();
         }
 
         public AssemblyDefinition ProcessAssembly()
         {
+            var assembly = LoadAssembly();
+
             logger.Progress("Processing assembly: '\{assembly.FullName}'");
             foreach (var module in assembly.Modules)
             {
-                logger.Notice("Processing module: '\{module.Name}'");
+                logger.Notice("\tProcessing module: '\{module.Name}'");
                 foreach (var type in module.Types)
                 {
-                    logger.Notice("Processing type: '\{type.Name}'");
+                    logger.Notice("\t\tProcessing type: '\{type.Name}'");
                     foreach (var method in type.Methods)
                     {
-                        logger.Notice("Processing name: '\{method.Name}'");
+                        logger.Notice("\t\t\tProcessing method: '\{method.Name}'");
                         foreach (var rewriter in MethodProcessors) rewriter.Rewrite(method);
                     }
                 }
@@ -59,15 +46,51 @@ namespace ILTools
         {
             var rewrittenAssembly = ProcessAssembly();
 
-            logger.Progress("Saving assembly '\{assembly.FullName}' to '\{rewrittenAssemblyPath}'");
-            var symbolWriterProvider = new PdbWriterProvider();
-            var writerParameters = new WriterParameters()
+            logger.Progress("Saving assembly '\{rewrittenAssembly.FullName}' to '\{rewrittenAssemblyPath}'");
+            try
             {
-                WriteSymbols = true,
-                SymbolWriterProvider = symbolWriterProvider
-            };
-            rewrittenAssembly.Write(rewrittenAssemblyPath, new WriterParameters() { WriteSymbols = true });
+                var symbolWriterProvider = new PdbWriterProvider();
+                var writerParameters = new WriterParameters()
+                {
+                    WriteSymbols = true,
+                    SymbolWriterProvider = symbolWriterProvider
+                };
+                rewrittenAssembly.Write(rewrittenAssemblyPath, new WriterParameters() { WriteSymbols = true });
+            }
+            catch (Exception e)
+            {
+                logger.Error("Error while saving assembly '\{rewrittenAssemblyPath}'\{Environment.NewLine}\{e}.");
+                throw;
+            }
             logger.Progress("Saving assembly done");
+        }
+
+        private AssemblyDefinition LoadAssembly()
+        {
+            try
+            {
+                var assemblyResolver = new DefaultAssemblyResolver();
+                assemblyResolver.AddSearchDirectory(assemblyPath);
+
+                var symbolReaderProvider = new PdbReaderProvider();
+
+                logger.Progress("Loading assembly: '\{assemblyPath}'");
+                var readerParameters = new ReaderParameters(ReadingMode.Immediate)
+                {
+                    ReadSymbols = true,
+                    AssemblyResolver = assemblyResolver,
+                    SymbolReaderProvider = symbolReaderProvider
+                };
+
+                var assembly =  AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
+                logger.Progress("Loading assembly done");
+                return assembly;
+            }
+            catch(Exception e)
+            {
+                logger.Error("Error while loading assembly '\{assemblyPath}'\{Environment.NewLine}\{e}.");
+                throw;
+            }
         }
     }
 }
