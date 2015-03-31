@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="Contracts\NotNullAttribute.cs" />
-    <Compile Include="Contracts\NotNullAttributeRewriter.cs" />
+    <Compile Include="Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IMethodProcessor.cs" />

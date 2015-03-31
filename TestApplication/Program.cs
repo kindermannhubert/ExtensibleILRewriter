@@ -13,6 +13,8 @@ namespace TestApplication
         private static void Main(string[] args)
         {
             //A.Test();
+            A.Test(new object());
+            A.Test(new object(), "");
             A.Test(new object(), null);
 
             Console.WriteLine("Done");
@@ -24,10 +26,15 @@ namespace TestApplication
     {
         public static void Test([NotNull]object o)
         {
-            //Console.WriteLine("Is parameter null? \{o == null}");
+            Console.WriteLine("Is parameter null? \{o == null}");
         }
 
         public static void Test([NotNull]object a, [NotNull]string b)
+        {
+            Console.WriteLine("Is parameter null? a: \{a == null}; b: \{b == null}");
+        }
+
+        public static void Test([NotNull]int i, [NotNull]string b)
         {
             //Console.WriteLine("Is parameter null? \{a == null}");
         }
@@ -37,4 +44,9 @@ namespace TestApplication
             if (o == null) throw new ArgumentNullException("xxx");
         }
     }
+
+    //public interface II
+    //{
+    //    void Foo([NotNull] object o);
+    //}
 }

@@ -15,16 +15,15 @@ namespace ILTools.MsBuild
 
         public override bool Execute()
         {
-            return Execute(AssemblyPath);
+            var logger = new MsBuildLogger(Log);
+            return Execute(AssemblyPath, logger);
         }
 
         public bool Execute(string outputPath, ILogger logger = null)
         {
-            //Log.LogError("AssemblyPath: {0}", AssemblyPath);
-
             var rewriter = new AssemblyRewriter(AssemblyPath, logger);
 
-            rewriter.MethodProcessors.Add(new NotNullAttributeRewriter());
+            rewriter.MethodProcessors.Add(new NotNullAttributeProcessor());
 
             rewriter.ProcessAssemblyAndSave(outputPath);
 

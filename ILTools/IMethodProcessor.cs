@@ -9,6 +9,6 @@ namespace ILTools
 {
     public interface IMethodProcessor
     {
-        void Rewrite([NotNull]MethodDefinition method, [NotNull]List<string> errors);
+        void Process([NotNull]MethodDefinition method, [NotNull]ILogger logger);
     }
 }

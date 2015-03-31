@@ -9,6 +9,7 @@ namespace ILTools
     public interface ILogger
     {
         void Message(LogLevel level, string message);
+        void MessageDetailed(LogLevel level, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber, string message);
     }
 
     public static class ILoggerExtensions
@@ -45,5 +46,6 @@ namespace ILTools
     public class DummyLogger : ILogger
     {
         public void Message(LogLevel level, string message) { }
+        public void MessageDetailed(LogLevel level, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber, string message) { }
     }
 }

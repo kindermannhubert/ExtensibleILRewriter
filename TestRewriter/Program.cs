@@ -26,11 +26,13 @@ namespace TestRewriter
 
             Console.WriteLine("Rewriting:\t\{assemblyToRewritePath}");
             Console.WriteLine("Output:\t\t\{rewrittenAssemblyPath}");
+            Console.WriteLine();
 
             var rewriteTask = new AssemblyRewrite();
             rewriteTask.AssemblyPath = assemblyToRewritePath;
             rewriteTask.Execute(rewrittenAssemblyPath, new ConsoleLogger());
 
+            Console.WriteLine();
             Console.WriteLine("Done");
             Console.ReadLine();
         }
@@ -40,7 +42,48 @@ namespace TestRewriter
     {
         public void Message(LogLevel level, string message)
         {
+            switch (level)
+            {
+                case LogLevel.Notice:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogLevel.Progress:
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
+                case LogLevel.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                default:
+                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+            }
             Console.WriteLine(message);
+            Console.ResetColor();
+        }
+
+        public void MessageDetailed(LogLevel level, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber, string message)
+        {
+            switch (level)
+            {
+                case LogLevel.Notice:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogLevel.Progress:
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
+                case LogLevel.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                default:
+                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+            }
+            Console.WriteLine("File: \{file}; lineNumber: \{lineNumber}; columnNumber: \{columnNumber}; endLineNumber: \{endLineNumber}; endColumnNumber: \{endColumnNumber}; \{message}");
+            Console.ResetColor();
         }
     }
 }

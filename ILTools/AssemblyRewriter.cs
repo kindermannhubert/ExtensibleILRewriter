@@ -25,8 +25,6 @@ namespace ILTools
         {
             var assembly = LoadAssembly();
 
-            var errors = new List<string>();
-
             logger.Progress("Processing assembly: '\{assembly.FullName}'");
             foreach (var module in assembly.Modules)
             {
@@ -36,8 +34,11 @@ namespace ILTools
                     logger.Notice("\t\tProcessing type: '\{type.Name}'");
                     foreach (var method in type.Methods)
                     {
-                        logger.Notice("\t\t\tProcessing method: '\{method.Name}'");
-                        foreach (var rewriter in MethodProcessors) rewriter.Rewrite(method, errors);
+                        logger.Notice("\t\t\tProcessing method: '\{method.FullName}'");
+                        foreach (var rewriter in MethodProcessors)
+                        {
+                            rewriter.Process(method, logger);
+                        }
                     }
                 }
             }
@@ -84,11 +85,11 @@ namespace ILTools
                     SymbolReaderProvider = symbolReaderProvider
                 };
 
-                var assembly =  AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
+                var assembly = AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
                 logger.Progress("Loading assembly done");
                 return assembly;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error("Error while loading assembly '\{assemblyPath}'\{Environment.NewLine}\{e}.");
                 throw;
