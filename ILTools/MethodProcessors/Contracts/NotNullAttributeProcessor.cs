@@ -8,9 +8,9 @@ using Mono.Cecil.Rocks;
 using System;
 using System.Diagnostics;
 
-namespace ILTools.Contracts
+namespace ILTools.MethodProcessors.Contracts
 {
-    public class NotNullAttributeProcessor : IMethodProcessor
+    public class NotNullAttributeProcessor : IComponentProcessor<MethodDefinition>
     {
         private const int HideLineIndex = 0xfeefee;
 

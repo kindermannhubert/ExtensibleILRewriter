@@ -1,4 +1,5 @@
 ﻿using ILTools;
+using ILTools.MethodProcessors.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,10 +35,10 @@ namespace TestApplication
             Console.WriteLine("Is parameter null? a: \{a == null}; b: \{b == null}");
         }
 
-        public static void Test([NotNull]int i, [NotNull]string b)
-        {
-            //Console.WriteLine("Is parameter null? \{a == null}");
-        }
+        //public static void Test([NotNull]int i, [NotNull]string b)
+        //{
+        //    //Console.WriteLine("Is parameter null? \{a == null}");
+        //}
 
         public static void IfObjectNull(object o)
         {

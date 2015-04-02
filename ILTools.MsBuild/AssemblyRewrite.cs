@@ -1,4 +1,4 @@
-﻿using ILTools.Contracts;
+﻿using ILTools.MethodProcessors.Contracts;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;

@@ -41,11 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
-    <Compile Include="Contracts\NotNullAttribute.cs" />
-    <Compile Include="Contracts\NotNullAttributeProcessor.cs" />
+    <Compile Include="MethodProcessors\Contracts\NotNullAttribute.cs" />
+    <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
-    <Compile Include="IMethodProcessor.cs" />
+    <Compile Include="IComponentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +61,11 @@
       <Project>{63e6915c-7ea4-4d76-ab28-0d7191eea626}</Project>
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AssemblyProcessors\" />
+    <Folder Include="ModuleProcessors\" />
+    <Folder Include="TypeProcessors\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

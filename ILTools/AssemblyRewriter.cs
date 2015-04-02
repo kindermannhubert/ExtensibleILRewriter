@@ -13,36 +13,15 @@ namespace ILTools
         private readonly string assemblyPath;
         private readonly ILogger logger;
 
-        public List<IMethodProcessor> MethodProcessors { get; } = new List<IMethodProcessor>();
+        public List<IComponentProcessor<AssemblyDefinition>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyDefinition>>();
+        public List<IComponentProcessor<ModuleDefinition>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleDefinition>>();
+        public List<IComponentProcessor<TypeDefinition>> TypeProcessors { get; } = new List<IComponentProcessor<TypeDefinition>>();
+        public List<IComponentProcessor<MethodDefinition>> MethodProcessors { get; } = new List<IComponentProcessor<MethodDefinition>>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
             this.assemblyPath = assemblyPath;
             this.logger = logger ?? new DummyLogger();
-        }
-
-        public AssemblyDefinition ProcessAssembly()
-        {
-            var assembly = LoadAssembly();
-
-            logger.Progress("Processing assembly: '\{assembly.FullName}'");
-            foreach (var module in assembly.Modules)
-            {
-                logger.Notice("\tProcessing module: '\{module.Name}'");
-                foreach (var type in module.Types)
-                {
-                    logger.Notice("\t\tProcessing type: '\{type.Name}'");
-                    foreach (var method in type.Methods)
-                    {
-                        logger.Notice("\t\t\tProcessing method: '\{method.FullName}'");
-                        foreach (var rewriter in MethodProcessors)
-                        {
-                            rewriter.Process(method, logger);
-                        }
-                    }
-                }
-            }
-            return assembly;
         }
 
         public void ProcessAssemblyAndSave(string rewrittenAssemblyPath)
@@ -66,6 +45,52 @@ namespace ILTools
                 throw;
             }
             logger.Progress("Saving assembly done");
+        }
+
+        public AssemblyDefinition ProcessAssembly()
+        {
+            var assembly = LoadAssembly();
+
+            logger.Progress("Processing assembly: '\{assembly.FullName}'");
+            ProcessComponent(assembly, AssemblyProcessors, logger);
+            foreach (var module in assembly.Modules) ProcessModule(module);
+
+            return assembly;
+        }
+
+        private void ProcessModule(ModuleDefinition module)
+        {
+            logger.Notice("\tProcessing module: '\{module.Name}'");
+            ProcessComponent(module, ModuleProcessors, logger);
+            foreach (var type in module.Types) ProcessType(type);
+        }
+
+        private void ProcessType(TypeDefinition type)
+        {
+            logger.Notice("\t\tProcessing type: '\{type.Name}'");
+            ProcessComponent(type, TypeProcessors, logger);
+            foreach (var method in type.Methods) ProcessMethod(method);
+        }
+
+        private void ProcessMethod(MethodDefinition method)
+        {
+            logger.Notice("\t\t\tProcessing method: '\{method.FullName}'");
+            ProcessComponent(method, MethodProcessors, logger);
+        }
+
+        private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<IComponentProcessor<ComponentType>> componentProcessors, ILogger logger)
+        {
+            foreach (var processor in componentProcessors)
+            {
+                try
+                {
+                    processor.Process(component, logger);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("There was an error while processing '\{component}' with processor '\{processor}'. Exception: \{e}");
+                }
+            }
         }
 
         private AssemblyDefinition LoadAssembly()

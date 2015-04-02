@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\cecil\Mono.Cecil.csproj">
+      <Project>{d68133bd-1e63-496e-9ede-4fbdbf77b486}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ILTools\ILTools.csproj">
       <Project>{b8631325-d271-4581-8d79-6c1bbdb83464}</Project>
       <Name>ILTools</Name>
