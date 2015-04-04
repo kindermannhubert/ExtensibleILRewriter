@@ -28,6 +28,8 @@ namespace TestRewriter
             Console.WriteLine("Output:\t\t\{rewrittenAssemblyPath}");
             Console.WriteLine();
 
+            //Environment.CurrentDirectory = @"D:\SourcesPrivate\ILTools\TestApplication";
+
             var rewriteTask = new AssemblyRewrite();
             rewriteTask.AssemblyPath = assemblyToRewritePath;
             rewriteTask.Execute(rewrittenAssemblyPath, new ConsoleLogger());

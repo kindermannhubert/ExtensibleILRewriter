@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
+using ILTools.Extensions;
+using System.IO;
 
 namespace ILTools
 {
@@ -98,7 +100,7 @@ namespace ILTools
             try
             {
                 var assemblyResolver = new DefaultAssemblyResolver();
-                assemblyResolver.AddSearchDirectory(assemblyPath);
+                assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
 
                 var symbolReaderProvider = new PdbReaderProvider();
 

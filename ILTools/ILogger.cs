@@ -12,29 +12,6 @@ namespace ILTools
         void MessageDetailed(LogLevel level, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber, string message);
     }
 
-    public static class ILoggerExtensions
-    {
-        public static void Notice(this ILogger logger, string message)
-        {
-            logger.Message(LogLevel.Notice, message);
-        }
-
-        public static void Progress(this ILogger logger, string message)
-        {
-            logger.Message(LogLevel.Progress, message);
-        }
-
-        public static void Warning(this ILogger logger, string message)
-        {
-            logger.Message(LogLevel.Warning, message);
-        }
-
-        public static void Error(this ILogger logger, string message)
-        {
-            logger.Message(LogLevel.Error, message);
-        }
-    }
-
     public enum LogLevel
     {
         Notice,

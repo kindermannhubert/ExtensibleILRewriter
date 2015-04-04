@@ -41,7 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="Extensions\ILoggerExtensions.cs" />
+    <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
+    <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor2.cs" />
+    <Compile Include="MethodProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
+    <Compile Include="MethodProcessors\Helpers\IArgumentHandlingCodeInjector.cs" />
+    <Compile Include="MethodProcessors\Helpers\IArgumentHandlingCodeProvider.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttribute.cs" />
+    <Compile Include="MethodProcessors\Helpers\ArgumentHandlingCodeInjector.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />

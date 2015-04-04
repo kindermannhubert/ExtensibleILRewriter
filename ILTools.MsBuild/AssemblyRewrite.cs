@@ -23,7 +23,7 @@ namespace ILTools.MsBuild
         {
             var rewriter = new AssemblyRewriter(AssemblyPath, logger);
 
-            rewriter.MethodProcessors.Add(new NotNullAttributeProcessor());
+            rewriter.MethodProcessors.Add(new NotNullAttributeProcessor2());
 
             rewriter.ProcessAssemblyAndSave(outputPath);
 
