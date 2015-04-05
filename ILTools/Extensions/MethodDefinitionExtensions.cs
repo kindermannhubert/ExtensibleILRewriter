@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using System;
+using System.Linq;
 
 namespace ILTools.Extensions
 {
@@ -28,8 +29,34 @@ namespace ILTools.Extensions
         {
             if (!method.CouldBeStatic()) throw new InvalidOperationException("Method '\{method.FullName}' cannot be made static.");
 
-            var staticMethod = new MethodDefinition(method.Name, method.Attributes | MethodAttributes.Static, method.ReturnType);
-            staticMethod.Body.Instructions.AddRange(method.Body.Instructions);
+            var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
+            attributes |= method.Attributes & MethodAttributes.Private;
+            attributes |= method.Attributes & MethodAttributes.FamANDAssem;
+            attributes |= method.Attributes & MethodAttributes.Assembly;
+            attributes |= method.Attributes & MethodAttributes.Family;
+            attributes |= method.Attributes & MethodAttributes.FamORAssem;
+            attributes |= method.Attributes & MethodAttributes.Public;
+
+            var staticMethod = new MethodDefinition(method.Name, attributes, method.ReturnType);
+            staticMethod.Parameters.AddRange(method.Parameters);
+            staticMethod.Body.Variables.AddRange(method.Body.Variables);
+            staticMethod.Body.InitLocals = method.Body.InitLocals;
+
+            method.Body.SimplifyMacros();
+            foreach (var ins in method.Body.Instructions)
+            {
+                Instruction newIns = ins;
+                if (ins.OpCode.OperandType == OperandType.InlineArg)
+                {
+                    var parameter = (ParameterDefinition)ins.Operand;
+                    newIns = Instruction.Create(ins.OpCode, parameter);
+                }
+
+                newIns.Operand = ins.Operand;
+                staticMethod.Body.Instructions.Add(newIns);
+            }
+            staticMethod.Body.OptimizeMacros();
+            method.Body.OptimizeMacros();
 
             return staticMethod;
         }

@@ -76,12 +76,19 @@
     <Folder Include="ModuleProcessors\" />
     <Folder Include="TypeProcessors\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="RunRewrite.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <PropertyGroup>
+    <RunRewriteProject>$(ProjectDir)RunRewrite.xml</RunRewriteProject>
+  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <Exec Command="&quot;$(MSBuildToolsPath)\msbuild.exe&quot; &quot;$(RunRewriteProject)&quot; /p:Configuration=$(Configuration);AssemblyPath=&quot;$(ProjectDir)$(OutputPath)$(TargetFileName)&quot;" />
+  </Target>
 </Project>

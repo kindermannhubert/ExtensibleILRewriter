@@ -47,9 +47,19 @@ namespace TestApplication
         }
 
         [MakeStaticVersion("__static_" + nameof(Hello))]
-        public void Hello()
+        public void Hello(string text)
         {
-            Console.WriteLine("Hello");
+            Console.WriteLine(text);
+        }
+    }
+
+
+    public class NotNullArgumentHandligCodeProvider<ArgumentType>
+    {
+        [MakeStaticVersion("__static_" + nameof(HandleArgument))]
+        public void HandleArgument(ArgumentType argument, string argumentName)
+        {
+            if (argument == null) throw new ArgumentNullException(argumentName);
         }
     }
 
