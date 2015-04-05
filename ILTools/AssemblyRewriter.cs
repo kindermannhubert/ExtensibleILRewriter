@@ -55,7 +55,10 @@ namespace ILTools
 
             logger.Progress("Processing assembly: '\{assembly.FullName}'");
             ProcessComponent(assembly, AssemblyProcessors, logger);
-            foreach (var module in assembly.Modules) ProcessModule(module);
+
+            //needs to copy out, because processors can modified the collection
+            var modules = assembly.Modules.ToArray();
+            foreach (var module in modules) ProcessModule(module);
 
             return assembly;
         }
@@ -64,14 +67,20 @@ namespace ILTools
         {
             logger.Notice("\tProcessing module: '\{module.Name}'");
             ProcessComponent(module, ModuleProcessors, logger);
-            foreach (var type in module.Types) ProcessType(type);
+
+            //needs to copy out, because processors can modified the collection
+            var types = module.Types.ToArray();
+            foreach (var type in types) ProcessType(type);
         }
 
         private void ProcessType(TypeDefinition type)
         {
             logger.Notice("\t\tProcessing type: '\{type.Name}'");
             ProcessComponent(type, TypeProcessors, logger);
-            foreach (var method in type.Methods) ProcessMethod(method);
+
+            //needs to copy out, because processors can modified the collection
+            var methods = type.Methods.ToArray();
+            foreach (var method in methods) ProcessMethod(method);
         }
 
         private void ProcessMethod(MethodDefinition method)

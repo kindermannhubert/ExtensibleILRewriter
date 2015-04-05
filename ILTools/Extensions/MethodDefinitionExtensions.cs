@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using System;
 
 namespace ILTools.Extensions
 {
@@ -21,6 +22,16 @@ namespace ILTools.Extensions
                 if (ins.Operand as ParameterDefinition == methodBody.ThisParameter) return true;
             }
             return false;
+        }
+
+        public static MethodDefinition CreateStaticVersion(this MethodDefinition method)
+        {
+            if (!method.CouldBeStatic()) throw new InvalidOperationException("Method '\{method.FullName}' cannot be made static.");
+
+            var staticMethod = new MethodDefinition(method.Name, method.Attributes | MethodAttributes.Static, method.ReturnType);
+            staticMethod.Body.Instructions.AddRange(method.Body.Instructions);
+
+            return staticMethod;
         }
     }
 }

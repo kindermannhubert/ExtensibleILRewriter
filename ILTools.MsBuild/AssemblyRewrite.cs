@@ -1,4 +1,6 @@
-﻿using ILTools.MethodProcessors.Contracts;
+﻿using ILTools.MethodProcessors;
+using ILTools.MethodProcessors.Contracts;
+using ILTools.MethodProcessors.Helpers;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
@@ -23,7 +25,8 @@ namespace ILTools.MsBuild
         {
             var rewriter = new AssemblyRewriter(AssemblyPath, logger);
 
-            rewriter.MethodProcessors.Add(new NotNullAttributeProcessor2());
+            //rewriter.MethodProcessors.Add(new NotNullAttributeProcessor2());
+            rewriter.MethodProcessors.Add(new MakeStaticVersionProcessor());
 
             rewriter.ProcessAssemblyAndSave(outputPath);
 

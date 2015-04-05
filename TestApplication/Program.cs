@@ -1,5 +1,6 @@
 ﻿using ILTools;
 using ILTools.MethodProcessors.Contracts;
+using ILTools.MethodProcessors.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,12 @@ namespace TestApplication
         public static void IfObjectNull(object o)
         {
             if (o == null) throw new ArgumentNullException("xxx");
+        }
+
+        [MakeStaticVersion("__static_" + nameof(Hello))]
+        public void Hello()
+        {
+            Console.WriteLine("Hello");
         }
     }
 

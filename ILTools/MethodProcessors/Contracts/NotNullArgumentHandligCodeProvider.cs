@@ -1,4 +1,5 @@
-﻿using ILTools.MethodProcessors.Helpers;
+﻿using ILTools.MethodProcessors.ArgumentHandling;
+using ILTools.MethodProcessors.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,22 @@ namespace ILTools.MethodProcessors.Contracts
 {
     class NotNullArgumentHandligCodeProvider<ArgumentType> : IArgumentHandlingCodeProvider<ArgumentType>
     {
+        public IArgumentHandlingCodeProvider<ArgumentType> HandlingObject
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool MakeArgumentHandligMethodStatic
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public void CheckPrerequisites()
         {
             if (!typeof(ArgumentType).IsClass && Nullable.GetUnderlyingType(typeof(ArgumentType)) == null)
@@ -17,6 +34,7 @@ namespace ILTools.MethodProcessors.Contracts
             }
         }
 
+        [MakeStaticVersion("__static_" + nameof(HandleArgument))]
         public void HandleArgument(ArgumentType argument, string argumentName)
         {
             if (argument == null) throw new ArgumentNullException(argumentName);

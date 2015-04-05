@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace ILTools.MethodProcessors.Helpers
+namespace ILTools.MethodProcessors.ArgumentHandling
 {
     public interface IArgumentHandlingCodeInjector
     {

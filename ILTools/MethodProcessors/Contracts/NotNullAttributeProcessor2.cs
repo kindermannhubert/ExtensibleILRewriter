@@ -8,6 +8,7 @@ using Mono.Cecil.Rocks;
 using System;
 using System.Diagnostics;
 using ILTools.MethodProcessors.Helpers;
+using ILTools.MethodProcessors.ArgumentHandling;
 
 namespace ILTools.MethodProcessors.Contracts
 {
@@ -24,13 +25,13 @@ namespace ILTools.MethodProcessors.Contracts
                 {
                     if (parameter.ParameterType.IsValueType)
                     {
-                        LogError(method, logger, "Parameter '\{parameter.Name}' of method '\{method.FullName}' cannot be non-nullable because it is a value type.");
+                        logger.LogErrorWithSource(method, "Parameter '\{parameter.Name}' of method '\{method.FullName}' cannot be non-nullable because it is a value type.");
                         continue;
                     }
 
                     if (!method.HasBody)
                     {
-                        LogError(method, logger, "Method '\{method.FullName}' does not have body and cannot be rewritten.");
+                        logger.LogErrorWithSource(method, "Method '\{method.FullName}' does not have body and cannot be rewritten.");
                         continue;
                     }
 
@@ -57,17 +58,6 @@ namespace ILTools.MethodProcessors.Contracts
             }
 
             return codeInjector;
-        }
-
-        private void LogError(MethodDefinition method, ILogger logger, string message)
-        {
-            var firstSequencePoint = method.HasBody ? method.Body.Instructions.FirstOrDefault(i => i.SequencePoint != null)?.SequencePoint : null;
-            logger.MessageDetailed(
-                LogLevel.Error,
-                firstSequencePoint?.Document.Url ?? "Unknown",
-                firstSequencePoint?.StartLine ?? 0, firstSequencePoint?.StartColumn ?? 0,
-                firstSequencePoint?.EndLine ?? 0, firstSequencePoint?.EndColumn ?? 0,
-                message);
         }
     }
 }

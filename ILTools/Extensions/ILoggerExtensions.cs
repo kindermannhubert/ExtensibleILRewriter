@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mono.Cecil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,17 @@ namespace ILTools.Extensions
         public static void Error(this ILogger logger, string message)
         {
             logger.Message(LogLevel.Error, message);
+        }
+
+        public static void LogErrorWithSource(this ILogger logger, MethodDefinition method, string message)
+        {
+            var firstSequencePoint = method.HasBody ? method.Body.Instructions.FirstOrDefault(i => i.SequencePoint != null)?.SequencePoint : null;
+            logger.MessageDetailed(
+                LogLevel.Error,
+                firstSequencePoint?.Document.Url ?? "Unknown",
+                firstSequencePoint?.StartLine ?? 0, firstSequencePoint?.StartColumn ?? 0,
+                firstSequencePoint?.EndLine ?? 0, firstSequencePoint?.EndColumn ?? 0,
+                message);
         }
     }
 }

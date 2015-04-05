@@ -45,14 +45,16 @@
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor2.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
-    <Compile Include="MethodProcessors\Helpers\IArgumentHandlingCodeInjector.cs" />
-    <Compile Include="MethodProcessors\Helpers\IArgumentHandlingCodeProvider.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeInjector.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeProvider.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttribute.cs" />
-    <Compile Include="MethodProcessors\Helpers\ArgumentHandlingCodeInjector.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeInjector.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IComponentProcessor.cs" />
+    <Compile Include="MethodProcessors\Helpers\MakeStaticVersionAttribute.cs" />
+    <Compile Include="MethodProcessors\Helpers\MakeStaticVersionProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
