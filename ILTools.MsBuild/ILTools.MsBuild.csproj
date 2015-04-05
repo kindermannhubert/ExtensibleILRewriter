@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AssemblyDefinition.cs" />
+    <Compile Include="Configuration\ProcessorDefinition.cs" />
+    <Compile Include="Configuration\AssemblyRewriteConfiguration.cs" />
     <Compile Include="AssemblyRewrite.cs" />
     <Compile Include="MsBuildLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

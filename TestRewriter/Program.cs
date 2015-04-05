@@ -13,16 +13,18 @@ namespace TestRewriter
     class Program
     {
 #if DEBUG
-        private const string Configuration = "Debug"; 
+        private const string Configuration = "Debug";
 #else
         private const string Configuration = "Release";
 #endif
 
         static void Main(string[] args)
         {
+            const string ProjectName = "TestApplication";
             var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var assemblyToRewritePath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..\TestApplication\bin", Configuration, "TestApplication.exe");
-            var rewrittenAssemblyPath = Path.Combine(Path.GetDirectoryName(assemblyToRewritePath), Path.GetFileNameWithoutExtension(assemblyToRewritePath) + "_Rewritten" + Path.GetExtension(assemblyToRewritePath));
+            var projectBinariesPath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..", ProjectName, "bin", Configuration);
+            var assemblyToRewritePath = Path.Combine(projectBinariesPath, ProjectName + ".exe");
+            var rewrittenAssemblyPath = Path.Combine(projectBinariesPath, Path.GetFileNameWithoutExtension(assemblyToRewritePath) + "_Rewritten.exe");
 
             Console.WriteLine("Rewriting:\t\{assemblyToRewritePath}");
             Console.WriteLine("Output:\t\t\{rewrittenAssemblyPath}");
@@ -30,8 +32,11 @@ namespace TestRewriter
 
             //Environment.CurrentDirectory = @"D:\SourcesPrivate\ILTools\TestApplication";
 
-            var rewriteTask = new AssemblyRewrite();
-            rewriteTask.AssemblyPath = assemblyToRewritePath;
+            var rewriteTask = new AssemblyRewrite()
+            {
+                AssemblyPath = assemblyToRewritePath,
+                ConfigurationPath = Path.Combine( projectBinariesPath , @"..\..\RewriteConfiguration.xml")
+            };
             rewriteTask.Execute(rewrittenAssemblyPath, new ConsoleLogger());
 
             Console.WriteLine();

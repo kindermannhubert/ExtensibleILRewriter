@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<AssemblyRewriteConfiguration>
+  <AssembliesWithProcessors>
+    <AssemblyDefinition>
+      <Name>ILTools</Name>
+      <Path>ILTools.dll</Path>
+    </AssemblyDefinition>
+  </AssembliesWithProcessors>
+
+  <MethodProcessors>
+    <Processor>
+      <AssemblyName>ILTools</AssemblyName>
+      <ProcessorName>ILTools.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
+    </Processor>
+  </MethodProcessors>
+</AssemblyRewriteConfiguration>
