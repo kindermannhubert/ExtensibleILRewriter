@@ -16,7 +16,19 @@ namespace ILTools.MsBuild.Configuration
     {
         [XmlArray]
         [XmlArrayItem("AssemblyDefinition")]
-        public AssemblyDefinition[] AssembliesWithProcessors { get; set; }
+        public AssemblyNameDefinition[] AssembliesWithProcessors { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem("Processor")]
+        public ProcessorDefinition[] AssemblyProcessors { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem("Processor")]
+        public ProcessorDefinition[] ModuleProcessors { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem("Processor")]
+        public ProcessorDefinition[] TypeProcessors { get; set; }
 
         [XmlArray]
         [XmlArrayItem("Processor")]
@@ -37,11 +49,19 @@ namespace ILTools.MsBuild.Configuration
 
             var definedAssemblyNames = new HashSet<string>(AssembliesWithProcessors.Select(a => a.Name));
 
-            if (MethodProcessors == null)
+            CheckProcessorDefinitions(AssemblyProcessors, nameof(AssemblyProcessors), definedAssemblyNames);
+            CheckProcessorDefinitions(ModuleProcessors, nameof(ModuleProcessors), definedAssemblyNames);
+            CheckProcessorDefinitions(TypeProcessors, nameof(TypeProcessors), definedAssemblyNames);
+            CheckProcessorDefinitions(MethodProcessors, nameof(MethodProcessors), definedAssemblyNames);
+        }
+
+        private void CheckProcessorDefinitions(ProcessorDefinition[] processors, string elementName, HashSet<string> definedAssemblyNames)
+        {
+            if (processors == null)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(MethodProcessors)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{elementName} element.");
             }
-            foreach (var methodProcessor in MethodProcessors) methodProcessor.Check(definedAssemblyNames);
+            foreach (var processor in processors) processor.Check(definedAssemblyNames);
         }
     }
 }

@@ -101,22 +101,30 @@ namespace ILTools.MsBuild
 
                 var assembliesDict = configuration.AssembliesWithProcessors.ToDictionary(a => a.Name, a => new Lazy<Assembly>(() => LoadProcessorsAssembly(a.Path, executingAssemblyPath, logger)));
 
-                foreach (var processorDefinition in configuration.MethodProcessors)
-                {
-                    logger.Notice("Loading processor \{processorDefinition.ProcessorName}.");
-
-                    var assembly = assembliesDict[processorDefinition.AssemblyName].Value;
-                    var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
-
-                    var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                    if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
-                    var processor = (ComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType, processorProperties, logger);
-                    assemblyRewriter.MethodProcessors.Add(processor);
-                }
+                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyDefinition>(configuration.AssemblyProcessors, logger, assembliesDict));
+                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleDefinition>(configuration.ModuleProcessors, logger, assembliesDict));
+                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeDefinition>(configuration.TypeProcessors, logger, assembliesDict));
+                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodDefinition>(configuration.MethodProcessors, logger, assembliesDict));
             }
             finally
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= currentDomain_AssemblyResolve;
+            }
+        }
+
+        private static IEnumerable<ComponentProcessor<ComponentType>> LoadProcessors<ComponentType>(ProcessorDefinition[] processorDefinitions, ILogger logger, Dictionary<string, Lazy<Assembly>> assembliesDict)
+        {
+            foreach (var processorDefinition in processorDefinitions)
+            {
+                logger.Notice("Loading processor \{processorDefinition.ProcessorName}.");
+
+                var assembly = assembliesDict[processorDefinition.AssemblyName].Value;
+                var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
+
+                var processorType = assembly.GetType(processorDefinition.ProcessorName);
+                if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
+                var processor = (ComponentProcessor<ComponentType>)Activator.CreateInstance(processorType, processorProperties, logger);
+                yield return processor;
             }
         }
 

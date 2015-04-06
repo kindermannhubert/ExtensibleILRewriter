@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace ILTools.MsBuild.Configuration
 {
-    public class AssemblyDefinition
+    public class AssemblyNameDefinition
     {
         public string Name { get; set; }
         public string Path { get; set; }
@@ -21,12 +21,12 @@ namespace ILTools.MsBuild.Configuration
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyDefinition)} must contain \{nameof(Name)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyNameDefinition)} must contain \{nameof(Name)} element.");
             }
 
             if (string.IsNullOrWhiteSpace(Path))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyDefinition)} must contain \{nameof(Path)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyNameDefinition)} must contain \{nameof(Path)} element.");
             }
         }
     }

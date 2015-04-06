@@ -7,6 +7,19 @@
     </AssemblyDefinition>
   </AssembliesWithProcessors>
 
+  <AssemblyProcessors>
+  </AssemblyProcessors>
+
+  <ModuleProcessors>
+    <Processor>
+      <AssemblyName>ILTools</AssemblyName>
+      <ProcessorName>ILTools.ModuleProcessors.ModuleInitializerProcessor</ProcessorName>
+    </Processor>
+  </ModuleProcessors>
+
+  <TypeProcessors>
+  </TypeProcessors>
+
   <MethodProcessors>
     <Processor>
       <AssemblyName>ILTools</AssemblyName>

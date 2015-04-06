@@ -56,6 +56,8 @@
     <Compile Include="ComponentProcessor.cs" />
     <Compile Include="MethodProcessors\Helpers\MakeStaticVersionAttribute.cs" />
     <Compile Include="MethodProcessors\Helpers\MakeStaticVersionProcessor.cs" />
+    <Compile Include="ModuleProcessors\ModuleInitializerAttribute.cs" />
+    <Compile Include="ModuleProcessors\ModuleInitializerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AssemblyProcessors\" />
-    <Folder Include="ModuleProcessors\" />
     <Folder Include="TypeProcessors\" />
   </ItemGroup>
   <ItemGroup>

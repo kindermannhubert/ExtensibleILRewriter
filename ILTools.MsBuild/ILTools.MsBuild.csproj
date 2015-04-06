@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ProcessorPropertyDefinition.cs" />
-    <Compile Include="Configuration\AssemblyDefinition.cs" />
+    <Compile Include="Configuration\AssemblyNameDefinition.cs" />
     <Compile Include="Configuration\ProcessorDefinition.cs" />
     <Compile Include="Configuration\AssemblyRewriteConfiguration.cs" />
     <Compile Include="AssemblyRewrite.cs" />
