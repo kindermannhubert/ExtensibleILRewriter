@@ -97,9 +97,10 @@ namespace ILTools.MsBuild
                 foreach (var processorDefinition in configuration.MethodProcessors)
                 {
                     var assembly = assembliesDict[processorDefinition.AssemblyName].Value;
+                    var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
                     var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                    var processor = (IComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType);
+                    var processor = (ComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType, processorProperties);
                     assemblyRewriter.MethodProcessors.Add(processor);
                 }
             }

@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="ComponentProcessorProperties.cs" />
     <Compile Include="Extensions\ILoggerExtensions.cs" />
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor2.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
-    <Compile Include="IComponentProcessor.cs" />
+    <Compile Include="ComponentProcessor.cs" />
     <Compile Include="MethodProcessors\Helpers\MakeStaticVersionAttribute.cs" />
     <Compile Include="MethodProcessors\Helpers\MakeStaticVersionProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

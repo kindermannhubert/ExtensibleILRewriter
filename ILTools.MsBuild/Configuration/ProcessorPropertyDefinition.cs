@@ -12,23 +12,23 @@ using System.Xml.Serialization;
 
 namespace ILTools.MsBuild.Configuration
 {
-    public class AssemblyDefinition
+    public class ProcessorPropertyDefinition
     {
         public string Name { get; set; }
-        public string Path { get; set; }
+        public string Value { get; set; }
 
         public void Check([NotNull] ILogger logger)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                var message = "Configuration of \{nameof(AssemblyDefinition)} must contain \{nameof(Name)} element.";
+                var message = "Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Name)} element.";
                 logger.Error(message);
                 throw new InvalidOperationException(message);
             }
 
-            if (string.IsNullOrWhiteSpace(Path))
+            if (string.IsNullOrWhiteSpace(Value))
             {
-                var message = "Configuration of \{nameof(AssemblyDefinition)} must contain \{nameof(Path)} element.";
+                var message = "Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Value)} element.";
                 logger.Error(message);
                 throw new InvalidOperationException(message);
             }

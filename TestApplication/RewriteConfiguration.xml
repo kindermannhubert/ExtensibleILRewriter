@@ -16,6 +16,12 @@
     <Processor>
       <AssemblyName>ILTools</AssemblyName>
       <ProcessorName>ILTools.MethodProcessors.Contracts.NotNullAttributeProcessor2</ProcessorName>
+      <Properties>
+        <Property>
+          <Name>Type</Name>
+          <Value>Static</Value>
+        </Property>
+      </Properties>
     </Processor>
   </MethodProcessors>
 </AssemblyRewriteConfiguration>

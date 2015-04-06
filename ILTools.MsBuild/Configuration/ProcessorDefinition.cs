@@ -15,7 +15,12 @@ namespace ILTools.MsBuild.Configuration
     public class ProcessorDefinition
     {
         public string AssemblyName { get; set; }
+
         public string ProcessorName { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem("Property")]
+        public ProcessorPropertyDefinition[] Properties { get; set; }
 
         public void Check([NotNull] ILogger logger, HashSet<string> definedAssemblyNames)
         {
@@ -36,6 +41,15 @@ namespace ILTools.MsBuild.Configuration
             if (!definedAssemblyNames.Contains(AssemblyName))
             {
                 var message = "Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyName}'.";
+                logger.Error(message);
+                throw new InvalidOperationException(message);
+            }
+
+            if (Properties == null) Properties = new ProcessorPropertyDefinition[0];
+
+            if (Properties.Select(p => p.Name).Distinct().Count() != Properties.Length)
+            {
+                var message = "Configuration of \{nameof(ProcessorDefinition)} must contain only distinct property names.";
                 logger.Error(message);
                 throw new InvalidOperationException(message);
             }

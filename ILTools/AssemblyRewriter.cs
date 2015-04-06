@@ -15,10 +15,10 @@ namespace ILTools
         private readonly string assemblyPath;
         private readonly ILogger logger;
 
-        public List<IComponentProcessor<AssemblyDefinition>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyDefinition>>();
-        public List<IComponentProcessor<ModuleDefinition>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleDefinition>>();
-        public List<IComponentProcessor<TypeDefinition>> TypeProcessors { get; } = new List<IComponentProcessor<TypeDefinition>>();
-        public List<IComponentProcessor<MethodDefinition>> MethodProcessors { get; } = new List<IComponentProcessor<MethodDefinition>>();
+        public List<ComponentProcessor<AssemblyDefinition>> AssemblyProcessors { get; } = new List<ComponentProcessor<AssemblyDefinition>>();
+        public List<ComponentProcessor<ModuleDefinition>> ModuleProcessors { get; } = new List<ComponentProcessor<ModuleDefinition>>();
+        public List<ComponentProcessor<TypeDefinition>> TypeProcessors { get; } = new List<ComponentProcessor<TypeDefinition>>();
+        public List<ComponentProcessor<MethodDefinition>> MethodProcessors { get; } = new List<ComponentProcessor<MethodDefinition>>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
@@ -89,7 +89,7 @@ namespace ILTools
             ProcessComponent(method, MethodProcessors, logger);
         }
 
-        private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<IComponentProcessor<ComponentType>> componentProcessors, ILogger logger)
+        private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<ComponentProcessor<ComponentType>> componentProcessors, ILogger logger)
         {
             foreach (var processor in componentProcessors)
             {

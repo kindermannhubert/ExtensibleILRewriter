@@ -9,11 +9,16 @@ using ILTools.Extensions;
 
 namespace ILTools.MethodProcessors.Helpers
 {
-    public class MakeStaticVersionProcessor : IComponentProcessor<MethodDefinition>
+    public class MakeStaticVersionProcessor : ComponentProcessor<MethodDefinition>
     {
         private readonly static string makeStaticVersionAttributeFullName = typeof(MakeStaticVersionAttribute).FullName;
 
-        public void Process([NotNull]MethodDefinition method, [NotNull]ILogger logger)
+        public MakeStaticVersionProcessor(ComponentProcessorProperties properties)
+            : base(properties)
+        {
+        }
+
+        public override void Process([NotNull]MethodDefinition method, [NotNull]ILogger logger)
         {
             var attribute = method.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == makeStaticVersionAttributeFullName);
             if (attribute == null) return;

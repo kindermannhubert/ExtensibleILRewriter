@@ -10,14 +10,19 @@ using System.Diagnostics;
 
 namespace ILTools.MethodProcessors.Contracts
 {
-    public class NotNullAttributeProcessor : IComponentProcessor<MethodDefinition>
+    public class NotNullAttributeProcessor : ComponentProcessor<MethodDefinition>
     {
         private const int HideLineIndex = 0xfeefee;
 
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly static Instruction nopInstruction = Instruction.Create(OpCodes.Nop);
 
-        public void Process(MethodDefinition method, ILogger logger)
+        public NotNullAttributeProcessor(ComponentProcessorProperties properties)
+            : base(properties)
+        {
+        }
+
+        public override void Process(MethodDefinition method, ILogger logger)
         {
             var body = method.Body;
             Collection<Instruction> originalMethodInstructions = null, bodyInstructions = null;

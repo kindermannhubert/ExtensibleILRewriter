@@ -12,12 +12,17 @@ using ILTools.MethodProcessors.ArgumentHandling;
 
 namespace ILTools.MethodProcessors.Contracts
 {
-    public class NotNullAttributeProcessor2 : IComponentProcessor<MethodDefinition>
+    public class NotNullAttributeProcessor2 : ComponentProcessor<MethodDefinition>
     {
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
 
-        public void Process(MethodDefinition method, ILogger logger)
+        public NotNullAttributeProcessor2(ComponentProcessorProperties properties)
+            : base(properties)
+        {
+        }
+
+        public override void Process(MethodDefinition method, ILogger logger)
         {
             foreach (var parameter in method.Parameters)
             {
