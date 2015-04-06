@@ -15,7 +15,7 @@
 
     <Processor>
       <AssemblyName>ILTools</AssemblyName>
-      <ProcessorName>ILTools.MethodProcessors.Contracts.NotNullAttributeProcessor2</ProcessorName>
+      <ProcessorName>ILTools.MethodProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
       <Properties>
         <Property>
           <Name>HandlingType</Name>

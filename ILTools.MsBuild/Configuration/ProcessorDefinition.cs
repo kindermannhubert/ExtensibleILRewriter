@@ -22,36 +22,28 @@ namespace ILTools.MsBuild.Configuration
         [XmlArrayItem("Property")]
         public ProcessorPropertyDefinition[] Properties { get; set; }
 
-        public void Check([NotNull] ILogger logger, HashSet<string> definedAssemblyNames)
+        public void Check(HashSet<string> definedAssemblyNames)
         {
             if (string.IsNullOrWhiteSpace(AssemblyName))
             {
-                var message = "Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(AssemblyName)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(AssemblyName)} element.");
             }
 
             if (string.IsNullOrWhiteSpace(ProcessorName))
             {
-                var message = "Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(ProcessorName)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(ProcessorName)} element.");
             }
 
             if (!definedAssemblyNames.Contains(AssemblyName))
             {
-                var message = "Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyName}'.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyName}'.");
             }
 
             if (Properties == null) Properties = new ProcessorPropertyDefinition[0];
 
             if (Properties.Select(p => p.Name).Distinct().Count() != Properties.Length)
             {
-                var message = "Configuration of \{nameof(ProcessorDefinition)} must contain only distinct property names.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain only distinct property names.");
             }
         }
     }

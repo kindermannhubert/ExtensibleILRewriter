@@ -52,10 +52,10 @@ namespace TestRewriter
             switch (level)
             {
                 case LogLevel.Notice:
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     break;
                 case LogLevel.Progress:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogLevel.Warning:
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -75,10 +75,10 @@ namespace TestRewriter
             switch (level)
             {
                 case LogLevel.Notice:
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     break;
                 case LogLevel.Progress:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogLevel.Warning:
                     Console.ForegroundColor = ConsoleColor.Yellow;

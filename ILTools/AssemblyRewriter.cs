@@ -30,7 +30,7 @@ namespace ILTools
         {
             var rewrittenAssembly = ProcessAssembly();
 
-            logger.Progress("Saving assembly '\{rewrittenAssembly.FullName}' to '\{rewrittenAssemblyPath}'");
+            logger.Progress("Saving assembly '\{rewrittenAssembly.FullName}' to '\{rewrittenAssemblyPath}'.");
             try
             {
                 var symbolWriterProvider = new PdbWriterProvider();
@@ -43,50 +43,55 @@ namespace ILTools
             }
             catch (Exception e)
             {
-                logger.Error("Error while saving assembly '\{rewrittenAssemblyPath}'\{Environment.NewLine}\{e}.");
-                throw;
+                throw new InvalidOperationException("Error while saving assembly '\{rewrittenAssemblyPath}'.", e);
             }
-            logger.Progress("Saving assembly done");
+            logger.Progress("Saving assembly done.");
         }
 
         public AssemblyDefinition ProcessAssembly()
         {
             var assembly = LoadAssembly();
 
-            logger.Progress("Processing assembly: '\{assembly.FullName}'");
+            logger.Progress("Processing assembly: '\{assembly.FullName}'.");
             ProcessComponent(assembly, AssemblyProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var modules = assembly.Modules.ToArray();
             foreach (var module in modules) ProcessModule(module);
 
+            logger.Progress("Processing assembly done.");
             return assembly;
         }
 
         private void ProcessModule(ModuleDefinition module)
         {
-            logger.Notice("\tProcessing module: '\{module.Name}'");
+            logger.Progress("Processing module: '\{module.Name}'.");
             ProcessComponent(module, ModuleProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var types = module.Types.ToArray();
             foreach (var type in types) ProcessType(type);
+
+            logger.Progress("Processing module done.");
         }
 
         private void ProcessType(TypeDefinition type)
         {
-            logger.Notice("\t\tProcessing type: '\{type.Name}'");
+            logger.Progress("Processing type: '\{type.Name}'.");
             ProcessComponent(type, TypeProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var methods = type.Methods.ToArray();
             foreach (var method in methods) ProcessMethod(method);
+
+            logger.Progress("Processing type done.");
         }
 
         private void ProcessMethod(MethodDefinition method)
         {
-            logger.Notice("\t\t\tProcessing method: '\{method.FullName}'");
+            logger.Notice("Processing method: '\{method.FullName}'.");
             ProcessComponent(method, MethodProcessors, logger);
+            logger.Notice("Processing method done.");
         }
 
         private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<ComponentProcessor<ComponentType>> componentProcessors, ILogger logger)
@@ -127,8 +132,7 @@ namespace ILTools
             }
             catch (Exception e)
             {
-                logger.Error("Error while loading assembly '\{assemblyPath}'\{Environment.NewLine}\{e}.");
-                throw;
+                throw new InvalidOperationException("Error while loading assembly '\{assemblyPath}'.", e);
             }
         }
     }

@@ -17,20 +17,16 @@ namespace ILTools.MsBuild.Configuration
         public string Name { get; set; }
         public string Value { get; set; }
 
-        public void Check([NotNull] ILogger logger)
+        public void Check()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                var message = "Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Name)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Name)} element.");
             }
 
             if (string.IsNullOrWhiteSpace(Value))
             {
-                var message = "Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Value)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Value)} element.");
             }
         }
     }

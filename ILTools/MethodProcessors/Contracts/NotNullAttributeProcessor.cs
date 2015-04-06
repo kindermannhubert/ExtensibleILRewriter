@@ -7,28 +7,34 @@ using ILTools.Extensions;
 using Mono.Cecil.Rocks;
 using System;
 using System.Diagnostics;
+using ILTools.MethodProcessors.Helpers;
+using ILTools.MethodProcessors.ArgumentHandling;
 
 namespace ILTools.MethodProcessors.Contracts
 {
     public class NotNullAttributeProcessor : ComponentProcessor<MethodDefinition>
     {
-        private const int HideLineIndex = 0xfeefee;
-
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
-        private readonly static Instruction nopInstruction = Instruction.Create(OpCodes.Nop);
+        private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
+        private readonly ArgumentHandlingType handlingType;
 
         public NotNullAttributeProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
             : base(properties, logger)
         {
+            const string HandligTypeName = "HandlingType";
+
+            if (!properties.ContainsProperty(HandligTypeName))
+            {
+                throw new InvalidOperationException("\{nameof(NotNullAttributeProcessor)} processor needs '\{HandligTypeName}' element in configuration specified.");
+            }
+            if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeName), out handlingType))
+            {
+                throw new InvalidOperationException("Unable to parse handling type property of \{nameof(NotNullAttributeProcessor)} processor. Value: '\{properties.GetProperty(HandligTypeName)}'.");
+            }
         }
 
         public override void Process(MethodDefinition method)
         {
-            var body = method.Body;
-            Collection<Instruction> originalMethodInstructions = null, bodyInstructions = null;
-            List<Instruction> newBranchInstructions = null;
-            MethodReference argumentNullExceptionCtor = null; //TODO PERF:  smarter cacheing per module
-
             foreach (var parameter in method.Parameters)
             {
                 if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == notNullAttributeFullName))
@@ -45,67 +51,29 @@ namespace ILTools.MethodProcessors.Contracts
                         continue;
                     }
 
-                    if (originalMethodInstructions == null)
-                    {
-                        //lazy initialization
-                        body.SimplifyMacros();
-                        bodyInstructions = body.Instructions;
-                        originalMethodInstructions = new Collection<Instruction>(bodyInstructions);
-                        bodyInstructions.Clear();
-
-                        newBranchInstructions = new List<Instruction>();
-                        argumentNullExceptionCtor = method.Module.Import(typeof(ArgumentNullException).GetConstructor(new[] { typeof(string) }));
-                    }
-
-                    //IL_0000: ldarg.0
-                    //IL_0001: brtrue.s IL_000e
-                    //IL_0003: ldstr "xxx"
-                    //IL_0008: newobj System.Void System.ArgumentNullException::.ctor(System.String)
-                    //IL_000d: throw
-                    //IL_000e: ret
-
-                    var ldargInstruction = Instruction.Create(OpCodes.Ldarg, parameter);
-                    bodyInstructions.Add(ldargInstruction);
-                    if (newBranchInstructions.Count > 0)
-                    {
-                        var lastBranchInstruction = newBranchInstructions[newBranchInstructions.Count - 1];
-                        Debug.Assert(lastBranchInstruction.Operand == nopInstruction);
-                        lastBranchInstruction.Operand = ldargInstruction;
-                    }
-
-                    var branchInstruction = Instruction.Create(OpCodes.Brtrue, nopInstruction);
-                    bodyInstructions.Add(branchInstruction);
-                    bodyInstructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-                    bodyInstructions.Add(Instruction.Create(OpCodes.Newobj, argumentNullExceptionCtor));
-                    bodyInstructions.Add(Instruction.Create(OpCodes.Throw));
-
-                    newBranchInstructions.Add(branchInstruction);
+                    var codeInjector = GetCodeInjector(method.Module, parameter.ParameterType);
+                    codeInjector.Inject(method, parameter, logger);
                 }
             }
+        }
 
-            if (originalMethodInstructions != null)
+        private IArgumentHandlingCodeInjector GetCodeInjector(ModuleDefinition module, TypeReference ArgumentType)
+        {
+            IArgumentHandlingCodeInjector codeInjector;
+
+            if (!codeInjectorsCache.TryGetValue(ArgumentType, out codeInjector))
             {
-                int numberOfNewInstructions = bodyInstructions.Count;
-                bodyInstructions.AddRange(originalMethodInstructions);
+                var parameterClrType = Type.GetType(ArgumentType.FullName);
+                var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
+                var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
+                var codeProvider = Activator.CreateInstance(codeProviderType, handlingType);
 
-                if (newBranchInstructions.Count > 0)
-                {
-                    var lastBranchInstruction = newBranchInstructions[newBranchInstructions.Count - 1];
-                    Debug.Assert(lastBranchInstruction.Operand == nopInstruction);
-                    lastBranchInstruction.Operand = bodyInstructions[numberOfNewInstructions];
-                }
+                codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 
-                var sequencePoint = bodyInstructions.FirstOrDefault(i => i.SequencePoint != null && i.SequencePoint.Document != null)?.SequencePoint;
-                if (sequencePoint != null)
-                {
-                    var firstInstruction = bodyInstructions[0];
-                    firstInstruction.SequencePoint = new SequencePoint(sequencePoint.Document);
-                    firstInstruction.SequencePoint.StartLine = HideLineIndex;
-                    firstInstruction.SequencePoint.EndLine = HideLineIndex;
-                }
-
-                body.OptimizeMacros();
+                codeInjectorsCache.Add(ArgumentType, codeInjector);
             }
+
+            return codeInjector;
         }
     }
 }

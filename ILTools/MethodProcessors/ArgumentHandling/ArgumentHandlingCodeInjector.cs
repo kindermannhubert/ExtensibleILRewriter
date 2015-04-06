@@ -28,7 +28,6 @@ namespace ILTools.MethodProcessors.ArgumentHandling
             switch (codeProvider.HandlingType)
             {
                 case ArgumentHandlingType.CallStaticHandling:
-                case ArgumentHandlingType.InlineStaticHandling:
                     var methodInfo = codeProvider.GetType().GetMethod(StaticHandlingMethodPrefix + nameof(ArgumentHandlingCodeProvider<>.HandleArgument));
                     handleParameterMethodImportedReference = module.Import(methodInfo);
                     handleParameterMethodDefinition = handleParameterMethodImportedReference.Resolve();
@@ -62,9 +61,6 @@ namespace ILTools.MethodProcessors.ArgumentHandling
                 case ArgumentHandlingType.CallStaticHandling:
                     CallStaticHandlingFromProvider(method, parameter);
                     break;
-                case ArgumentHandlingType.InlineStaticHandling:
-                    InlineStaticHandlingFromProvider(method, parameter);
-                    break;
                 case ArgumentHandlingType.CallInstanceHandling:
                     CallInstanceHandlingFromProvider(method, parameter);
                     break;
@@ -75,18 +71,18 @@ namespace ILTools.MethodProcessors.ArgumentHandling
 
         private void CallInstanceHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
         {
-            oldInstructions.Clear();
-            method.Body.SimplifyMacros();
-            oldInstructions.AddRange(method.Body.Instructions);
+            //oldInstructions.Clear();
+            //method.Body.SimplifyMacros();
+            //oldInstructions.AddRange(method.Body.Instructions);
 
-            method.Body.Instructions.Clear();
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, codeProvider.HandlingObject)); //TODO: make correct 'this' object loading
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
-            method.Body.Instructions.AddRange(oldInstructions);
+            //method.Body.Instructions.Clear();
+            ////method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, codeProvider.HandlingObject)); //TODO: make correct 'this' object loading
+            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
+            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
+            //method.Body.Instructions.AddRange(oldInstructions);
 
-            method.Body.OptimizeMacros();
+            //method.Body.OptimizeMacros();
 
             throw new NotImplementedException();
         }
@@ -115,12 +111,6 @@ namespace ILTools.MethodProcessors.ArgumentHandling
             }
 
             method.Body.OptimizeMacros();
-        }
-
-        private void InlineStaticHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
-        {
-            //TODO - argument indexing must be repaired here
-            throw new NotImplementedException();
         }
     }
 }

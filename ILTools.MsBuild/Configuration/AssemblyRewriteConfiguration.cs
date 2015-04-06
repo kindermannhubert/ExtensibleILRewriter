@@ -22,32 +22,26 @@ namespace ILTools.MsBuild.Configuration
         [XmlArrayItem("Processor")]
         public ProcessorDefinition[] MethodProcessors { get; set; }
 
-        public void Check([NotNull] ILogger logger)
+        public void Check()
         {
             if (AssembliesWithProcessors == null)
             {
-                var message = "Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(AssembliesWithProcessors)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(AssembliesWithProcessors)} element.");
             }
-            foreach (var assembly in AssembliesWithProcessors) assembly.Check(logger);
+            foreach (var assembly in AssembliesWithProcessors) assembly.Check();
 
             if (AssembliesWithProcessors.Select(a => a.Name).Distinct().Count() != AssembliesWithProcessors.Length)
             {
-                var message = "Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct assembly definition names.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct assembly definition names.");
             }
 
             var definedAssemblyNames = new HashSet<string>(AssembliesWithProcessors.Select(a => a.Name));
 
             if (MethodProcessors == null)
             {
-                var message = "Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(MethodProcessors)} element.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(MethodProcessors)} element.");
             }
-            foreach (var methodProcessor in MethodProcessors) methodProcessor.Check(logger, definedAssemblyNames);
+            foreach (var methodProcessor in MethodProcessors) methodProcessor.Check(definedAssemblyNames);
         }
     }
 }

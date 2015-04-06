@@ -35,32 +35,40 @@ namespace ILTools.MsBuild
         {
             if (logger == null) logger = new DummyLogger();
 
-            var configuration = LoadConfiguration(logger);
-            configuration.Check(logger);
+            try
+            {
+                logger.Progress("Loading configuration '\{ConfigurationPath ?? string.Empty}'.");
+                var configuration = LoadConfiguration();
+                configuration.Check();
+                logger.Progress("Loading configuration done.");
 
-            var rewriter = new AssemblyRewriter(AssemblyPath, logger);
+                var rewriter = new AssemblyRewriter(AssemblyPath, logger);
 
-            PrepareRewriters(rewriter, configuration, logger);
+                logger.Progress("Loading processors.");
+                LoadProcessors(rewriter, configuration, logger);
+                logger.Progress("Loading processors done.");
 
-            rewriter.ProcessAssemblyAndSave(outputPath);
+                rewriter.ProcessAssemblyAndSave(outputPath);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.ToString());
+                return false;
+            }
 
             return true;
         }
 
-        private AssemblyRewriteConfiguration LoadConfiguration([NotNull]ILogger logger)
+        private AssemblyRewriteConfiguration LoadConfiguration()
         {
             if (string.IsNullOrEmpty(ConfigurationPath))
             {
-                var message = "You have to specify \{nameof(ConfigurationPath)} for \{nameof(AssemblyRewrite)} task.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("You have to specify \{nameof(ConfigurationPath)} for \{nameof(AssemblyRewrite)} task.");
             }
 
             if (!File.Exists(ConfigurationPath))
             {
-                var message = "Configuration file for rewriting task '\{ConfigurationPath}' does not exist.";
-                logger.Error(message);
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException("Configuration file for rewriting task '\{ConfigurationPath}' does not exist.");
             }
 
             var serializer = new XmlSerializer(typeof(AssemblyRewriteConfiguration));
@@ -70,7 +78,7 @@ namespace ILTools.MsBuild
             }
         }
 
-        private void PrepareRewriters(AssemblyRewriter assemblyRewriter, AssemblyRewriteConfiguration configuration, [NotNull]ILogger logger)
+        private void LoadProcessors(AssemblyRewriter assemblyRewriter, AssemblyRewriteConfiguration configuration, [NotNull]ILogger logger)
         {
             var executingAssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             ResolveEventHandler currentDomain_AssemblyResolve =
@@ -84,7 +92,6 @@ namespace ILTools.MsBuild
                     else if (File.Exists(path + ".exe")) path = path + ".exe";
                     else return null;
 
-                    logger.Warning(path);
                     return Assembly.Load(File.ReadAllBytes(path));
                 };
 
@@ -96,10 +103,13 @@ namespace ILTools.MsBuild
 
                 foreach (var processorDefinition in configuration.MethodProcessors)
                 {
+                    logger.Notice("Loading processor \{processorDefinition.ProcessorName}.");
+
                     var assembly = assembliesDict[processorDefinition.AssemblyName].Value;
                     var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
                     var processorType = assembly.GetType(processorDefinition.ProcessorName);
+                    if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
                     var processor = (ComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType, processorProperties, logger);
                     assemblyRewriter.MethodProcessors.Add(processor);
                 }
@@ -115,9 +125,7 @@ namespace ILTools.MsBuild
             if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
             if (!File.Exists(path))
             {
-                var message = "Assembly file '\{path}' with processors does not exist.";
-                logger.Error(message);
-                throw new FileNotFoundException(message);
+                throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
             }
 
             var assemblyDefinition = Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
