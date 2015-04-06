@@ -13,12 +13,12 @@ namespace ILTools.MethodProcessors.Helpers
     {
         private readonly static string makeStaticVersionAttributeFullName = typeof(MakeStaticVersionAttribute).FullName;
 
-        public MakeStaticVersionProcessor(ComponentProcessorProperties properties)
-            : base(properties)
+        public MakeStaticVersionProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
+            : base(properties, logger)
         {
         }
 
-        public override void Process([NotNull]MethodDefinition method, [NotNull]ILogger logger)
+        public override void Process([NotNull]MethodDefinition method)
         {
             var attribute = method.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == makeStaticVersionAttributeFullName);
             if (attribute == null) return;

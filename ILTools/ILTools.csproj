@@ -44,10 +44,11 @@
     <Compile Include="ComponentProcessorProperties.cs" />
     <Compile Include="Extensions\ILoggerExtensions.cs" />
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeProvider.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor2.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeInjector.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeProvider.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingType.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttribute.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeInjector.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />

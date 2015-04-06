@@ -18,8 +18,8 @@
       <ProcessorName>ILTools.MethodProcessors.Contracts.NotNullAttributeProcessor2</ProcessorName>
       <Properties>
         <Property>
-          <Name>Type</Name>
-          <Value>Static</Value>
+          <Name>HandlingType</Name>
+          <Value>CallStaticHandling</Value>
         </Property>
       </Properties>
     </Processor>

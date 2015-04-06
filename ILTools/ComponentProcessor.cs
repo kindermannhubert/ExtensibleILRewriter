@@ -11,12 +11,14 @@ namespace ILTools
     public abstract class ComponentProcessor<ComponentType>
     {
         protected readonly ComponentProcessorProperties properties;
+        protected readonly ILogger logger;
 
-        public ComponentProcessor([NotNull]ComponentProcessorProperties properties)
+        public ComponentProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
         {
             this.properties = properties;
+            this.logger = logger;
         }
 
-        public abstract void Process([NotNull]ComponentType component, [NotNull]ILogger logger);
+        public abstract void Process([NotNull]ComponentType component);
     }
 }

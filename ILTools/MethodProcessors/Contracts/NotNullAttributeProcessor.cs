@@ -17,12 +17,12 @@ namespace ILTools.MethodProcessors.Contracts
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly static Instruction nopInstruction = Instruction.Create(OpCodes.Nop);
 
-        public NotNullAttributeProcessor(ComponentProcessorProperties properties)
-            : base(properties)
+        public NotNullAttributeProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
+            : base(properties, logger)
         {
         }
 
-        public override void Process(MethodDefinition method, ILogger logger)
+        public override void Process(MethodDefinition method)
         {
             var body = method.Body;
             Collection<Instruction> originalMethodInstructions = null, bodyInstructions = null;

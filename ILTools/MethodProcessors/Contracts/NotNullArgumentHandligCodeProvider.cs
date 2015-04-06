@@ -8,25 +8,14 @@ using System.Threading.Tasks;
 
 namespace ILTools.MethodProcessors.Contracts
 {
-    class NotNullArgumentHandligCodeProvider<ArgumentType> : IArgumentHandlingCodeProvider<ArgumentType>
+    public class NotNullArgumentHandligCodeProvider<ArgumentType> : ArgumentHandlingCodeProvider<ArgumentType>
     {
-        public IArgumentHandlingCodeProvider<ArgumentType> HandlingObject
+        public NotNullArgumentHandligCodeProvider(ArgumentHandlingType type)
+            : base(type)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
         }
 
-        public bool MakeArgumentHandligMethodStatic
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public void CheckPrerequisites()
+        public override void CheckPrerequisites()
         {
             if (!typeof(ArgumentType).IsClass && Nullable.GetUnderlyingType(typeof(ArgumentType)) == null)
             {
@@ -34,8 +23,8 @@ namespace ILTools.MethodProcessors.Contracts
             }
         }
 
-        [MakeStaticVersion("__static_" + nameof(HandleArgument))]
-        public void HandleArgument(ArgumentType argument, string argumentName)
+        [MakeStaticVersion(ArgumentHandligCodeInjector<ArgumentType>.StaticHandlingMethodPrefix + nameof(HandleArgument))]
+        public override void HandleArgument(ArgumentType argument, string argumentName)
         {
             if (argument == null) throw new ArgumentNullException(argumentName);
         }

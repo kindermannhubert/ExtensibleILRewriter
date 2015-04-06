@@ -95,7 +95,7 @@ namespace ILTools
             {
                 try
                 {
-                    processor.Process(component, logger);
+                    processor.Process(component);
                 }
                 catch (Exception e)
                 {

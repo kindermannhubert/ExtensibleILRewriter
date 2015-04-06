@@ -16,13 +16,28 @@ namespace ILTools.MethodProcessors.Contracts
     {
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
+        private readonly ArgumentHandlingType handlingType;
 
-        public NotNullAttributeProcessor2(ComponentProcessorProperties properties)
-            : base(properties)
+        public NotNullAttributeProcessor2([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
+            : base(properties, logger)
         {
+            const string HandligTypeName = "HandlingType";
+
+            if (!properties.ContainsProperty(HandligTypeName))
+            {
+                var message = "\{nameof(NotNullAttributeProcessor2)} processor needs '\{HandligTypeName}' element in configuration specified.";
+                logger.Error(message);
+                throw new InvalidOperationException(message);
+            }
+            if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeName), out handlingType))
+            {
+                var message = "Unable to parse handling type property of \{nameof(NotNullAttributeProcessor2)} processor. Value: '\{properties.GetProperty(HandligTypeName)}'.";
+                logger.Error(message);
+                throw new InvalidOperationException(message);
+            }
         }
 
-        public override void Process(MethodDefinition method, ILogger logger)
+        public override void Process(MethodDefinition method)
         {
             foreach (var parameter in method.Parameters)
             {
@@ -55,7 +70,7 @@ namespace ILTools.MethodProcessors.Contracts
                 var parameterClrType = Type.GetType(ArgumentType.FullName);
                 var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
                 var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
-                var codeProvider = Activator.CreateInstance(codeProviderType);
+                var codeProvider = Activator.CreateInstance(codeProviderType, handlingType);
 
                 codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 

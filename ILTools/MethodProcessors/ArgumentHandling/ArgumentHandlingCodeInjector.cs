@@ -12,33 +12,42 @@ namespace ILTools.MethodProcessors.ArgumentHandling
 {
     public class ArgumentHandligCodeInjector<ArgumentType> : IArgumentHandlingCodeInjector
     {
-        private readonly IArgumentHandlingCodeProvider<ArgumentType> codeProvider;
+        public const string StaticHandlingMethodPrefix = "__static_";
+
+        private readonly ArgumentHandlingCodeProvider<ArgumentType> codeProvider;
         private readonly MethodDefinition handleParameterMethodDefinition;
         private readonly MethodReference handleParameterMethodImportedReference;
         private readonly Collection<Instruction> oldInstructions = new Collection<Instruction>();
 
-        public ArgumentHandligCodeInjector(ModuleDefinition module, IArgumentHandlingCodeProvider<ArgumentType> codeProvider)
+        public ArgumentHandligCodeInjector(ModuleDefinition module, ArgumentHandlingCodeProvider<ArgumentType> codeProvider)
         {
             this.codeProvider = codeProvider;
 
             codeProvider.CheckPrerequisites();
 
-            //if (codeProvider.MakeArgumentHandligMethodStatic)
-            //{
-            //    //var codeProviderModule = ModuleDefinition.ReadModule(codeProvider.GetType().Module.FullyQualifiedName);
-                
-            //    //PrepareStaticVersionOfHandling(module);
-
-            //    //throw new NotImplementedException();
-            //}
-            //else
+            switch (codeProvider.HandlingType)
             {
-                Action<ArgumentType, string> handleParameterMethodDelegate = codeProvider.HandleArgument;
-                handleParameterMethodImportedReference = module.Import(handleParameterMethodDelegate.Method);
-                handleParameterMethodDefinition = handleParameterMethodImportedReference.Resolve();
+                case ArgumentHandlingType.CallStaticHandling:
+                case ArgumentHandlingType.InlineStaticHandling:
+                    var methodInfo = codeProvider.GetType().GetMethod(StaticHandlingMethodPrefix + nameof(ArgumentHandlingCodeProvider<>.HandleArgument));
+                    handleParameterMethodImportedReference = module.Import(methodInfo);
+                    handleParameterMethodDefinition = handleParameterMethodImportedReference.Resolve();
+                    break;
+                case ArgumentHandlingType.CallInstanceHandling:
+                    Action<ArgumentType, string> handleParameterMethodDelegate = codeProvider.HandleArgument;
+                    handleParameterMethodImportedReference = module.Import(handleParameterMethodDelegate.Method);
+                    handleParameterMethodDefinition = handleParameterMethodImportedReference.Resolve();
+                    break;
+                default:
+                    throw new InvalidOperationException("Unknown \{nameof(ArgumentHandlingType)}: '\{codeProvider.HandlingType}'.");
             }
 
             CheckHandleParameterMethod();
+        }
+
+        private void CheckHandleParameterMethod()
+        {
+            if (!handleParameterMethodDefinition.HasBody) throw new InvalidOperationException("Code provider's method '\{handleParameterMethodDefinition.FullName}' does not have body.");
         }
 
         public void Inject(MethodDefinition method, ParameterDefinition parameter, ILogger logger)
@@ -48,16 +57,23 @@ namespace ILTools.MethodProcessors.ArgumentHandling
 
             logger.Notice("Injecting parameter handlig to method '\{method.FullName}' of parameter '\{parameter.Name}'.");
 
-            if (codeProvider.MakeArgumentHandligMethodStatic)
+            switch (codeProvider.HandlingType)
             {
-                CallStaticHandlingFromProvider(method, parameter);
+                case ArgumentHandlingType.CallStaticHandling:
+                    CallStaticHandlingFromProvider(method, parameter);
+                    break;
+                case ArgumentHandlingType.InlineStaticHandling:
+                    InlineStaticHandlingFromProvider(method, parameter);
+                    break;
+                case ArgumentHandlingType.CallInstanceHandling:
+                    CallInstanceHandlingFromProvider(method, parameter);
+                    break;
+                default:
+                    throw new InvalidOperationException("Unknown \{nameof(ArgumentHandlingType)}: '\{codeProvider.HandlingType}'.");
             }
-            else CallNonStaticHandlingFromProvider(method, parameter);
-
-            //InlineHandling(method, parameter);
         }
 
-        private void CallNonStaticHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
+        private void CallInstanceHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
         {
             oldInstructions.Clear();
             method.Body.SimplifyMacros();
@@ -71,6 +87,8 @@ namespace ILTools.MethodProcessors.ArgumentHandling
             method.Body.Instructions.AddRange(oldInstructions);
 
             method.Body.OptimizeMacros();
+
+            throw new NotImplementedException();
         }
 
         private void CallStaticHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
@@ -80,32 +98,29 @@ namespace ILTools.MethodProcessors.ArgumentHandling
             oldInstructions.AddRange(method.Body.Instructions);
 
             method.Body.Instructions.Clear();
-            //TODO - load 'this' arg
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
             method.Body.Instructions.AddRange(oldInstructions);
 
+            var sequencePoint = method.Body.Instructions.FirstOrDefault(i => i.SequencePoint != null && i.SequencePoint.Document != null)?.SequencePoint;
+            if (sequencePoint != null)
+            {
+                var firstInstruction = method.Body.Instructions[0];
+                firstInstruction.SequencePoint = new SequencePoint(sequencePoint.Document);
+                firstInstruction.SequencePoint.StartLine = sequencePoint.StartLine;
+                firstInstruction.SequencePoint.EndLine = sequencePoint.EndLine;
+                firstInstruction.SequencePoint.StartColumn = sequencePoint.StartColumn;
+                firstInstruction.SequencePoint.EndColumn = sequencePoint.EndColumn;
+            }
+
             method.Body.OptimizeMacros();
         }
 
-        private void InlineHandling(MethodDefinition method, ParameterDefinition parameter)
+        private void InlineStaticHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
         {
             //TODO - argument indexing must be repaired here
+            throw new NotImplementedException();
         }
-
-        private void CheckHandleParameterMethod()
-        {
-            if (!handleParameterMethodDefinition.HasBody) throw new InvalidOperationException("Code provider's method '\{handleParameterMethodDefinition.FullName}' does not have body.");
-        }
-
-        //private void PrepareStaticVersionOfHandling(ModuleDefinition module)
-        //{
-        //    if (!handleParameterMethodDefinition.CouldBeStatic()) throw new InvalidOperationException("Code provider's method '\{handleParameterMethodDefinition.FullName}' must be able to be static.");
-
-        //    var staticHandlingMethodDefinition = handleParameterMethodDefinition.CreateStaticVersion();
-        //    staticHandlingMethodDefinition.Name = "\{handleParameterMethodDefinition.DeclaringType?.FullName}__static_\{handleParameterMethodDefinition.Name}";
-        //    handleParameterMethodDefinition = staticHandlingMethodDefinition;
-        //}
     }
 }

@@ -100,7 +100,7 @@ namespace ILTools.MsBuild
                     var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
                     var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                    var processor = (ComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType, processorProperties);
+                    var processor = (ComponentProcessor<MethodDefinition>)Activator.CreateInstance(processorType, processorProperties, logger);
                     assemblyRewriter.MethodProcessors.Add(processor);
                 }
             }
