@@ -38,7 +38,7 @@ namespace ILTools.MethodProcessors.ArgumentHandling
                     handleParameterMethodDefinition = handleParameterMethodImportedReference.Resolve();
                     break;
                 default:
-                    throw new InvalidOperationException("Unknown \{nameof(ArgumentHandlingType)}: '\{codeProvider.HandlingType}'.");
+                    throw new NotImplementedException("Unknown argument handling type: '\{codeProvider.HandlingType}'.");
             }
 
             CheckHandleParameterMethod();
@@ -56,48 +56,27 @@ namespace ILTools.MethodProcessors.ArgumentHandling
 
             logger.Notice("Injecting parameter handlig to method '\{method.FullName}' of parameter '\{parameter.Name}'.");
 
-            switch (codeProvider.HandlingType)
-            {
-                case ArgumentHandlingType.CallStaticHandling:
-                    CallStaticHandlingFromProvider(method, parameter);
-                    break;
-                case ArgumentHandlingType.CallInstanceHandling:
-                    CallInstanceHandlingFromProvider(method, parameter);
-                    break;
-                default:
-                    throw new InvalidOperationException("Unknown \{nameof(ArgumentHandlingType)}: '\{codeProvider.HandlingType}'.");
-            }
+            EmitCallHandling(method, parameter);
         }
 
-        private void CallInstanceHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
-        {
-            //oldInstructions.Clear();
-            //method.Body.SimplifyMacros();
-            //oldInstructions.AddRange(method.Body.Instructions);
-
-            //method.Body.Instructions.Clear();
-            ////method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, codeProvider.HandlingObject)); //TODO: make correct 'this' object loading
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
-            //method.Body.Instructions.AddRange(oldInstructions);
-
-            //method.Body.OptimizeMacros();
-
-            throw new NotImplementedException();
-        }
-
-        private void CallStaticHandlingFromProvider(MethodDefinition method, ParameterDefinition parameter)
+        private void EmitCallHandling(MethodDefinition method, ParameterDefinition parameter)
         {
             oldInstructions.Clear();
             method.Body.SimplifyMacros();
             oldInstructions.AddRange(method.Body.Instructions);
 
-            method.Body.Instructions.Clear();
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-            method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
-            method.Body.Instructions.AddRange(oldInstructions);
+            switch (codeProvider.HandlingType)
+            {
+                case ArgumentHandlingType.CallStaticHandling:
+                    EmitStaticCallHandling(method, parameter, oldInstructions);
+                    break;
+                case ArgumentHandlingType.CallInstanceHandling:
+                    EmitInstanceCallHandling(method, parameter, oldInstructions);
+                    break;
+                default:
+                    throw new NotImplementedException("Unknown argument handling type: '\{codeProvider.HandlingType}'.");
+            }
+
 
             var sequencePoint = method.Body.Instructions.FirstOrDefault(i => i.SequencePoint != null && i.SequencePoint.Document != null)?.SequencePoint;
             if (sequencePoint != null)
@@ -112,5 +91,36 @@ namespace ILTools.MethodProcessors.ArgumentHandling
 
             method.Body.OptimizeMacros();
         }
+
+        private void EmitStaticCallHandling(MethodDefinition method, ParameterDefinition parameter, Collection<Instruction> oldInstructions)
+        {
+            method.Body.Instructions.Clear();
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
+            method.Body.Instructions.AddRange(oldInstructions);
+        }
+
+        private void EmitInstanceCallHandling(MethodDefinition method, ParameterDefinition parameter, Collection<Instruction> oldInstructions)
+        {
+            method.Body.Instructions.Clear();
+
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
+            method.Body.Instructions.AddRange(oldInstructions);
+        }
+
+        //private static void InstanceHandle(ArgumentHandlingCodeProvider<ArgumentType> instance, ArgumentType argument, string argumentName)
+        //{
+        //    if (instance != null)
+        //    {
+        //        instance.HandleArgument(argument, argumentName);
+        //    }
+        //}
     }
 }

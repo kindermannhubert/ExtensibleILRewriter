@@ -6,8 +6,8 @@ namespace ILTools.MethodProcessors.Contracts
 {
     public class NotNullArgumentHandligCodeProvider<ArgumentType> : ArgumentHandlingCodeProvider<ArgumentType>
     {
-        public NotNullArgumentHandligCodeProvider(ArgumentHandlingType type)
-            : base(type)
+        public NotNullArgumentHandligCodeProvider(ArgumentHandlingType type, string handlingInstanceName)
+            : base(type, handlingInstanceName)
         {
         }
 

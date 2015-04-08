@@ -1,13 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Collections.Generic;
 using ILTools.Extensions;
-using Mono.Cecil.Rocks;
 using System;
-using System.Diagnostics;
-using ILTools.MethodProcessors.Helpers;
 using ILTools.MethodProcessors.ArgumentHandling;
 
 namespace ILTools.MethodProcessors.Contracts
@@ -17,19 +12,30 @@ namespace ILTools.MethodProcessors.Contracts
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
         private readonly ArgumentHandlingType handlingType;
+        private readonly string handlingInstanceName;
 
         public NotNullAttributeProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
             : base(properties, logger)
         {
-            const string HandligTypeName = "HandlingType";
-
-            if (!properties.ContainsProperty(HandligTypeName))
+            const string HandligTypeElementName = "HandlingType";
+            CheckIfContainsProperty(properties, HandligTypeElementName);
+            if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeElementName), out handlingType))
             {
-                throw new InvalidOperationException("\{nameof(NotNullAttributeProcessor)} processor needs '\{HandligTypeName}' element in configuration specified.");
+                throw new InvalidOperationException("Unable to parse handling type property of \{nameof(NotNullAttributeProcessor)} processor. Value: '\{properties.GetProperty(HandligTypeElementName)}'.");
             }
-            if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeName), out handlingType))
+
+            switch (handlingType)
             {
-                throw new InvalidOperationException("Unable to parse handling type property of \{nameof(NotNullAttributeProcessor)} processor. Value: '\{properties.GetProperty(HandligTypeName)}'.");
+                case ArgumentHandlingType.CallStaticHandling:
+                    //we don't need instance
+                    break;
+                case ArgumentHandlingType.CallInstanceHandling:
+                    const string HandlingInstanceNameElementName = "HandlingInstanceName";
+                    CheckIfContainsProperty(properties, HandlingInstanceNameElementName);
+                    handlingInstanceName = properties.GetProperty(HandlingInstanceNameElementName);
+                    break;
+                default:
+                    throw new NotImplementedException("Unknown argument handling type: '\{handlingType}'.");
             }
         }
 
@@ -66,7 +72,7 @@ namespace ILTools.MethodProcessors.Contracts
                 var parameterClrType = Type.GetType(ArgumentType.FullName);
                 var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
                 var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
-                var codeProvider = Activator.CreateInstance(codeProviderType, handlingType);
+                var codeProvider = Activator.CreateInstance(codeProviderType, handlingType, handlingInstanceName);
 
                 codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 

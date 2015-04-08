@@ -20,5 +20,13 @@ namespace ILTools
         }
 
         public abstract void Process([NotNull]ComponentType component);
+
+        protected void CheckIfContainsProperty([NotNull]ComponentProcessorProperties properties, string propertyName)
+        {
+            if (!properties.ContainsProperty(propertyName))
+            {
+                throw new InvalidOperationException("\{GetType().FullName} processor needs '\{propertyName}' element in configuration specified.");
+            }
+        }
     }
 }
