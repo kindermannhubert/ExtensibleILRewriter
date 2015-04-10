@@ -130,7 +130,7 @@ namespace ExtensibleILRewriter.MethodProcessors.ArgumentHandling
             }
 
             string fieldName = typeof(ArgumentType).FullName;
-            var holderField = holderType.Fields.First(f => f.Name == fieldName);
+            var holderField = holderType.Fields.FirstOrDefault(f => f.Name == fieldName);
             if (holderField == null)
             {
                 holderField = new FieldDefinition(fieldName, FieldAttributes.Public | FieldAttributes.Static, moduleToExtend.Import(typeof(ArgumentType)));

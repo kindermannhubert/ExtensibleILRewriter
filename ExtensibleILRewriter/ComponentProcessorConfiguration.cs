@@ -6,7 +6,7 @@ namespace ExtensibleILRewriter
 {
     public abstract class ComponentProcessorConfiguration
     {
-        public abstract void LoadFromProperties(ComponentProcessorProperties properties);
+        public abstract void LoadFromProperties(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver);
 
         protected void CheckIfContainsProperty([NotNull]ComponentProcessorProperties properties, string property)
         {
@@ -18,7 +18,7 @@ namespace ExtensibleILRewriter
 
         public class EmptyConfiguration : ComponentProcessorConfiguration
         {
-            public override void LoadFromProperties(ComponentProcessorProperties properties)
+            public override void LoadFromProperties(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver)
             {
             }
         }

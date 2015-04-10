@@ -74,7 +74,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             }
             foreach (var type in Types) type.Check();
 
-            if (Types.Select(t => t.FullName).Distinct().Count() != Types.Length)
+            if (Types.Select(t => t.Name).Distinct().Count() != Types.Length)
             {
                 throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct type definition names.");
             }

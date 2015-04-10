@@ -6,7 +6,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
     {
         public string AssemblyAlias { get; set; }
         public string Alias { get; set; }
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
         public void Check()
         {
@@ -20,9 +20,9 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
                 throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Alias)} element.");
             }
 
-            if (string.IsNullOrWhiteSpace(FullName))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(FullName)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Name)} element.");
             }
         }
     }

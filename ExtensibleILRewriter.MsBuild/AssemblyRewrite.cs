@@ -99,12 +99,22 @@ namespace ExtensibleILRewriter.MsBuild
             {
                 AppDomain.CurrentDomain.AssemblyResolve += currentDomain_AssemblyResolve;
 
-                var assembliesDict = configuration.Assemblies.ToDictionary(a => a.Alias, a => new Lazy<Assembly>(() => LoadProcessorsAssembly(a.Path, executingAssemblyPath, logger)));
+                var assembliesDict = new Dictionary<string, LazyAssembly>();
+                foreach (var assemblyCfg in configuration.Assemblies)
+                {
+                    var lazyAssemblyDefinition = new Lazy<AssemblyDefinition>(() => LoadProcessorsAssemblyDefinition(assemblyCfg.Path, executingAssemblyPath));
+                    var lazyAssembly = new Lazy<Assembly>(() => LoadProcessorsAssembly(assemblyCfg.Path, executingAssemblyPath, lazyAssemblyDefinition.Value));
+                    assembliesDict.Add(assemblyCfg.Alias, new LazyAssembly(lazyAssembly, lazyAssemblyDefinition));
+                }
 
-                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyDefinition>(configuration.AssemblyProcessors, logger, assembliesDict));
-                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleDefinition>(configuration.ModuleProcessors, logger, assembliesDict));
-                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeDefinition>(configuration.TypeProcessors, logger, assembliesDict));
-                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodDefinition>(configuration.MethodProcessors, logger, assembliesDict));
+                var typeAliasResolver = new TypeAliasResolver(
+                    assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.AssemblyDefinition), 
+                    configuration.Types.ToDictionary(t => t.Alias, t => new TypeAliasResolver.TypeAliasDefinition(t.AssemblyAlias, t.Name)));
+
+                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyDefinition>(configuration.AssemblyProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleDefinition>(configuration.ModuleProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeDefinition>(configuration.TypeProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodDefinition>(configuration.MethodProcessors, logger, assembliesDict, typeAliasResolver));
             }
             finally
             {
@@ -112,13 +122,15 @@ namespace ExtensibleILRewriter.MsBuild
             }
         }
 
-        private static IEnumerable<IComponentProcessor<ComponentType, ComponentProcessorConfiguration>> LoadProcessors<ComponentType>(ProcessorDefinition[] processorDefinitions, ILogger logger, Dictionary<string, Lazy<Assembly>> assembliesDict)
+        private static IEnumerable<IComponentProcessor<ComponentType, ComponentProcessorConfiguration>> LoadProcessors<ComponentType>(
+            ProcessorDefinition[] processorDefinitions, ILogger logger,
+            Dictionary<string, LazyAssembly> assembliesDict, TypeAliasResolver typeAliasResolver)
         {
             foreach (var processorDefinition in processorDefinitions)
             {
                 logger.Notice("Loading processor \{processorDefinition.ProcessorName}.");
 
-                var assembly = assembliesDict[processorDefinition.AssemblyAlias].Value;
+                var assembly = assembliesDict[processorDefinition.AssemblyAlias].Assembly.Value;
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
                 if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
 
@@ -126,22 +138,26 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);
-                processorConfiguration.LoadFromProperties(processorProperties);
+                processorConfiguration.LoadFromProperties(processorProperties, typeAliasResolver);
 
                 var processor = (IComponentProcessor<ComponentType, ComponentProcessorConfiguration>)Activator.CreateInstance(processorType, processorConfiguration, logger);
                 yield return processor;
             }
         }
 
-        private Assembly LoadProcessorsAssembly(string path, string currentPath, [NotNull]ILogger logger)
+        private Mono.Cecil.AssemblyDefinition LoadProcessorsAssemblyDefinition(string path, string currentPath)
         {
             if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
-            }
+            if (!File.Exists(path)) throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
 
-            var assemblyDefinition = Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
+            return Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
+        }
+
+        private Assembly LoadProcessorsAssembly(string path, string currentPath, Mono.Cecil.AssemblyDefinition assemblyDefinition)
+        {
+            if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
+            if (!File.Exists(path)) throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
+
             var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == assemblyDefinition.FullName);
             if (loadedAssembly != null) return loadedAssembly;
 
@@ -152,6 +168,18 @@ namespace ExtensibleILRewriter.MsBuild
         {
             int firstComma = fullName.IndexOf(',');
             return fullName.Substring(0, firstComma);
+        }
+
+        class LazyAssembly
+        {
+            public Lazy<Assembly> Assembly { get; }
+            public Lazy<AssemblyDefinition> AssemblyDefinition { get; }
+
+            public LazyAssembly(Lazy<Assembly> assembly, Lazy<AssemblyDefinition> assemblyDefinition)
+            {
+                Assembly = assembly;
+                AssemblyDefinition = assemblyDefinition;
+            }
         }
     }
 }

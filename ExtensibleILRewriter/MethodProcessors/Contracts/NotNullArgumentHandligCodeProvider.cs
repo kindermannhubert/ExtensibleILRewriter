@@ -1,13 +1,14 @@
 ﻿using ExtensibleILRewriter.MethodProcessors.ArgumentHandling;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
+using Mono.Cecil;
 using System;
 
 namespace ExtensibleILRewriter.MethodProcessors.Contracts
 {
     public class NotNullArgumentHandligCodeProvider<ArgumentType> : ArgumentHandlingCodeProvider<ArgumentType>
     {
-        public NotNullArgumentHandligCodeProvider(ArgumentHandlingType type, string handlingInstanceName)
-            : base(type, handlingInstanceName)
+        public NotNullArgumentHandligCodeProvider(ArgumentHandlingType type, TypeDefinition handlingInstanceType)
+            : base(type, handlingInstanceType)
         {
         }
 

@@ -50,7 +50,7 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
                 var parameterClrType = Type.GetType(ArgumentType.FullName);
                 var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
                 var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
-                var codeProvider = Activator.CreateInstance(codeProviderType, configuration.HandlingType, null);
+                var codeProvider = Activator.CreateInstance(codeProviderType, configuration.HandlingType, configuration.HandlingInstanceType);
 
                 codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 
@@ -65,7 +65,9 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
             private ArgumentHandlingType handlingType;
             public ArgumentHandlingType HandlingType { get { return handlingType; } }
 
-            public override void LoadFromProperties(ComponentProcessorProperties properties)
+            public TypeDefinition HandlingInstanceType { get; private set; }
+
+            public override void LoadFromProperties(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver)
             {
                 const string HandligTypeElementName = "HandlingType";
                 CheckIfContainsProperty(properties, HandligTypeElementName);
@@ -77,12 +79,12 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
                 switch (handlingType)
                 {
                     case ArgumentHandlingType.CallStaticHandling:
-                        //we don't need instance
+                        HandlingInstanceType = null;
                         break;
                     case ArgumentHandlingType.CallInstanceHandling:
-                        //const string HandlingInstanceNameElementName = "HandlingInstanceName";
-                        //CheckIfContainsProperty(properties, HandlingInstanceNameElementName);
-                        //handlingInstanceName = properties.GetProperty(HandlingInstanceNameElementName);
+                        const string HandlingInstanceTypeAliasElementName = "HandlingInstanceTypeAlias";
+                        CheckIfContainsProperty(properties, HandlingInstanceTypeAliasElementName);
+                        HandlingInstanceType = typeAliasResolver.Resolve(properties.GetProperty(HandlingInstanceTypeAliasElementName));
                         break;
                     default:
                         throw new NotImplementedException("Unknown argument handling type: '\{handlingType}'.");
