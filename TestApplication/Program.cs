@@ -1,6 +1,6 @@
-﻿using ILTools;
-using ILTools.MethodProcessors.Contracts;
-using ILTools.MethodProcessors.Helpers;
+﻿using ExtensibleILRewriter;
+using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.MethodProcessors.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -11,10 +11,6 @@
   </AssemblyProcessors>
 
   <ModuleProcessors>
-    <Processor>
-      <AssemblyName>ExtensibleILRewriter</AssemblyName>
-      <ProcessorName>ExtensibleILRewriter.ModuleProcessors.ModuleInitializerProcessor</ProcessorName>
-    </Processor>
   </ModuleProcessors>
 
   <TypeProcessors>
@@ -24,17 +20,6 @@
     <Processor>
       <AssemblyName>ExtensibleILRewriter</AssemblyName>
       <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
-    </Processor>
-
-    <Processor>
-      <AssemblyName>ExtensibleILRewriter</AssemblyName>
-      <ProcessorName>ExtensibleILRewriter.MethodProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
-      <Properties>
-        <Property>
-          <Name>HandlingType</Name>
-          <Value>CallStaticHandling</Value>
-        </Property>
-      </Properties>
     </Processor>
   </MethodProcessors>
 </AssemblyRewriteConfiguration>

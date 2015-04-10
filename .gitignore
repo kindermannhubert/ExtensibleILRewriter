@@ -2,24 +2,20 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/ILTools/obj/Debug
-/ILTools/bin/Debug
-/ILTools.sln.ide
 *.suo
 /TestApplication/obj/Debug
 /TestApplication/bin/Debug
-/ILTools.MsBuild/obj/Debug
-/ILTools.MsBuild/bin/Debug
 /packages
 /TestRewriter/obj/Debug
 /TestRewriter/bin/Debug
-/ILTools.MsBuild/obj/Release
-/ILTools/obj/Release
 /TestRewriter/bin/Release/TestRewriter.vshost.exe.manifest
 /TestRewriter/bin/Release/TestRewriter.vshost.exe
 /TestRewriter/obj/Release
-/ILTools/bin/Release
 /TestApplication/bin/Release
-/ILTools.MsBuild/bin/Release
 /TestRewriter/bin/Release
 /TestApplication/obj/Release
+/ExtensibleILRewriter/bin
+/ExtensibleILRewriter/obj
+/ExtensibleILRewriter.sln.ide
+/ExtensibleILRewriter.MsBuild/bin
+/ExtensibleILRewriter.MsBuild/obj

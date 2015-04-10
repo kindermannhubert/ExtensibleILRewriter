@@ -1,5 +1,5 @@
-﻿using ILTools;
-using ILTools.MsBuild;
+﻿using ExtensibleILRewriter;
+using ExtensibleILRewriter.MsBuild;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +30,7 @@ namespace TestRewriter
             Console.WriteLine("Output:\t\t\{rewrittenAssemblyPath}");
             Console.WriteLine();
 
-            //Environment.CurrentDirectory = @"D:\SourcesPrivate\ILTools\TestApplication";
+            //Environment.CurrentDirectory = @"D:\SourcesPrivate\ExtensibleILRewriter\TestApplication";
 
             var rewriteTask = new AssemblyRewrite()
             {
