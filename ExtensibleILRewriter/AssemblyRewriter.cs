@@ -15,10 +15,10 @@ namespace ExtensibleILRewriter
         private readonly string assemblyPath;
         private readonly ILogger logger;
 
-        public List<ComponentProcessor<AssemblyDefinition>> AssemblyProcessors { get; } = new List<ComponentProcessor<AssemblyDefinition>>();
-        public List<ComponentProcessor<ModuleDefinition>> ModuleProcessors { get; } = new List<ComponentProcessor<ModuleDefinition>>();
-        public List<ComponentProcessor<TypeDefinition>> TypeProcessors { get; } = new List<ComponentProcessor<TypeDefinition>>();
-        public List<ComponentProcessor<MethodDefinition>> MethodProcessors { get; } = new List<ComponentProcessor<MethodDefinition>>();
+        public List<IComponentProcessor<AssemblyDefinition, ComponentProcessorConfiguration>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyDefinition, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<TypeDefinition, ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<TypeDefinition, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<MethodDefinition, ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<MethodDefinition, ComponentProcessorConfiguration>>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
@@ -94,7 +94,7 @@ namespace ExtensibleILRewriter
             logger.Notice("Processing method done.");
         }
 
-        private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<ComponentProcessor<ComponentType>> componentProcessors, ILogger logger)
+        private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<IComponentProcessor<ComponentType, ComponentProcessorConfiguration>> componentProcessors, ILogger logger)
         {
             foreach (var processor in componentProcessors)
             {

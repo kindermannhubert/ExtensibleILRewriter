@@ -14,7 +14,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
 {
     public class ProcessorDefinition
     {
-        public string AssemblyName { get; set; }
+        public string AssemblyAlias { get; set; }
 
         public string ProcessorName { get; set; }
 
@@ -22,11 +22,11 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         [XmlArrayItem("Property")]
         public ProcessorPropertyDefinition[] Properties { get; set; }
 
-        public void Check(HashSet<string> definedAssemblyNames)
+        public void Check(HashSet<string> definedAssemblyAliases, HashSet<string> definedTypeAliases)
         {
-            if (string.IsNullOrWhiteSpace(AssemblyName))
+            if (string.IsNullOrWhiteSpace(AssemblyAlias))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(AssemblyName)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(AssemblyAlias)} element.");
             }
 
             if (string.IsNullOrWhiteSpace(ProcessorName))
@@ -34,9 +34,9 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
                 throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(ProcessorName)} element.");
             }
 
-            if (!definedAssemblyNames.Contains(AssemblyName))
+            if (!definedAssemblyAliases.Contains(AssemblyAlias))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyName}'.");
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyAlias}'.");
             }
 
             if (Properties == null) Properties = new ProcessorPropertyDefinition[0];

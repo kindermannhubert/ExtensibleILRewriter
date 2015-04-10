@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AssemblyRewriteConfiguration>
-  <AssembliesWithProcessors>
-    <AssemblyDefinition>
-      <Name>ExtensibleILRewriter</Name>
+  <Assemblies>
+    <Assembly>
+      <Alias>ExtensibleILRewriter</Alias>
       <Path>ExtensibleILRewriter.dll</Path>
-    </AssemblyDefinition>
-  </AssembliesWithProcessors>
+    </Assembly>
+  </Assemblies>
+
+  <Types>
+  </Types>
 
   <AssemblyProcessors>
   </AssemblyProcessors>
@@ -18,7 +21,7 @@
 
   <MethodProcessors>
     <Processor>
-      <AssemblyName>ExtensibleILRewriter</AssemblyName>
+      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
     </Processor>
   </MethodProcessors>

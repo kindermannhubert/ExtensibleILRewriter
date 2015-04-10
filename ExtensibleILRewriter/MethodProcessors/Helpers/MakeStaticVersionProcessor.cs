@@ -9,12 +9,12 @@ using ExtensibleILRewriter.Extensions;
 
 namespace ExtensibleILRewriter.MethodProcessors.Helpers
 {
-    public class MakeStaticVersionProcessor : ComponentProcessor<MethodDefinition>
+    public class MakeStaticVersionProcessor : ComponentProcessor<MethodDefinition, ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string makeStaticVersionAttributeFullName = typeof(MakeStaticVersionAttribute).FullName;
 
-        public MakeStaticVersionProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
-            : base(properties, logger)
+        public MakeStaticVersionProcessor([NotNull]ComponentProcessorConfiguration.EmptyConfiguration configuration, [NotNull]ILogger logger)
+            : base(configuration, logger)
         {
         }
 

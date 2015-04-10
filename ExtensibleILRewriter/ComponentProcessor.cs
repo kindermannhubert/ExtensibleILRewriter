@@ -8,25 +8,18 @@ using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter
 {
-    public abstract class ComponentProcessor<ComponentType>
+    public abstract class ComponentProcessor<ComponentType, ConfigurationType> : IComponentProcessor<ComponentType, ConfigurationType>
+        where ConfigurationType : ComponentProcessorConfiguration
     {
-        protected readonly ComponentProcessorProperties properties;
+        protected readonly ConfigurationType configuration;
         protected readonly ILogger logger;
 
-        public ComponentProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
+        public ComponentProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
         {
-            this.properties = properties;
+            this.configuration = configuration;
             this.logger = logger;
         }
 
         public abstract void Process([NotNull]ComponentType component);
-
-        protected void CheckIfContainsProperty([NotNull]ComponentProcessorProperties properties, string propertyName)
-        {
-            if (!properties.ContainsProperty(propertyName))
-            {
-                throw new InvalidOperationException("\{GetType().FullName} processor needs '\{propertyName}' element in configuration specified.");
-            }
-        }
     }
 }

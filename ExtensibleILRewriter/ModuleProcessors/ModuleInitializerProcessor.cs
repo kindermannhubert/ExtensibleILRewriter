@@ -7,12 +7,12 @@ using Mono.Cecil.Rocks;
 
 namespace ExtensibleILRewriter.ModuleProcessors
 {
-    public class ModuleInitializerProcessor : ComponentProcessor<ModuleDefinition>
+    public class ModuleInitializerProcessor : ComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string moduleInitializerAttributeFullName = typeof(ModuleInitializerAttribute).FullName;
 
-        public ModuleInitializerProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
-            : base(properties, logger)
+        public ModuleInitializerProcessor([NotNull]ComponentProcessorConfiguration.EmptyConfiguration configuration, [NotNull]ILogger logger)
+            : base(configuration, logger)
         {
         }
 

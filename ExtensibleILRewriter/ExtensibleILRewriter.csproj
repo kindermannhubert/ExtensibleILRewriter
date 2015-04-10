@@ -41,11 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ILoggerExtensions.cs" />
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="HandlingInstancesManager.cs" />
+    <Compile Include="ComponentProcessorConfiguration.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeProvider.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
     <Compile Include="MethodProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />

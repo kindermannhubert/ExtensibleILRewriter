@@ -7,36 +7,14 @@ using ExtensibleILRewriter.MethodProcessors.ArgumentHandling;
 
 namespace ExtensibleILRewriter.MethodProcessors.Contracts
 {
-    public class NotNullAttributeProcessor : ComponentProcessor<MethodDefinition>
+    public class NotNullAttributeProcessor : ComponentProcessor<MethodDefinition, NotNullAttributeProcessor.Configuration>
     {
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
-        private readonly ArgumentHandlingType handlingType;
-        private readonly string handlingInstanceName;
 
-        public NotNullAttributeProcessor([NotNull]ComponentProcessorProperties properties, [NotNull]ILogger logger)
-            : base(properties, logger)
+        public NotNullAttributeProcessor([NotNull]Configuration configuration, [NotNull]ILogger logger)
+            : base(configuration, logger)
         {
-            const string HandligTypeElementName = "HandlingType";
-            CheckIfContainsProperty(properties, HandligTypeElementName);
-            if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeElementName), out handlingType))
-            {
-                throw new InvalidOperationException("Unable to parse handling type property of \{nameof(NotNullAttributeProcessor)} processor. Value: '\{properties.GetProperty(HandligTypeElementName)}'.");
-            }
-
-            switch (handlingType)
-            {
-                case ArgumentHandlingType.CallStaticHandling:
-                    //we don't need instance
-                    break;
-                case ArgumentHandlingType.CallInstanceHandling:
-                    const string HandlingInstanceNameElementName = "HandlingInstanceName";
-                    CheckIfContainsProperty(properties, HandlingInstanceNameElementName);
-                    handlingInstanceName = properties.GetProperty(HandlingInstanceNameElementName);
-                    break;
-                default:
-                    throw new NotImplementedException("Unknown argument handling type: '\{handlingType}'.");
-            }
         }
 
         public override void Process(MethodDefinition method)
@@ -72,7 +50,7 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
                 var parameterClrType = Type.GetType(ArgumentType.FullName);
                 var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
                 var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
-                var codeProvider = Activator.CreateInstance(codeProviderType, handlingType, handlingInstanceName);
+                var codeProvider = Activator.CreateInstance(codeProviderType, configuration.HandlingType, null);
 
                 codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 
@@ -80,6 +58,36 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
             }
 
             return codeInjector;
+        }
+
+        public class Configuration : ComponentProcessorConfiguration
+        {
+            private ArgumentHandlingType handlingType;
+            public ArgumentHandlingType HandlingType { get { return handlingType; } }
+
+            public override void LoadFromProperties(ComponentProcessorProperties properties)
+            {
+                const string HandligTypeElementName = "HandlingType";
+                CheckIfContainsProperty(properties, HandligTypeElementName);
+                if (!Enum.TryParse<ArgumentHandlingType>(properties.GetProperty(HandligTypeElementName), out handlingType))
+                {
+                    throw new InvalidOperationException("Unable to parse handling type property of \{nameof(NotNullAttributeProcessor)} processor. Value: '\{properties.GetProperty(HandligTypeElementName)}'.");
+                }
+
+                switch (handlingType)
+                {
+                    case ArgumentHandlingType.CallStaticHandling:
+                        //we don't need instance
+                        break;
+                    case ArgumentHandlingType.CallInstanceHandling:
+                        //const string HandlingInstanceNameElementName = "HandlingInstanceName";
+                        //CheckIfContainsProperty(properties, HandlingInstanceNameElementName);
+                        //handlingInstanceName = properties.GetProperty(HandlingInstanceNameElementName);
+                        break;
+                    default:
+                        throw new NotImplementedException("Unknown argument handling type: '\{handlingType}'.");
+                }
+            }
         }
     }
 }

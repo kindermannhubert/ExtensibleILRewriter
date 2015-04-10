@@ -15,8 +15,12 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
     public class AssemblyRewriteConfiguration
     {
         [XmlArray]
-        [XmlArrayItem("AssemblyDefinition")]
-        public AssemblyNameDefinition[] AssembliesWithProcessors { get; set; }
+        [XmlArrayItem("Assembly")]
+        public AssemblyAliasDefinition[] Assemblies { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem("Type")]
+        public TypeAliasDefinition[] Types { get; set; }
 
         [XmlArray]
         [XmlArrayItem("Processor")]
@@ -36,32 +40,53 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
 
         public void Check()
         {
-            if (AssembliesWithProcessors == null)
-            {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(AssembliesWithProcessors)} element.");
-            }
-            foreach (var assembly in AssembliesWithProcessors) assembly.Check();
+            CheckAssemblies();
+            CheckTypes();
 
-            if (AssembliesWithProcessors.Select(a => a.Name).Distinct().Count() != AssembliesWithProcessors.Length)
+            var definedAssemblyAliases = new HashSet<string>(Assemblies.Select(a => a.Alias));
+            var definedTypeAliases = new HashSet<string>(Types.Select(t => t.Alias));
+
+            CheckProcessorDefinitions(AssemblyProcessors, nameof(AssemblyProcessors), definedAssemblyAliases, definedTypeAliases);
+            CheckProcessorDefinitions(ModuleProcessors, nameof(ModuleProcessors), definedAssemblyAliases, definedTypeAliases);
+            CheckProcessorDefinitions(TypeProcessors, nameof(TypeProcessors), definedAssemblyAliases, definedTypeAliases);
+            CheckProcessorDefinitions(MethodProcessors, nameof(MethodProcessors), definedAssemblyAliases, definedTypeAliases);
+        }
+
+        private void CheckAssemblies()
+        {
+            if (Assemblies == null)
+            {
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(Assemblies)} element.");
+            }
+            foreach (var assembly in Assemblies) assembly.Check();
+
+            if (Assemblies.Select(a => a.Alias).Distinct().Count() != Assemblies.Length)
             {
                 throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct assembly definition names.");
             }
-
-            var definedAssemblyNames = new HashSet<string>(AssembliesWithProcessors.Select(a => a.Name));
-
-            CheckProcessorDefinitions(AssemblyProcessors, nameof(AssemblyProcessors), definedAssemblyNames);
-            CheckProcessorDefinitions(ModuleProcessors, nameof(ModuleProcessors), definedAssemblyNames);
-            CheckProcessorDefinitions(TypeProcessors, nameof(TypeProcessors), definedAssemblyNames);
-            CheckProcessorDefinitions(MethodProcessors, nameof(MethodProcessors), definedAssemblyNames);
         }
 
-        private void CheckProcessorDefinitions(ProcessorDefinition[] processors, string elementName, HashSet<string> definedAssemblyNames)
+        private void CheckTypes()
+        {
+            if (Types == null)
+            {
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(Types)} element.");
+            }
+            foreach (var type in Types) type.Check();
+
+            if (Types.Select(t => t.FullName).Distinct().Count() != Types.Length)
+            {
+                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct type definition names.");
+            }
+        }
+
+        private void CheckProcessorDefinitions(ProcessorDefinition[] processors, string elementName, HashSet<string> definedAssemblyAliases, HashSet<string> definedTypeAliases)
         {
             if (processors == null)
             {
                 throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{elementName} element.");
             }
-            foreach (var processor in processors) processor.Check(definedAssemblyNames);
+            foreach (var processor in processors) processor.Check(definedAssemblyAliases, definedTypeAliases);
         }
     }
 }
