@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,29 +11,59 @@ namespace ExtensibleILRewriter
     {
         private static readonly object sync = new object();
         private static readonly Dictionary<string, object> instaces = new Dictionary<string, object>();
-        private static readonly Dictionary<string, List<InstanceRegisteredHandler>> instanceRegisteredHandlers = new Dictionary<string, List<InstanceRegisteredHandler>>();
+        private static readonly Dictionary<string, IntPtr> instanceHolderFieldAddresses = new Dictionary<string, IntPtr>();
 
-        public static void RegisterInstance(string name, object instance)
+        public static void RegisterInstance(string instanceName, object instance)
         {
             lock (sync)
             {
-                if (instaces.ContainsKey(name)) throw new InvalidOperationException("Instance with name '\{name}' was already registered.");
-                instaces.Add(name, instance);
+                if (instaces.ContainsKey(instanceName)) throw new InvalidOperationException("Instance with name '\{instanceName}' was already registered.");
+                instaces.Add(instanceName, instance);
+
+                IntPtr staticFieldAddress;
+                if (instanceHolderFieldAddresses.TryGetValue(instanceName, out staticFieldAddress))
+                {
+                    SetInstanceToStaticFieldAddress(staticFieldAddress, instance);
+                }
             }
         }
 
-        private static void AddInstanceRegisteredEventHandler(string instanceName, InstanceRegisteredHandler instanceRegistered)
+        public static void RegisterInstanceHolderFieldAddress(string instanceName, IntPtr instanceHolderFieldAddress)
         {
             lock (sync)
             {
-                List<InstanceRegisteredHandler> handlers;
-                if (instanceRegisteredHandlers.ContainsKey(instanceName)) handlers = instanceRegisteredHandlers[instanceName];
-                else handlers = new List<InstanceRegisteredHandler>();
+                if (instanceHolderFieldAddresses.ContainsKey(instanceName))
+                {
+                    throw new InvalidOperationException("Instance holder field address was already added for instanceName = '\{instanceName}'.");
+                }
+                else
+                {
+                    instanceHolderFieldAddresses.Add(instanceName, instanceHolderFieldAddress);
 
-                handlers.Add(instanceRegistered);
+                    object alreadyExistingInstance;
+                    if (instaces.TryGetValue(instanceName, out alreadyExistingInstance))
+                    {
+                        SetInstanceToStaticFieldAddress(instanceHolderFieldAddress, alreadyExistingInstance);
+                    }
+                }
             }
         }
 
-        public delegate void InstanceRegisteredHandler(object instance);
+        private static Action<IntPtr, object> _setInstanceToStaticFieldAddress;
+        private static void SetInstanceToStaticFieldAddress(IntPtr address, object instance)
+        {
+            if (_setInstanceToStaticFieldAddress == null)
+            {
+                var dynamicMethod = new DynamicMethod(nameof(_setInstanceToStaticFieldAddress), null, new Type[] { typeof(IntPtr), typeof(object) });
+                var ilGen = dynamicMethod.GetILGenerator();
+
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Stind_Ref);
+
+                _setInstanceToStaticFieldAddress = (Action<IntPtr, object>)dynamicMethod.CreateDelegate(typeof(Action<IntPtr, object>));
+            }
+            _setInstanceToStaticFieldAddress(address, instance);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using ExtensibleILRewriter.MethodProcessors.Contracts;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using ExtensibleILRewriter.Extensions;
 
 namespace ExtensibleILRewriter.ModuleProcessors
 {
@@ -35,29 +36,16 @@ namespace ExtensibleILRewriter.ModuleProcessors
             if (method.ReturnType != module.TypeSystem.Void) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must be void.");
             if (method.Parameters.Count != 0) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must have 0 arguments.");
 
+            var cctor = FindOrCreateInitializer(module);
+
+            cctor.Body.AddInstructionToBegining(Instruction.Create(OpCodes.Call, method));
+        }
+
+        public static MethodDefinition FindOrCreateInitializer([NotNull]ModuleDefinition module)
+        {
             var moduleType = module.GetType("<Module>");
             if (moduleType == null) throw new InvalidOperationException("ModuleInitializerProcessor cannot find type '<Module>' in '\{module.FullyQualifiedName}' module.");
 
-            var cctor = FindOrCreateInitializer(moduleType);
-            cctor.Body.SimplifyMacros();
-
-            var instructions = cctor.Body.Instructions;
-            var oldInstructions = instructions.ToArray();
-            instructions.Clear();
-            foreach (var ins in oldInstructions)
-            {
-                if (ins.OpCode.Code == Code.Ret)
-                {
-                    instructions.Add(Instruction.Create(OpCodes.Call, method));
-                }
-                instructions.Add(ins);
-            }
-
-            cctor.Body.OptimizeMacros();
-        }
-
-        private MethodDefinition FindOrCreateInitializer(TypeDefinition moduleType)
-        {
             var cctor = moduleType.Methods.FirstOrDefault(x => x.Name == ".cctor");
             if (cctor == null)
             {

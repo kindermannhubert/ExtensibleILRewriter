@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="HandlingInstancesCodeGenerator.cs" />
+    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeProvider.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />

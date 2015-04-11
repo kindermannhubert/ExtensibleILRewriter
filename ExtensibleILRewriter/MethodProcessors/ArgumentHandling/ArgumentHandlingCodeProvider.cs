@@ -3,7 +3,7 @@ using System;
 
 namespace ExtensibleILRewriter.MethodProcessors.ArgumentHandling
 {
-    public abstract class ArgumentHandlingCodeProvider<ArgumentType>
+    public abstract class ArgumentHandlingCodeProvider<ArgumentType> : IArgumentHandlingCodeProvider
     {
         //private ArgumentHandlingCodeProvider<ArgumentType> handlingInstance;
 

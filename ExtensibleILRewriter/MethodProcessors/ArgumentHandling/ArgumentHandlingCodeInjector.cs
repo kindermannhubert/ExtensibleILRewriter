@@ -103,52 +103,24 @@ namespace ExtensibleILRewriter.MethodProcessors.ArgumentHandling
 
         private void EmitInstanceCallHandling(MethodDefinition method, ParameterDefinition parameter, Collection<Instruction> oldInstructions)
         {
-            PrepareInstanceHoldingClass(method.Module);
+            var instanceHoldingField = HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(method.Module, codeProvider.GetType(), GetInstanceHoldingFieldName(), "TEST_INSTANCE");
 
-            //method.Body.Instructions.Clear();
+            method.Body.Instructions.Clear();
 
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldsfld, instanceHoldingField));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Brfalse, oldInstructions[0]));
 
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-            //method.Body.Instructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
-            //method.Body.Instructions.AddRange(oldInstructions);
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldsfld, instanceHoldingField));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
+            method.Body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, handleParameterMethodImportedReference));
+
+            method.Body.Instructions.AddRange(oldInstructions);
         }
 
-        private void PrepareInstanceHoldingClass(ModuleDefinition moduleToExtend)
+        private string GetInstanceHoldingFieldName()
         {
-            const string NamespaceName = "__ExtensibleILRewriter";
-            const string TypeName = "__ArgumentHandlingInstacesHolder";
-
-            var holderType = moduleToExtend.Types.FirstOrDefault(t => t.Name == TypeName && t.Namespace == NamespaceName);
-            if (holderType == null)
-            {
-                holderType = new TypeDefinition(NamespaceName, TypeName, TypeAttributes.AutoClass | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
-                moduleToExtend.Types.Add(holderType);
-            }
-
-            string fieldName = typeof(ArgumentType).FullName;
-            var holderField = holderType.Fields.FirstOrDefault(f => f.Name == fieldName);
-            if (holderField == null)
-            {
-                holderField = new FieldDefinition(fieldName, FieldAttributes.Public | FieldAttributes.Static, moduleToExtend.Import(typeof(ArgumentType)));
-                holderType.Fields.Add(holderField);
-            }
+            return codeProvider.GetType().Name.Replace('`', '_') + typeof(ArgumentType).Name;
         }
-
-        //private static void InstanceHandle(ArgumentHandlingCodeProvider<ArgumentType> instance, ArgumentType argument, string argumentName)
-        //{
-        //    if (instance != null)
-        //    {
-        //        instance.HandleArgument(argument, argumentName);
-        //    }
-        //}
     }
-
-    //public static class XXXX
-    //{
-    //    public static object o;
-    //}
 }

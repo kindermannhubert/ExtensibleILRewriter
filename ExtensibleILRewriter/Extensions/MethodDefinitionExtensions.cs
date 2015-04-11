@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
 using System;
 using System.Linq;
 
@@ -59,6 +60,29 @@ namespace ExtensibleILRewriter.Extensions
             method.Body.OptimizeMacros();
 
             return staticMethod;
+        }
+
+        public static void AddInstructionToBegining(this MethodBody body, Instruction newInstruction)
+        {
+            body.SimplifyMacros();
+
+            body.Instructions.Insert(0, newInstruction);
+
+            body.OptimizeMacros();
+        }
+
+        public static void AddInstructionsToBegining(this MethodBody body, Collection<Instruction> newInstructions)
+        {
+            body.SimplifyMacros();
+
+            var instructions = body.Instructions;
+            var oldInstructions = instructions.ToArray();
+
+            instructions.Clear();
+            instructions.AddRange(newInstructions);
+            instructions.AddRange(oldInstructions);
+
+            body.OptimizeMacros();
         }
     }
 }

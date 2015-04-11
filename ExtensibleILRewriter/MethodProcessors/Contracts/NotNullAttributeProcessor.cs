@@ -41,20 +41,20 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
             }
         }
 
-        private IArgumentHandlingCodeInjector GetCodeInjector(ModuleDefinition module, TypeReference ArgumentType)
+        private IArgumentHandlingCodeInjector GetCodeInjector(ModuleDefinition module, TypeReference argumentType)
         {
             IArgumentHandlingCodeInjector codeInjector;
 
-            if (!codeInjectorsCache.TryGetValue(ArgumentType, out codeInjector))
+            if (!codeInjectorsCache.TryGetValue(argumentType, out codeInjector))
             {
-                var parameterClrType = Type.GetType(ArgumentType.FullName);
+                var parameterClrType = Type.GetType(argumentType.FullName);
                 var codeProviderType = typeof(NotNullArgumentHandligCodeProvider<>).MakeGenericType(parameterClrType);
                 var codeInjectorType = typeof(ArgumentHandligCodeInjector<>).MakeGenericType(parameterClrType);
                 var codeProvider = Activator.CreateInstance(codeProviderType, configuration.HandlingType, configuration.HandlingInstanceType);
 
                 codeInjector = (IArgumentHandlingCodeInjector)Activator.CreateInstance(codeInjectorType, new object[] { module, codeProvider });
 
-                codeInjectorsCache.Add(ArgumentType, codeInjector);
+                codeInjectorsCache.Add(argumentType, codeInjector);
             }
 
             return codeInjector;
