@@ -1,6 +1,6 @@
 ﻿using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.MethodProcessors;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
 using ExtensibleILRewriter.MsBuild.Configuration;
 using Microsoft.Build.Framework;
@@ -115,6 +115,7 @@ namespace ExtensibleILRewriter.MsBuild
                 assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleDefinition>(configuration.ModuleProcessors, logger, assembliesDict, typeAliasResolver));
                 assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeDefinition>(configuration.TypeProcessors, logger, assembliesDict, typeAliasResolver));
                 assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodDefinition>(configuration.MethodProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.ParameterProcessors.AddRange(LoadProcessors<ParameterDefinition>(configuration.ParameterProcessors, logger, assembliesDict, typeAliasResolver));
             }
             finally
             {

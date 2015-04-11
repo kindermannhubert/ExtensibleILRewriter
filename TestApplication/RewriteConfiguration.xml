@@ -33,10 +33,12 @@
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
     </Processor>
+  </MethodProcessors>
 
+  <ParameterProcessors>
     <Processor>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.MethodProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
+      <ProcessorName>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
       <Properties>
         <Property>
           <Name>HandlingType</Name>
@@ -49,5 +51,5 @@
         </Property>
       </Properties>
     </Processor>
-  </MethodProcessors>
+  </ParameterProcessors>
 </AssemblyRewriteConfiguration>

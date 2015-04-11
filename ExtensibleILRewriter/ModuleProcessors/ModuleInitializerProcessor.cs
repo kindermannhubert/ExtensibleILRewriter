@@ -1,14 +1,13 @@
 ﻿using Mono.Cecil;
 using System;
 using System.Linq;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
 using ExtensibleILRewriter.Extensions;
 
 namespace ExtensibleILRewriter.ModuleProcessors
 {
-    public class ModuleInitializerProcessor : ComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration.EmptyConfiguration>
+    public class ModuleInitializerProcessor : ModuleProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string moduleInitializerAttributeFullName = typeof(ModuleInitializerAttribute).FullName;
 

@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.MethodProcessors.Contracts;
+﻿using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using Mono.Cecil;
 using System;
 using System.Linq;

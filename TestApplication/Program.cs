@@ -1,5 +1,5 @@
 ﻿using ExtensibleILRewriter;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
 using System;
 using System.Collections.Generic;

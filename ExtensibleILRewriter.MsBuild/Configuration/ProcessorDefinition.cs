@@ -1,6 +1,6 @@
 ﻿using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.MethodProcessors;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;

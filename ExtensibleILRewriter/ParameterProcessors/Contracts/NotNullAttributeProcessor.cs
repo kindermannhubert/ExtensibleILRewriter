@@ -4,10 +4,11 @@ using Mono.Cecil;
 using ExtensibleILRewriter.Extensions;
 using System;
 using ExtensibleILRewriter.MethodProcessors.ArgumentHandling;
+using ExtensibleILRewriter.MethodArgumentProcessors;
 
-namespace ExtensibleILRewriter.MethodProcessors.Contracts
+namespace ExtensibleILRewriter.ParameterProcessors.Contracts
 {
-    public class NotNullAttributeProcessor : ComponentProcessor<MethodDefinition, NotNullAttributeProcessor.Configuration>
+    public class NotNullAttributeProcessor : GeneralParameterProcessor<NotNullAttributeProcessor.Configuration>
     {
         private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
         private readonly Dictionary<TypeReference, IArgumentHandlingCodeInjector> codeInjectorsCache = new Dictionary<TypeReference, IArgumentHandlingCodeInjector>();
@@ -17,27 +18,25 @@ namespace ExtensibleILRewriter.MethodProcessors.Contracts
         {
         }
 
-        public override void Process(MethodDefinition method)
+        public override void Process(ParameterDefinition parameter)
         {
-            foreach (var parameter in method.Parameters)
+            if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == notNullAttributeFullName))
             {
-                if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == notNullAttributeFullName))
+                var method = parameter.Method as MethodDefinition;
+                if (method == null)
                 {
-                    if (parameter.ParameterType.IsValueType)
-                    {
-                        logger.LogErrorWithSource(method, "Parameter '\{parameter.Name}' of method '\{method.FullName}' cannot be non-nullable because it is a value type.");
-                        continue;
-                    }
-
-                    if (!method.HasBody)
-                    {
-                        logger.LogErrorWithSource(method, "Method '\{method.FullName}' does not have body and cannot be rewritten.");
-                        continue;
-                    }
-
-                    var codeInjector = GetCodeInjector(method.Module, parameter.ParameterType);
-                    codeInjector.Inject(method, parameter, logger);
+                    logger.Error("Unable to get MethodDefinition from parameter '\{parameter.Name}' of method '\{method.FullName}'.");
+                    return;
                 }
+
+                if (parameter.ParameterType.IsValueType)
+                {
+                    logger.LogErrorWithSource(method, "Parameter '\{parameter.Name}' of method '\{method.FullName}' cannot be non-nullable because it is a value type.");
+                    return;
+                }
+
+                var codeInjector = GetCodeInjector(method.Module, parameter.ParameterType);
+                codeInjector.Inject(method, parameter, logger);
             }
         }
 

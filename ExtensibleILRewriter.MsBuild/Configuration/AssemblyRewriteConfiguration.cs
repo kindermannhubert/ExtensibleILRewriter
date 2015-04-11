@@ -1,6 +1,6 @@
 ﻿using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.MethodProcessors;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -38,6 +38,10 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         [XmlArrayItem("Processor")]
         public ProcessorDefinition[] MethodProcessors { get; set; }
 
+        [XmlArray]
+        [XmlArrayItem("Processor")]
+        public ProcessorDefinition[] ParameterProcessors { get; set; }
+
         public void Check()
         {
             CheckAssemblies();
@@ -50,6 +54,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             CheckProcessorDefinitions(ModuleProcessors, nameof(ModuleProcessors), definedAssemblyAliases, definedTypeAliases);
             CheckProcessorDefinitions(TypeProcessors, nameof(TypeProcessors), definedAssemblyAliases, definedTypeAliases);
             CheckProcessorDefinitions(MethodProcessors, nameof(MethodProcessors), definedAssemblyAliases, definedTypeAliases);
+            CheckProcessorDefinitions(ParameterProcessors, nameof(ParameterProcessors), definedAssemblyAliases, definedTypeAliases);
         }
 
         private void CheckAssemblies()

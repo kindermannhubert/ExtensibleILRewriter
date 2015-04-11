@@ -1,15 +1,11 @@
 ﻿using Mono.Cecil;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ExtensibleILRewriter.MethodProcessors.Contracts;
+using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.Extensions;
 
 namespace ExtensibleILRewriter.MethodProcessors.Helpers
 {
-    public class MakeStaticVersionProcessor : ComponentProcessor<MethodDefinition, ComponentProcessorConfiguration.EmptyConfiguration>
+    public class MakeStaticVersionProcessor : MethodProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string makeStaticVersionAttributeFullName = typeof(MakeStaticVersionAttribute).FullName;
 

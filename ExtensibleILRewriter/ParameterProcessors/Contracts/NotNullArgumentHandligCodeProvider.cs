@@ -3,7 +3,7 @@ using ExtensibleILRewriter.MethodProcessors.Helpers;
 using Mono.Cecil;
 using System;
 
-namespace ExtensibleILRewriter.MethodProcessors.Contracts
+namespace ExtensibleILRewriter.ParameterProcessors.Contracts
 {
     public class NotNullArgumentHandligCodeProvider<ArgumentType> : ArgumentHandlingCodeProvider<ArgumentType>
     {

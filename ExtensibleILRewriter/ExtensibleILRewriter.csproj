@@ -40,9 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyProcessors\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
+    <Compile Include="ParameterProcessors\GeneralParameterProcessor.cs" />
+    <Compile Include="ParameterProcessors\GenericParameterProcessor.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeProvider.cs" />
+    <Compile Include="MethodProcessors\MethodProcessor.cs" />
+    <Compile Include="ModuleProcessors\ModuleProcessor.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
@@ -52,11 +57,11 @@
     <Compile Include="HandlingInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeProvider.cs" />
-    <Compile Include="MethodProcessors\Contracts\NotNullAttributeProcessor.cs" />
-    <Compile Include="MethodProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
+    <Compile Include="ParameterProcessors\Contracts\NotNullAttributeProcessor.cs" />
+    <Compile Include="ParameterProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeInjector.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingType.cs" />
-    <Compile Include="MethodProcessors\Contracts\NotNullAttribute.cs" />
+    <Compile Include="ParameterProcessors\Contracts\NotNullAttribute.cs" />
     <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeInjector.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
@@ -66,6 +71,7 @@
     <Compile Include="ModuleProcessors\ModuleInitializerAttribute.cs" />
     <Compile Include="ModuleProcessors\ModuleInitializerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeProcessors\TypeProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cecil\Mono.Cecil.csproj">
@@ -81,10 +87,7 @@
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AssemblyProcessors\" />
-    <Folder Include="TypeProcessors\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="RewriteConfiguration.xml" />
     <Content Include="RunRewrite.xml" />

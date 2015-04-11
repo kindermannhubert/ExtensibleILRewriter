@@ -19,6 +19,7 @@ namespace ExtensibleILRewriter
         public List<IComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleDefinition, ComponentProcessorConfiguration>>();
         public List<IComponentProcessor<TypeDefinition, ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<TypeDefinition, ComponentProcessorConfiguration>>();
         public List<IComponentProcessor<MethodDefinition, ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<MethodDefinition, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ParameterDefinition, ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<ParameterDefinition, ComponentProcessorConfiguration>>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
@@ -91,7 +92,17 @@ namespace ExtensibleILRewriter
         {
             logger.Notice("Processing method: '\{method.FullName}'.");
             ProcessComponent(method, MethodProcessors, logger);
+
+            //needs to copy out, because processors can modified the collection
+            var parameters = method.Parameters.ToArray();
+            foreach (var parameter in parameters) ProcessParameter(parameter);
+
             logger.Notice("Processing method done.");
+        }
+
+        private void ProcessParameter(ParameterDefinition parameter)
+        {
+            ProcessComponent(parameter, ParameterProcessors, logger);
         }
 
         private static void ProcessComponent<ComponentType>(ComponentType component, IEnumerable<IComponentProcessor<ComponentType, ComponentProcessorConfiguration>> componentProcessors, ILogger logger)
