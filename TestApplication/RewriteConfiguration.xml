@@ -11,7 +11,7 @@
     <Type>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <Alias>NonNullableDefaultHandler</Alias>
-      <Name>ExtensibleILRewriter.MethodProcessors.ArgumentHandling.ArgumentHandlingCodeProvider`1</Name>
+      <Name>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullArgumentHandligCodeProvider</Name>
     </Type>
   </Types>
 
@@ -29,25 +29,40 @@
   </TypeProcessors>
 
   <MethodProcessors>
-    <Processor>
+    <!--<Processor>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
-    </Processor>
+    </Processor>-->
   </MethodProcessors>
 
   <ParameterProcessors>
-    <Processor>
+    <!--<Processor>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <ProcessorName>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
       <Properties>
         <Property>
           <Name>HandlingType</Name>
-          <!--<Value>CallStaticHandling</Value>-->
+          --><!--<Value>CallStaticHandling</Value>--><!--
           <Value>CallInstanceHandling</Value>
         </Property>
         <Property>
           <Name>HandlingInstanceTypeAlias</Name>
           <Value>NonNullableDefaultHandler</Value>
+        </Property>
+      </Properties>
+    </Processor>-->
+
+    <Processor>
+      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
+      <ProcessorName>ExtensibleILRewriter.ParameterProcessors.ParameterValueHandlingProcessor</ProcessorName>
+      <Properties>
+        <Property>
+          <Name>CustomValueHandlingCodeProvider</Name>
+          <Value>NonNullableDefaultHandler</Value>
+        </Property>
+        <Property>
+          <Name>StateInstanceName</Name>
+          <Value>NonNullableDefaultHandlerState</Value>
         </Property>
       </Properties>
     </Processor>

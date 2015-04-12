@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter
 {
-    public abstract class ComponentProcessor<ComponentType, ConfigurationType> : IComponentProcessor<ComponentType, ConfigurationType>
+    public abstract class ComponentProcessor<ComponentType, DeclaringComponentType, ConfigurationType> : IComponentProcessor<ComponentType, DeclaringComponentType, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
     {
-        protected readonly ConfigurationType configuration;
         protected readonly ILogger logger;
+
+        public ConfigurationType Configuration { get; }
 
         public ComponentProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
         {
-            this.configuration = configuration;
+            this.Configuration = configuration;
             this.logger = logger;
         }
 
-        public abstract void Process([NotNull]ComponentType component);
+        public abstract void Process([NotNull]ComponentType component, DeclaringComponentType declaringComponent);
     }
 }

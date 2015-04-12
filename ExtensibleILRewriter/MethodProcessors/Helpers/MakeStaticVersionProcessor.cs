@@ -2,6 +2,7 @@
 using System.Linq;
 using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.Extensions;
+using System.Diagnostics;
 
 namespace ExtensibleILRewriter.MethodProcessors.Helpers
 {
@@ -14,7 +15,7 @@ namespace ExtensibleILRewriter.MethodProcessors.Helpers
         {
         }
 
-        public override void Process([NotNull]MethodDefinition method)
+        public override void Process([NotNull]MethodDefinition method, TypeDefinition declaringType)
         {
             var attribute = method.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == makeStaticVersionAttributeFullName);
             if (attribute == null) return;
@@ -38,14 +39,16 @@ namespace ExtensibleILRewriter.MethodProcessors.Helpers
             var staticMethod = method.CreateStaticVersion();
             staticMethod.Name = (string)attribute.ConstructorArguments[0].Value;
 
-            staticMethod.DeclaringType = method.DeclaringType;
-            if (method.DeclaringType.Methods.Any(m => m.FullName == staticMethod.FullName))
+            staticMethod.DeclaringType = declaringType;
+            if (declaringType.Methods.Any(m => m.FullName == staticMethod.FullName))
             {
                 staticMethod.DeclaringType = null;
-                logger.LogErrorWithSource(method, "Type '\{method.DeclaringType.FullName}' already contains method '\{staticMethod.FullName}'.");
-                return;
+                logger.LogErrorWithSource(method, "Type '\{declaringType.FullName}' already contains method '\{staticMethod.FullName}'.");
             }
-            method.DeclaringType.Methods.Add(staticMethod);
+            else
+            {
+                declaringType.Methods.Add(staticMethod);
+            }
         }
     }
 }

@@ -30,15 +30,18 @@ namespace ExtensibleILRewriter.Extensions
         {
             if (!method.CouldBeStatic()) throw new InvalidOperationException("Method '\{method.FullName}' cannot be made static.");
 
-            var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
-            attributes |= method.Attributes & MethodAttributes.Private;
-            attributes |= method.Attributes & MethodAttributes.FamANDAssem;
-            attributes |= method.Attributes & MethodAttributes.Assembly;
-            attributes |= method.Attributes & MethodAttributes.Family;
-            attributes |= method.Attributes & MethodAttributes.FamORAssem;
-            attributes |= method.Attributes & MethodAttributes.Public;
+            //var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
+            //attributes |= method.Attributes & MethodAttributes.Private;
+            //attributes |= method.Attributes & MethodAttributes.FamANDAssem;
+            //attributes |= method.Attributes & MethodAttributes.Assembly;
+            //attributes |= method.Attributes & MethodAttributes.Family;
+            //attributes |= method.Attributes & MethodAttributes.FamORAssem;
+            //attributes |= method.Attributes & MethodAttributes.Public;
+
+            var attributes = method.Attributes;
 
             var staticMethod = new MethodDefinition(method.Name, attributes, method.ReturnType);
+
             staticMethod.Parameters.AddRange(method.Parameters);
             staticMethod.Body.Variables.AddRange(method.Body.Variables);
             staticMethod.Body.InitLocals = method.Body.InitLocals;
@@ -71,7 +74,7 @@ namespace ExtensibleILRewriter.Extensions
             body.OptimizeMacros();
         }
 
-        public static void AddInstructionsToBegining(this MethodBody body, Collection<Instruction> newInstructions)
+        public static void AddInstructionsToBegining(this MethodBody body, Collection<Instruction> newInstructions, bool repairSequencePoints = true)
         {
             body.SimplifyMacros();
 
@@ -81,6 +84,20 @@ namespace ExtensibleILRewriter.Extensions
             instructions.Clear();
             instructions.AddRange(newInstructions);
             instructions.AddRange(oldInstructions);
+
+            if (repairSequencePoints)
+            {
+                var sequencePoint = instructions.FirstOrDefault(i => i.SequencePoint != null && i.SequencePoint.Document != null)?.SequencePoint;
+                if (sequencePoint != null)
+                {
+                    var firstInstruction = instructions[0];
+                    firstInstruction.SequencePoint = new SequencePoint(sequencePoint.Document);
+                    firstInstruction.SequencePoint.StartLine = sequencePoint.StartLine;
+                    firstInstruction.SequencePoint.EndLine = sequencePoint.EndLine;
+                    firstInstruction.SequencePoint.StartColumn = sequencePoint.StartColumn;
+                    firstInstruction.SequencePoint.EndColumn = sequencePoint.EndColumn;
+                }
+            }
 
             body.OptimizeMacros();
         }

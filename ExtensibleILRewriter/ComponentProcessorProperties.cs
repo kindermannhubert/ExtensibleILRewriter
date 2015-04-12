@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ExtensibleILRewriter
 {
-    public class ComponentProcessorProperties
+    public class ComponentProcessorProperties : IEnumerable<KeyValuePair<string, string>>
     {
         private readonly Dictionary<string, string> properties = new Dictionary<string, string>();
 
@@ -21,6 +22,16 @@ namespace ExtensibleILRewriter
         public bool ContainsProperty(string name)
         {
             return properties.ContainsKey(name);
+        }
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+        {
+            return properties.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

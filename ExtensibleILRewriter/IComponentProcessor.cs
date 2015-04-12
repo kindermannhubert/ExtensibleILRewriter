@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter
 {
-    public interface IComponentProcessor<ComponentType, out ConfigurationType>
+    public interface IComponentProcessor<ComponentType, DeclaringComponentType, out ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
     {
-        void Process([NotNull]ComponentType component);
+        void Process([NotNull]ComponentType component, DeclaringComponentType declaringComponent);
     }
+
+    public class NoDeclaringComponent { }
 }

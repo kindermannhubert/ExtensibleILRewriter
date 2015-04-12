@@ -1,12 +1,30 @@
 ﻿using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExtensibleILRewriter
 {
     public abstract class ComponentProcessorConfiguration
     {
-        public abstract void LoadFromProperties(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver);
+        public abstract IEnumerable<string> SupportedPropertyNames { get; }
+
+        public void LoadFromProperties([NotNull]ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)
+        {
+            CheckIfOnlySupportedPropertiesWereSpecified(properties, processorName);
+            LoadFromPropertiesInternal(properties, typeAliasResolver, processorName);
+        }
+
+        protected abstract void LoadFromPropertiesInternal([NotNull]ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName);
+
+        private void CheckIfOnlySupportedPropertiesWereSpecified([NotNull]ComponentProcessorProperties properties, string processorName)
+        {
+            var supportedPropertyName = new HashSet<string>(SupportedPropertyNames);
+            foreach (var property in properties)
+            {
+                if (!supportedPropertyName.Contains(property.Key)) throw new InvalidOperationException("Not supported property '\{property.Key}' of '\{GetType().FullName}' configuration was specified for processor '\{processorName}'.");
+            }
+        }
 
         protected void CheckIfContainsProperty([NotNull]ComponentProcessorProperties properties, string property)
         {
@@ -18,7 +36,9 @@ namespace ExtensibleILRewriter
 
         public class EmptyConfiguration : ComponentProcessorConfiguration
         {
-            public override void LoadFromProperties(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver)
+            public override IEnumerable<string> SupportedPropertyNames { get { return Enumerable.Empty<string>(); } }
+
+            protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)
             {
             }
         }

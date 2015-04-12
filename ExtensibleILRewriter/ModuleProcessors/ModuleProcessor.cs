@@ -3,7 +3,7 @@ using Mono.Cecil;
 
 namespace ExtensibleILRewriter.ModuleProcessors
 {
-    public abstract class ModuleProcessor<ConfigurationType> : ComponentProcessor<ModuleDefinition, ConfigurationType>
+    public abstract class ModuleProcessor<ConfigurationType> : ComponentProcessor<ModuleDefinition, AssemblyDefinition, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
     {
         public ModuleProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger) 

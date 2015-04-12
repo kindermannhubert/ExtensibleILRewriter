@@ -16,7 +16,7 @@ namespace ExtensibleILRewriter.ModuleProcessors
         {
         }
 
-        public override void Process([NotNull]ModuleDefinition module)
+        public override void Process([NotNull]ModuleDefinition module, AssemblyDefinition declaringAssembly)
         {
             var attribute = module.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == moduleInitializerAttributeFullName);
             if (attribute == null) return;

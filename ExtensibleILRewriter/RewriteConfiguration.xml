@@ -25,4 +25,7 @@
       <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
     </Processor>
   </MethodProcessors>
+
+  <ParameterProcessors>
+  </ParameterProcessors>
 </AssemblyRewriteConfiguration>

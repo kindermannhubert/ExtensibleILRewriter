@@ -42,10 +42,14 @@
   <ItemGroup>
     <Compile Include="AssemblyProcessors\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
-    <Compile Include="ParameterProcessors\GeneralParameterProcessor.cs" />
-    <Compile Include="ParameterProcessors\GenericParameterProcessor.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeProvider.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeInjector.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProvider.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessor.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorConfiguration.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorBase.cs" />
+    <Compile Include="ParameterProcessors\ParameterProcessor.cs" />
     <Compile Include="MethodProcessors\MethodProcessor.cs" />
     <Compile Include="ModuleProcessors\ModuleProcessor.cs" />
     <Compile Include="TypeAliasResolver.cs" />
@@ -56,13 +60,9 @@
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="HandlingInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeProvider.cs" />
     <Compile Include="ParameterProcessors\Contracts\NotNullAttributeProcessor.cs" />
-    <Compile Include="ParameterProcessors\Contracts\NotNullArgumentHandligCodeProvider.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\IArgumentHandlingCodeInjector.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingType.cs" />
+    <Compile Include="ParameterProcessors\Contracts\NotNullParameterHandligCodeProvider.cs" />
     <Compile Include="ParameterProcessors\Contracts\NotNullAttribute.cs" />
-    <Compile Include="MethodProcessors\ArgumentHandling\ArgumentHandlingCodeInjector.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ComponentProcessor.cs" />
