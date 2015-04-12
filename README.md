@@ -1,4 +1,2 @@
-# ILTools
-This project will provide set of IL rewriting (more generally assembly rewriting) tasks.
-
-The first category of those tasks is Contracts which are intended to replace Microsoft.Contracts. The reason for introducing new set of code contracts to .NET is that ILTools.Contracts will be much more configurable and will allow you to use your custom assert violations handling.
+# ExtensibleILRewriter
+This project will provide set of IL rewriting (more generally assembly rewriting) tasks. All those task will be easily configurable by XML document. You can provide your custom code providers for existing tasks or you can easily create your own rewriting processors.
