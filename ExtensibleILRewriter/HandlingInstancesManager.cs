@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter
 {
@@ -54,12 +52,13 @@ namespace ExtensibleILRewriter
         {
             if (_setInstanceToStaticFieldAddress == null)
             {
-                var dynamicMethod = new DynamicMethod(nameof(_setInstanceToStaticFieldAddress), null, new Type[] { typeof(IntPtr), typeof(object) });
+                var dynamicMethod = new DynamicMethod(nameof(_setInstanceToStaticFieldAddress), null, new Type[] { typeof(IntPtr), typeof(object) }, MethodInfo.GetCurrentMethod().Module);
                 var ilGen = dynamicMethod.GetILGenerator();
 
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldarg_1);
                 ilGen.Emit(OpCodes.Stind_Ref);
+                ilGen.Emit(OpCodes.Ret);
 
                 _setInstanceToStaticFieldAddress = (Action<IntPtr, object>)dynamicMethod.CreateDelegate(typeof(Action<IntPtr, object>));
             }

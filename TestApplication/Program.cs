@@ -14,6 +14,8 @@ namespace TestApplication
     {
         private static void Main(string[] args)
         {
+            HandlingInstancesManager.RegisterInstance("NonNullableDefaultHandlerState", new ExtensibleILRewriter.ParameterProcessors.EmptyCodeProviderState());
+
             //A.Test();
             A.Test(new object());
             A.Test(new object(), "");
