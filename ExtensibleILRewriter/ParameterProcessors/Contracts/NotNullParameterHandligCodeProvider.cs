@@ -20,9 +20,9 @@ namespace ExtensibleILRewriter.ParameterProcessors.Contracts
             if (parameter == null) throw new ArgumentNullException(parameterName);
         }
 
-        public override MethodInfo GetHandleParameterMethodInfo(TypeReference parameterType)
+        protected override string GetHandleParameterMethodName(TypeReference parameterType)
         {
-            return base.GetHandleParameterMethodInfo(nameof(HandleParameter));
+            return nameof(HandleParameter);
         }
     }
 }
