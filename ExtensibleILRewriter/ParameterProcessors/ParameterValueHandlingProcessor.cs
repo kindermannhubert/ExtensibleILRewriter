@@ -6,11 +6,12 @@ using System.Collections.Generic;
 
 namespace ExtensibleILRewriter.ParameterProcessors
 {
-    public class ParameterValueHandlingProcessor : ParameterValueHandlingProcessorBase<ParameterValueHandlingProcessorConfiguration>
+    public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterValueHandlingProcessorBase<ConfigurationType>
+        where ConfigurationType : ParameterValueHandlingProcessorConfiguration
     {
         private readonly Dictionary<ModuleDefinition, InjectionInfo> injectionInfos = new Dictionary<ModuleDefinition, InjectionInfo>();
 
-        public ParameterValueHandlingProcessor([NotNull]ParameterValueHandlingProcessorConfiguration configuration, [NotNull]ILogger logger)
+        public ParameterValueHandlingProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
         {
         }

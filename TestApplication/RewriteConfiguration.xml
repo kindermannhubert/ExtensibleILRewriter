@@ -36,34 +36,12 @@
   </MethodProcessors>
 
   <ParameterProcessors>
-    <!--<Processor>
+    <Processor>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <ProcessorName>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
       <Properties>
-        <Property>
-          <Name>HandlingType</Name>
-          --><!--<Value>CallStaticHandling</Value>--><!--
-          <Value>CallInstanceHandling</Value>
-        </Property>
-        <Property>
-          <Name>HandlingInstanceTypeAlias</Name>
-          <Value>NonNullableDefaultHandler</Value>
-        </Property>
-      </Properties>
-    </Processor>-->
-
-    <Processor>
-      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.ParameterProcessors.ParameterValueHandlingProcessor</ProcessorName>
-      <Properties>
-        <Property>
-          <Name>CustomValueHandlingCodeProvider</Name>
-          <Value>NonNullableDefaultHandler</Value>
-        </Property>
-        <Property>
-          <Name>StateInstanceName</Name>
-          <Value>NonNullableDefaultHandlerState</Value>
-        </Property>
+        <Property key="CustomValueHandlingCodeProvider" value="NonNullableDefaultHandler" />
+        <Property key="StateInstanceName" value="NonNullableDefaultHandlerState" />
       </Properties>
     </Processor>
   </ParameterProcessors>

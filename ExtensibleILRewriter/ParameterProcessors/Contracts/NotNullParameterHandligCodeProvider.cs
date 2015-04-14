@@ -9,10 +9,7 @@ namespace ExtensibleILRewriter.ParameterProcessors.Contracts
     {
         public override bool ShouldHandleParameter(ParameterDefinition parameterDefinition, MethodDefinition declaringMethod)
         {
-            //return true;
-
-            //TODO - temporary for testing
-            return parameterDefinition.ParameterType.IsValueType.Implies(parameterDefinition.ParameterType.IsNullableValueType());
+            return true;
         }
 
         public static void HandleParameter<ParameterType>(EmptyCodeProviderState state, ParameterType parameter, string parameterName)
