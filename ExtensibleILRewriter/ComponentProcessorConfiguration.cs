@@ -7,7 +7,8 @@ namespace ExtensibleILRewriter
 {
     public abstract class ComponentProcessorConfiguration
     {
-        public abstract IEnumerable<string> SupportedPropertyNames { get; }
+        private readonly List<string> supportedPropertyNames = new List<string>();
+        public IEnumerable<string> SupportedPropertyNames { get { return supportedPropertyNames; } }
 
         public void LoadFromProperties([NotNull]ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)
         {
@@ -34,10 +35,13 @@ namespace ExtensibleILRewriter
             }
         }
 
+        protected void AddSupportedPropertyNames(params string[] names)
+        {
+            supportedPropertyNames.AddRange(names);
+        }
+
         public class EmptyConfiguration : ComponentProcessorConfiguration
         {
-            public override IEnumerable<string> SupportedPropertyNames { get { return Enumerable.Empty<string>(); } }
-
             protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)
             {
             }

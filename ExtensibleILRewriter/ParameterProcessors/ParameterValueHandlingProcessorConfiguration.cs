@@ -5,6 +5,11 @@ namespace ExtensibleILRewriter.ParameterProcessors
 {
     public class ParameterValueHandlingProcessorConfiguration : ComponentProcessorConfiguration
     {
+        public ParameterValueHandlingProcessorConfiguration()
+        {
+            AddSupportedPropertyNames(nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName));
+        }
+
         protected virtual IParameterValueHandlingCodeProvider GetDefaultCodeProvider()
         {
             throw new InvalidOperationException("General \{nameof(ParameterValueHandlingProcessor)} does not have any default code provider. You need to configure \{nameof(CustomValueHandlingCodeProvider)} at processor properties.");
@@ -13,8 +18,6 @@ namespace ExtensibleILRewriter.ParameterProcessors
         public IParameterValueHandlingCodeProvider CustomValueHandlingCodeProvider { get; private set; }
 
         public string StateInstanceName { get; private set; }
-
-        public override IEnumerable<string> SupportedPropertyNames { get; } = new string[] { nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName) };
 
         protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string procesorName)
         {
