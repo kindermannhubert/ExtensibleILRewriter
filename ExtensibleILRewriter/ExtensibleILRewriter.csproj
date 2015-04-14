@@ -48,7 +48,6 @@
     <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProvider.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessor.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorConfiguration.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorBase.cs" />
     <Compile Include="ParameterProcessors\ParameterProcessor.cs" />
     <Compile Include="MethodProcessors\MethodProcessor.cs" />
     <Compile Include="ModuleProcessors\ModuleProcessor.cs" />

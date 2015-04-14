@@ -4,7 +4,7 @@ using ExtensibleILRewriter.Contracts;
 
 namespace ExtensibleILRewriter.ParameterProcessors
 {
-    public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterValueHandlingProcessorBase<ConfigurationType>
+    public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterProcessor<ConfigurationType>
         where ConfigurationType : ParameterValueHandlingProcessorConfiguration
     {
         private readonly Dictionary<ModuleDefinition, InjectionInfo> injectionInfos = new Dictionary<ModuleDefinition, InjectionInfo>();
