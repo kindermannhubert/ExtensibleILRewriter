@@ -1,12 +1,7 @@
 ﻿using ExtensibleILRewriter;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.MethodProcessors.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using ExtensibleILRewriter.Contracts;
 
 namespace TestApplication
 {
@@ -14,10 +9,8 @@ namespace TestApplication
     {
         private static void Main(string[] args)
         {
-            HandlingInstancesManager.RegisterInstance("NonNullableDefaultHandlerState", new ExtensibleILRewriter.ParameterProcessors.EmptyCodeProviderState());
-
-            //A.Test();
             A.Test(new object());
+            A.Test((int?)null);
             A.Test(new object(), "");
             A.Test(new object(), null);
 

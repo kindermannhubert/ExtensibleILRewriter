@@ -1,13 +1,4 @@
-﻿using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.MethodProcessors;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
-using ExtensibleILRewriter.MethodProcessors.Helpers;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Xml.Serialization;
 
 namespace ExtensibleILRewriter.MsBuild.Configuration

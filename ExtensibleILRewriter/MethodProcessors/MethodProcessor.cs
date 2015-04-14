@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.ParameterProcessors.Contracts;
+﻿using ExtensibleILRewriter.Contracts;
 using Mono.Cecil;
 
 namespace ExtensibleILRewriter.MethodProcessors

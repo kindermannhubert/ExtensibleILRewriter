@@ -1,7 +1,4 @@
 ﻿using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.MethodProcessors;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
-using ExtensibleILRewriter.MethodProcessors.Helpers;
 using ExtensibleILRewriter.MsBuild.Configuration;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -11,8 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml.Serialization;
+using ExtensibleILRewriter.Contracts;
 
 namespace ExtensibleILRewriter.MsBuild
 {

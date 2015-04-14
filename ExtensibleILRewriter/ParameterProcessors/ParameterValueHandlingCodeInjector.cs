@@ -40,10 +40,11 @@ namespace ExtensibleILRewriter.ParameterProcessors
             }
 
             newInstructions.Clear();
-            newInstructions.Add(Instruction.Create(OpCodes.Ldsfld, stateHoldingField));
+            if (stateHoldingField == null) newInstructions.Add(Instruction.Create(OpCodes.Ldnull));
+            else newInstructions.Add(Instruction.Create(OpCodes.Ldsfld, stateHoldingField));
             newInstructions.Add(Instruction.Create(OpCodes.Ldarg, parameter));
             newInstructions.Add(Instruction.Create(OpCodes.Ldstr, parameter.Name));
-            newInstructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference)); 
+            newInstructions.Add(Instruction.Create(OpCodes.Call, handleParameterMethodImportedReference));
 
             method.Body.AddInstructionsToBegining(newInstructions);
         }

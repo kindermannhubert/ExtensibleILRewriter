@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Mono.Cecil;
 using ExtensibleILRewriter.Extensions;
-using System;
+using ExtensibleILRewriter.ParameterProcessors;
 
-namespace ExtensibleILRewriter.ParameterProcessors.Contracts
+namespace ExtensibleILRewriter.Contracts
 {
     public class NotNullAttributeProcessor : ParameterValueHandlingProcessor<NotNullAttributeProcessor.ProcessorConfiguration>
     {
@@ -38,6 +37,10 @@ namespace ExtensibleILRewriter.ParameterProcessors.Contracts
 
         public class ProcessorConfiguration : ParameterValueHandlingProcessorConfiguration
         {
+            protected override IParameterValueHandlingCodeProvider GetDefaultCodeProvider()
+            {
+                return new NotNullArgumentHandligCodeProvider();
+            }
         }
     }
 }

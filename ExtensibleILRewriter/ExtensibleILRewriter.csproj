@@ -60,9 +60,9 @@
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="HandlingInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
-    <Compile Include="ParameterProcessors\Contracts\NotNullAttributeProcessor.cs" />
-    <Compile Include="ParameterProcessors\Contracts\NotNullParameterHandligCodeProvider.cs" />
-    <Compile Include="ParameterProcessors\Contracts\NotNullAttribute.cs" />
+    <Compile Include="Contracts\NotNullAttributeProcessor.cs" />
+    <Compile Include="Contracts\NotNullParameterHandligCodeProvider.cs" />
+    <Compile Include="Contracts\NotNullAttribute.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ComponentProcessor.cs" />

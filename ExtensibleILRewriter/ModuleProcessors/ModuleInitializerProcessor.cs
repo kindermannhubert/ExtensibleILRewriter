@@ -1,9 +1,9 @@
 ﻿using Mono.Cecil;
 using System;
 using System.Linq;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using Mono.Cecil.Cil;
 using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Contracts;
 
 namespace ExtensibleILRewriter.ModuleProcessors
 {

@@ -1,8 +1,7 @@
 ﻿using Mono.Cecil;
 using System.Linq;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
 using ExtensibleILRewriter.Extensions;
-using System.Diagnostics;
+using ExtensibleILRewriter.Contracts;
 
 namespace ExtensibleILRewriter.MethodProcessors.Helpers
 {

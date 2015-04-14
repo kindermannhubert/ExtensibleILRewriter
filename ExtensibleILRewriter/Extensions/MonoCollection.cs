@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.ParameterProcessors.Contracts;
+﻿using ExtensibleILRewriter.Contracts;
 using Mono.Collections.Generic;
 using System.Collections.Generic;
 

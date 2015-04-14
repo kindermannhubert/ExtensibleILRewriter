@@ -11,7 +11,7 @@
     <Type>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
       <Alias>NonNullableDefaultHandler</Alias>
-      <Name>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullArgumentHandligCodeProvider</Name>
+      <Name>ExtensibleILRewriter.Contracts.NotNullArgumentHandligCodeProvider</Name>
     </Type>
   </Types>
 
@@ -38,11 +38,11 @@
   <ParameterProcessors>
     <Processor>
       <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.ParameterProcessors.Contracts.NotNullAttributeProcessor</ProcessorName>
-      <Properties>
+      <ProcessorName>ExtensibleILRewriter.Contracts.NotNullAttributeProcessor</ProcessorName>
+      <!--<Properties>
         <Property key="CustomValueHandlingCodeProvider" value="NonNullableDefaultHandler" />
         <Property key="StateInstanceName" value="NonNullableDefaultHandlerState" />
-      </Properties>
+      </Properties>-->
     </Processor>
   </ParameterProcessors>
 </AssemblyRewriteConfiguration>

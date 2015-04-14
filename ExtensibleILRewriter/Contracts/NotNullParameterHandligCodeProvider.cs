@@ -1,9 +1,8 @@
-﻿using ExtensibleILRewriter.Extensions;
+﻿using ExtensibleILRewriter.ParameterProcessors;
 using Mono.Cecil;
 using System;
-using System.Reflection;
 
-namespace ExtensibleILRewriter.ParameterProcessors.Contracts
+namespace ExtensibleILRewriter.Contracts
 {
     public class NotNullArgumentHandligCodeProvider : ParameterValueHandlingCodeProvider<EmptyCodeProviderState>
     {

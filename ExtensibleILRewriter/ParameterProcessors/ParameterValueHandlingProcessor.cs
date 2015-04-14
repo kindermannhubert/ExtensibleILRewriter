@@ -1,8 +1,6 @@
-﻿using System;
-using ExtensibleILRewriter.ParameterProcessors.Contracts;
-using Mono.Cecil;
-using ExtensibleILRewriter.Extensions;
+﻿using Mono.Cecil;
 using System.Collections.Generic;
+using ExtensibleILRewriter.Contracts;
 
 namespace ExtensibleILRewriter.ParameterProcessors
 {
@@ -34,6 +32,7 @@ namespace ExtensibleILRewriter.ParameterProcessors
         private FieldDefinition PrepareStateHoldingField(ModuleDefinition module)
         {
             var stateType = Configuration.CustomValueHandlingCodeProvider.GetStateType();
+            if (stateType == typeof(EmptyCodeProviderState)) return null;
             return HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(module, stateType, Configuration.StateInstanceName, Configuration.StateInstanceName);
         }
 
