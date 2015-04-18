@@ -7,8 +7,10 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
 {
     public class ProcessorDefinition
     {
+        [XmlAttribute("assemblyAlias")]
         public string AssemblyAlias { get; set; }
 
+        [XmlAttribute("name")]
         public string ProcessorName { get; set; }
 
         [XmlArray]

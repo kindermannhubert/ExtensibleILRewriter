@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace ExtensibleILRewriter.MsBuild.Configuration
 {
     public class TypeAliasDefinition
     {
+        [XmlAttribute("assemblyAlias")]
         public string AssemblyAlias { get; set; }
+
+        [XmlAttribute("alias")]
         public string Alias { get; set; }
+
+        [XmlAttribute("name")]
         public string Name { get; set; }
 
         public void Check()

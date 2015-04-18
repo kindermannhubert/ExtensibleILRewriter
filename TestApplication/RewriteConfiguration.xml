@@ -1,44 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AssemblyRewriteConfiguration>
   <Assemblies>
-    <Assembly>
-      <Alias>ExtensibleILRewriter</Alias>
-      <Path>ExtensibleILRewriter.dll</Path>
-    </Assembly>
+    <Assembly alias="ExtensibleILRewriter" path="ExtensibleILRewriter.dll" />
   </Assemblies>
 
   <Types>
-    <Type>
-      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <Alias>NonNullableDefaultHandler</Alias>
-      <Name>ExtensibleILRewriter.Contracts.NotNullArgumentHandligCodeProvider</Name>
-    </Type>
+    <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Contracts.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <AssemblyProcessors>
   </AssemblyProcessors>
 
   <ModuleProcessors>
-    <Processor>
-      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.ModuleProcessors.ModuleInitializerProcessor</ProcessorName>
-    </Processor>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.ModuleProcessors.ModuleInitializerProcessor" />
   </ModuleProcessors>
 
   <TypeProcessors>
   </TypeProcessors>
 
   <MethodProcessors>
-    <!--<Processor>
-      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.MethodProcessors.Helpers.MakeStaticVersionProcessor</ProcessorName>
-    </Processor>-->
   </MethodProcessors>
 
   <ParameterProcessors>
-    <Processor>
-      <AssemblyAlias>ExtensibleILRewriter</AssemblyAlias>
-      <ProcessorName>ExtensibleILRewriter.Contracts.NotNullAttributeProcessor</ProcessorName>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Contracts.NotNullAttributeProcessor" >
       <!--<Properties>
         <Property key="CustomValueHandlingCodeProvider" value="NonNullableDefaultHandler" />
         <Property key="StateInstanceName" value="NonNullableDefaultHandlerState" />
