@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using System.Collections.Generic;
 using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.CodeInjection;
 
 namespace ExtensibleILRewriter.ParameterProcessors
 {
@@ -20,25 +21,31 @@ namespace ExtensibleILRewriter.ParameterProcessors
             if (!injectionInfos.TryGetValue(declaringMethod.Module, out info))
             {
                 info = new InjectionInfo();
-                info.CodeInjector = new ParameterValueHandlingCodeInjector(declaringMethod.Module, Configuration.CustomValueHandlingCodeProvider);
-                info.StateHoldingField = PrepareStateHoldingField(declaringMethod.Module);
+                var codeProvider = Configuration.CustomValueHandlingCodeProvider;
+                info.CodeInjector = new CodeInjector<ParameterValueHandlingCodeProviderArgument>(declaringMethod.Module, codeProvider);
+                info.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringMethod.Module);
 
                 injectionInfos.Add(declaringMethod.Module, info);
             }
 
-            info.CodeInjector.Inject(declaringMethod, parameter, info.StateHoldingField, logger);
+            info.CodeInjector.Inject(declaringMethod, new ParameterValueHandlingCodeProviderArgument(parameter, declaringMethod, info.StateHoldingField), logger);
         }
 
-        private FieldDefinition PrepareStateHoldingField(ModuleDefinition module)
+        private FieldDefinition PrepareStateHoldingField(CodeProvider<ParameterValueHandlingCodeProviderArgument> codeProvider, ModuleDefinition module)
         {
-            var stateType = Configuration.CustomValueHandlingCodeProvider.GetStateType();
-            if (stateType == typeof(EmptyCodeProviderState)) return null;
-            return HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(module, stateType, Configuration.StateInstanceName, Configuration.StateInstanceName);
+            if (codeProvider.HasState)
+            {
+                return HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         class InjectionInfo
         {
-            public ParameterValueHandlingCodeInjector CodeInjector;
+            public CodeInjector<ParameterValueHandlingCodeProviderArgument> CodeInjector;
             public FieldDefinition StateHoldingField;
         }
     }

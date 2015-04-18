@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExtensibleILRewriter.CodeInjection;
+using System;
 using System.Collections.Generic;
 
 namespace ExtensibleILRewriter.ParameterProcessors
@@ -10,12 +11,12 @@ namespace ExtensibleILRewriter.ParameterProcessors
             AddSupportedPropertyNames(nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName));
         }
 
-        protected virtual IParameterValueHandlingCodeProvider GetDefaultCodeProvider()
+        protected virtual CodeProvider<ParameterValueHandlingCodeProviderArgument> GetDefaultCodeProvider()
         {
             throw new InvalidOperationException("General \{nameof(ParameterValueHandlingProcessor)} does not have any default code provider. You need to configure \{nameof(CustomValueHandlingCodeProvider)} at processor properties.");
         }
 
-        public IParameterValueHandlingCodeProvider CustomValueHandlingCodeProvider { get; private set; }
+        public CodeProvider<ParameterValueHandlingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
 
         public string StateInstanceName { get; private set; }
 
@@ -25,7 +26,7 @@ namespace ExtensibleILRewriter.ParameterProcessors
             {
                 var customValueHandlingCodeProviderAlias = properties.GetProperty(nameof(CustomValueHandlingCodeProvider));
                 var customValueHandlingCodeProviderType = typeAliasResolver.ResolveType(customValueHandlingCodeProviderAlias);
-                CustomValueHandlingCodeProvider = (IParameterValueHandlingCodeProvider)Activator.CreateInstance(customValueHandlingCodeProviderType);
+                CustomValueHandlingCodeProvider = (CodeProvider<ParameterValueHandlingCodeProviderArgument>)Activator.CreateInstance(customValueHandlingCodeProviderType);
 
                 base.CheckIfContainsProperty(properties, nameof(StateInstanceName));
                 StateInstanceName = properties.GetProperty(nameof(StateInstanceName));

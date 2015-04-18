@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.ParameterProcessors;
+using ExtensibleILRewriter.CodeInjection;
 
 namespace ExtensibleILRewriter.Contracts
 {
@@ -37,7 +38,7 @@ namespace ExtensibleILRewriter.Contracts
 
         public class ProcessorConfiguration : ParameterValueHandlingProcessorConfiguration
         {
-            protected override IParameterValueHandlingCodeProvider GetDefaultCodeProvider()
+            protected override CodeProvider<ParameterValueHandlingCodeProviderArgument> GetDefaultCodeProvider()
             {
                 return new NotNullArgumentHandligCodeProvider();
             }

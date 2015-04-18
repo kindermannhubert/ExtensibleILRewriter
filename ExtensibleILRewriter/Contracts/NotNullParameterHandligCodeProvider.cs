@@ -1,24 +1,41 @@
-﻿using ExtensibleILRewriter.ParameterProcessors;
+﻿using ExtensibleILRewriter.CodeInjection;
+using ExtensibleILRewriter.ParameterProcessors;
 using Mono.Cecil;
 using System;
 
 namespace ExtensibleILRewriter.Contracts
 {
-    public class NotNullArgumentHandligCodeProvider : ParameterValueHandlingCodeProvider<EmptyCodeProviderState>
+    public class NotNullArgumentHandligCodeProvider : CodeProvider<ParameterValueHandlingCodeProviderArgument>
     {
-        public override bool ShouldHandleParameter(ParameterDefinition parameterDefinition, MethodDefinition declaringMethod)
+        public override bool HasState { get { return false; } }
+
+        protected override bool ShouldBeInjected(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
         {
             return true;
         }
 
-        public static void HandleParameter<ParameterType>(EmptyCodeProviderState state, ParameterType parameter, string parameterName)
+        protected override string GetCodeProvidingMethodName(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
+        {
+            return nameof(HandleParameter);
+        }
+
+        protected override CodeProviderCallArgument[] GetCodeProvidingMethodArguments(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
+        {
+            return new CodeProviderCallArgument[]
+            {
+                CodeProviderCallArgument.CreateGenericParameterArgument("parameter", codeProviderArgument.Parameter),
+                CodeProviderCallArgument.CreateTextArgument("parameterName", codeProviderArgument.Parameter.Name)
+            };
+        }
+
+        public static void HandleParameter<ParameterType>(ParameterType parameter, string parameterName)
         {
             if (parameter == null) throw new ArgumentNullException(parameterName);
         }
 
-        protected override string GetHandleParameterMethodName(TypeReference parameterType)
+        protected override TypeReference[] GetCodeProvidingMethodGenericArgumentTypes(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
         {
-            return nameof(HandleParameter);
+            return new TypeReference[] { codeProviderArgument.Parameter.ParameterType };
         }
     }
 }

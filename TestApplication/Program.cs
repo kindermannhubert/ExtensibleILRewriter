@@ -10,8 +10,8 @@ namespace TestApplication
         private static void Main(string[] args)
         {
             A.Test(new object());
-            A.Test((int?)null);
             A.Test(new object(), "");
+            A.Test((int?)null);
             A.Test(new object(), null);
 
             Console.WriteLine("Done");

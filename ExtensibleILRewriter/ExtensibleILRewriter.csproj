@@ -42,10 +42,14 @@
   <ItemGroup>
     <Compile Include="AssemblyProcessors\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
+    <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
+    <Compile Include="CodeInjection\CodeProviderCallArgumentType.cs" />
+    <Compile Include="CodeInjection\CodeProvider.cs" />
+    <Compile Include="CodeInjection\CodeProviderCallInfo.cs" />
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeInjector.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProvider.cs" />
+    <Compile Include="CodeInjection\CodeInjector.cs" />
+    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProviderArgument.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessor.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorConfiguration.cs" />
     <Compile Include="ParameterProcessors\ParameterProcessor.cs" />
