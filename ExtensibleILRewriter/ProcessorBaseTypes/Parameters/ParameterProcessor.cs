@@ -1,7 +1,7 @@
-﻿using ExtensibleILRewriter.Contracts;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 using Mono.Cecil;
 
-namespace ExtensibleILRewriter.ParameterProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
     public abstract class ParameterProcessor<ConfigurationType> : ComponentProcessor<ParameterDefinition, MethodDefinition, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration

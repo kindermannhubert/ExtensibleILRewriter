@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.Contracts;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter
 {

@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.Contracts;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;

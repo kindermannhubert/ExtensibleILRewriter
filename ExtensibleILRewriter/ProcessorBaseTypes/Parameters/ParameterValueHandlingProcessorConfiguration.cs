@@ -1,7 +1,7 @@
 ﻿using ExtensibleILRewriter.CodeInjection;
 using System;
 
-namespace ExtensibleILRewriter.ParameterProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
     public class ParameterValueHandlingProcessorConfiguration : ComponentProcessorConfiguration
     {

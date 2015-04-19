@@ -1,7 +1,7 @@
 ﻿using ExtensibleILRewriter.CodeInjection;
 using System;
 
-namespace ExtensibleILRewriter.MethodProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
 {
     public class MethodCodeInjectingProcessorConfiguration : ComponentProcessorConfiguration
     {

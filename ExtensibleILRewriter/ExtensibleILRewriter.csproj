@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyProcessors\AssemblyProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Assemblies\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgumentType.cs" />
@@ -49,15 +49,15 @@
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
-    <Compile Include="MethodProcessors\MethodCodeInjectingCodeProviderArgument.cs" />
-    <Compile Include="MethodProcessors\MethodCodeInjectingProcessor.cs" />
-    <Compile Include="MethodProcessors\MethodCodeInjectingProcessorConfiguration.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProviderArgument.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessor.cs" />
-    <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorConfiguration.cs" />
-    <Compile Include="ParameterProcessors\ParameterProcessor.cs" />
-    <Compile Include="MethodProcessors\MethodProcessor.cs" />
-    <Compile Include="ModuleProcessors\ModuleProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingCodeProviderArgument.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingProcessorConfiguration.cs" />
+    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingCodeProviderArgument.cs" />
+    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessorConfiguration.cs" />
+    <Compile Include="ProcessorBaseTypes\Parameters\ParameterProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\MethodProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
@@ -66,18 +66,18 @@
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
     <Compile Include="HandlingInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
-    <Compile Include="Contracts\NotNullAttributeProcessor.cs" />
-    <Compile Include="Contracts\NotNullParameterHandligCodeProvider.cs" />
-    <Compile Include="Contracts\NotNullAttribute.cs" />
+    <Compile Include="Processors\Parameters\NotNullAttributeProcessor.cs" />
+    <Compile Include="Processors\Parameters\NotNullParameterHandligCodeProvider.cs" />
+    <Compile Include="Processors\Parameters\NotNullAttribute.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ComponentProcessor.cs" />
-    <Compile Include="MethodProcessors\Helpers\MakeStaticVersionAttribute.cs" />
-    <Compile Include="MethodProcessors\Helpers\MakeStaticVersionProcessor.cs" />
-    <Compile Include="ModuleProcessors\ModuleInitializerAttribute.cs" />
-    <Compile Include="ModuleProcessors\ModuleInitializerProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionAttribute.cs" />
+    <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionProcessor.cs" />
+    <Compile Include="Processors\Modules\ModuleInitializerAttribute.cs" />
+    <Compile Include="Processors\Modules\ModuleInitializerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeProcessors\TypeProcessor.cs" />
+    <Compile Include="ProcessorBaseTypes\Types\TypeProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cecil\Mono.Cecil.csproj">
@@ -93,7 +93,11 @@
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Processors\Assemblies\" />
+    <Folder Include="Processors\Methods\" />
+    <Folder Include="Processors\Types\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="RewriteConfiguration.xml" />
     <Content Include="RunRewrite.xml" />

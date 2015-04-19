@@ -1,5 +1,5 @@
 ﻿using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.ModuleProcessors;
+using ExtensibleILRewriter.Processors.Modules;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;

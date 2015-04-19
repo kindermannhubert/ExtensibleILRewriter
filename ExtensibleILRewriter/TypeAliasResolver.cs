@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter
 {

@@ -1,9 +1,9 @@
 ﻿using Mono.Cecil;
 using System.Linq;
 using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.Processors.Parameters;
 
-namespace ExtensibleILRewriter.MethodProcessors.Helpers
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers
 {
     public class MakeStaticVersionProcessor : MethodProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {

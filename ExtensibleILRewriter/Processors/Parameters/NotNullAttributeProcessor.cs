@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using Mono.Cecil;
 using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.ParameterProcessors;
+using ExtensibleILRewriter.ProcessorBaseTypes.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 
-namespace ExtensibleILRewriter.Contracts
+namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class NotNullAttributeProcessor : ParameterValueHandlingProcessor<NotNullAttributeProcessor.ProcessorConfiguration>
     {

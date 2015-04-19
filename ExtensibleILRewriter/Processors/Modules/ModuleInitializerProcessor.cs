@@ -3,9 +3,10 @@ using System;
 using System.Linq;
 using Mono.Cecil.Cil;
 using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.Processors.Parameters;
+using ExtensibleILRewriter.ProcessorBaseTypes.Modules;
 
-namespace ExtensibleILRewriter.ModuleProcessors
+namespace ExtensibleILRewriter.Processors.Modules
 {
     public class ModuleInitializerProcessor : ModuleProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {

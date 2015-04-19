@@ -1,7 +1,6 @@
-﻿using ExtensibleILRewriter;
-using ExtensibleILRewriter.MethodProcessors.Helpers;
-using System;
-using ExtensibleILRewriter.Contracts;
+﻿using System;
+using ExtensibleILRewriter.Processors.Parameters;
+using ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers;
 
 namespace TestApplication
 {

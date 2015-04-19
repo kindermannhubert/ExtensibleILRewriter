@@ -1,9 +1,9 @@
 ﻿using Mono.Cecil;
 using System.Collections.Generic;
-using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 
-namespace ExtensibleILRewriter.ParameterProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
     public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterProcessor<ConfigurationType>
         where ConfigurationType : ParameterValueHandlingProcessorConfiguration

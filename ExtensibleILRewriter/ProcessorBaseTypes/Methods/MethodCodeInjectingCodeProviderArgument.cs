@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 
-namespace ExtensibleILRewriter.MethodProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
 {
     public struct MethodCodeInjectingCodeProviderArgument
     {

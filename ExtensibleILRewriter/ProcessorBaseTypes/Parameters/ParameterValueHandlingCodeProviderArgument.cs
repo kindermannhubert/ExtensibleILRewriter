@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 
-namespace ExtensibleILRewriter.ParameterProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
     public struct ParameterValueHandlingCodeProviderArgument
     {

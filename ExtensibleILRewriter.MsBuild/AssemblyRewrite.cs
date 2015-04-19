@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
-using ExtensibleILRewriter.Contracts;
+using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter.MsBuild
 {

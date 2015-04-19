@@ -1,9 +1,9 @@
 ﻿using ExtensibleILRewriter.CodeInjection;
-using ExtensibleILRewriter.ParameterProcessors;
+using ExtensibleILRewriter.ProcessorBaseTypes.Parameters;
 using Mono.Cecil;
 using System;
 
-namespace ExtensibleILRewriter.Contracts
+namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class NotNullArgumentHandligCodeProvider : CodeProvider<ParameterValueHandlingCodeProviderArgument>
     {

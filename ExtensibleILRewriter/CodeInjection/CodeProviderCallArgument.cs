@@ -1,4 +1,4 @@
-﻿using ExtensibleILRewriter.Contracts;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;

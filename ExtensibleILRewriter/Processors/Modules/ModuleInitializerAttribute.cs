@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExtensibleILRewriter.ModuleProcessors
+namespace ExtensibleILRewriter.Processors.Modules
 {
     [AttributeUsage(AttributeTargets.Module | AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
     public class ModuleInitializerAttribute : Attribute

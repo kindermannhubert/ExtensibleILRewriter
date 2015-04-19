@@ -1,7 +1,7 @@
-﻿using ExtensibleILRewriter.Contracts;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 using Mono.Cecil;
 
-namespace ExtensibleILRewriter.ModuleProcessors
+namespace ExtensibleILRewriter.ProcessorBaseTypes.Modules
 {
     public abstract class ModuleProcessor<ConfigurationType> : ComponentProcessor<ModuleDefinition, AssemblyDefinition, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration

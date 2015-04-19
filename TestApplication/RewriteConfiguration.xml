@@ -5,14 +5,14 @@
   </Assemblies>
 
   <Types>
-    <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Contracts.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
+    <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Processors.Parameters.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <AssemblyProcessors>
   </AssemblyProcessors>
 
   <ModuleProcessors>
-    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.ModuleProcessors.ModuleInitializerProcessor" />
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Modules.ModuleInitializerProcessor" />
   </ModuleProcessors>
 
   <TypeProcessors>
@@ -22,7 +22,7 @@
   </MethodProcessors>
 
   <ParameterProcessors>
-    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Contracts.NotNullAttributeProcessor" >
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Parameters.NotNullAttributeProcessor" >
       <!--<Properties>
         <Property key="CustomValueHandlingCodeProvider" value="NonNullableDefaultHandler" />
         <Property key="StateInstanceName" value="NonNullableDefaultHandlerState" />
