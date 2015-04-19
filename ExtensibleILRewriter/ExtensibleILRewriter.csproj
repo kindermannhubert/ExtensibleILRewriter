@@ -49,6 +49,9 @@
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
+    <Compile Include="MethodProcessors\MethodCodeInjectingCodeProviderArgument.cs" />
+    <Compile Include="MethodProcessors\MethodCodeInjectingProcessor.cs" />
+    <Compile Include="MethodProcessors\MethodCodeInjectingProcessorConfiguration.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingCodeProviderArgument.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessor.cs" />
     <Compile Include="ParameterProcessors\ParameterValueHandlingProcessorConfiguration.cs" />

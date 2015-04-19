@@ -1,12 +1,8 @@
-﻿using System.Linq;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 using ExtensibleILRewriter.Extensions;
-using Mono.Cecil.Rocks;
 using System;
-using System.Collections.Generic;
-using ExtensibleILRewriter.ParameterProcessors;
 
 namespace ExtensibleILRewriter.CodeInjection
 {
@@ -22,7 +18,7 @@ namespace ExtensibleILRewriter.CodeInjection
             this.codeProvider = codeProvider;
         }
 
-        public void Inject(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
+        public void InjectAtBegining(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
         {
             var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
 

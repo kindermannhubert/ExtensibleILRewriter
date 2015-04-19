@@ -1,7 +1,6 @@
 ﻿using ExtensibleILRewriter.Extensions;
 using Mono.Cecil;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -35,8 +34,8 @@ namespace ExtensibleILRewriter.CodeInjection
                 .GetMethods(BindingFlags.Static | BindingFlags.Public)
                 .Where(m => m.Name == codeProvidingMethodName).ToArray();
 
-            if (handlingMethods.Length == 0) throw new InvalidOperationException("Unable to find method '\{codeProvidingMethodName}' on type '\{GetType().FullName}'.");
-            else if (handlingMethods.Length > 1) throw new InvalidOperationException("Found more than one method with name '\{codeProvidingMethodName}' on type '\{GetType().FullName}'.");
+            if (handlingMethods.Length == 0) throw new InvalidOperationException("Unable to find public static method '\{codeProvidingMethodName}' on type '\{GetType().FullName}'.");
+            else if (handlingMethods.Length > 1) throw new InvalidOperationException("Found more than one public static method with name '\{codeProvidingMethodName}' on type '\{GetType().FullName}'.");
 
             var method = handlingMethods[0];
 

@@ -8,7 +8,7 @@ namespace ExtensibleILRewriter.ParameterProcessors
     public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterProcessor<ConfigurationType>
         where ConfigurationType : ParameterValueHandlingProcessorConfiguration
     {
-        private readonly Dictionary<ModuleDefinition, InjectionInfo> injectionInfos = new Dictionary<ModuleDefinition, InjectionInfo>();
+        private readonly Dictionary<ModuleDefinition, ModuleData> modulesData = new Dictionary<ModuleDefinition, ModuleData>();
 
         public ParameterValueHandlingProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
@@ -17,18 +17,18 @@ namespace ExtensibleILRewriter.ParameterProcessors
 
         public override void Process([NotNull]ParameterDefinition parameter, MethodDefinition declaringMethod)
         {
-            InjectionInfo info;
-            if (!injectionInfos.TryGetValue(declaringMethod.Module, out info))
+            ModuleData moduleData;
+            if (!modulesData.TryGetValue(declaringMethod.Module, out moduleData))
             {
-                info = new InjectionInfo();
+                moduleData = new ModuleData();
                 var codeProvider = Configuration.CustomValueHandlingCodeProvider;
-                info.CodeInjector = new CodeInjector<ParameterValueHandlingCodeProviderArgument>(declaringMethod.Module, codeProvider);
-                info.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringMethod.Module);
+                moduleData.CodeInjector = new CodeInjector<ParameterValueHandlingCodeProviderArgument>(declaringMethod.Module, codeProvider);
+                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringMethod.Module);
 
-                injectionInfos.Add(declaringMethod.Module, info);
+                modulesData.Add(declaringMethod.Module, moduleData);
             }
 
-            info.CodeInjector.Inject(declaringMethod, new ParameterValueHandlingCodeProviderArgument(parameter, declaringMethod, info.StateHoldingField), logger);
+            moduleData.CodeInjector.InjectAtBegining(declaringMethod, new ParameterValueHandlingCodeProviderArgument(parameter, declaringMethod, moduleData.StateHoldingField), logger);
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<ParameterValueHandlingCodeProviderArgument> codeProvider, ModuleDefinition module)
@@ -43,7 +43,7 @@ namespace ExtensibleILRewriter.ParameterProcessors
             }
         }
 
-        class InjectionInfo
+        struct ModuleData
         {
             public CodeInjector<ParameterValueHandlingCodeProviderArgument> CodeInjector;
             public FieldDefinition StateHoldingField;
