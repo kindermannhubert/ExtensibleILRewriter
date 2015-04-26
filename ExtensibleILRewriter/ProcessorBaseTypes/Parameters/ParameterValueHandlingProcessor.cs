@@ -15,20 +15,20 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
         {
         }
 
-        public override void Process([NotNull]ParameterDefinition parameter, MethodDefinition declaringMethod)
+        public override void Process([NotNull]MethodParameterProcessableComponent parameter)
         {
             ModuleData moduleData;
-            if (!modulesData.TryGetValue(declaringMethod.Module, out moduleData))
+            if (!modulesData.TryGetValue(parameter.DeclaringModule, out moduleData))
             {
                 moduleData = new ModuleData();
                 var codeProvider = Configuration.CustomValueHandlingCodeProvider;
-                moduleData.CodeInjector = new CodeInjector<ParameterValueHandlingCodeProviderArgument>(declaringMethod.Module, codeProvider);
-                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringMethod.Module);
+                moduleData.CodeInjector = new CodeInjector<ParameterValueHandlingCodeProviderArgument>(parameter.DeclaringModule, codeProvider);
+                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, parameter.DeclaringModule);
 
-                modulesData.Add(declaringMethod.Module, moduleData);
+                modulesData.Add(parameter.DeclaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(declaringMethod, new ParameterValueHandlingCodeProviderArgument(parameter, declaringMethod, moduleData.StateHoldingField), logger);
+            moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, new ParameterValueHandlingCodeProviderArgument(parameter.UnderlyingComponent, parameter.DeclaringComponent.UnderlyingComponent, moduleData.StateHoldingField), logger);
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<ParameterValueHandlingCodeProviderArgument> codeProvider, ModuleDefinition module)

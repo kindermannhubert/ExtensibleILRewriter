@@ -14,39 +14,40 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers
         {
         }
 
-        public override void Process([NotNull]MethodDefinition method, TypeDefinition declaringType)
+        public override void Process([NotNull]MethodProcessableComponent method)
         {
             var attribute = method.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == makeStaticVersionAttributeFullName);
             if (attribute == null) return;
 
-            if (!method.HasBody)
+            var methodDefinition = method.UnderlyingComponent;
+            if (!methodDefinition.HasBody)
             {
-                logger.LogErrorWithSource(method, "Cannot make static version of method '\{method.FullName}' which does not have body.");
+                logger.LogErrorWithSource(methodDefinition, "Cannot make static version of method '\{method.FullName}' which does not have body.");
                 return;
             }
-            if (method.IsStatic)
+            if (methodDefinition.IsStatic)
             {
-                logger.LogErrorWithSource(method, "Method '\{method.FullName}' is already static.");
+                logger.LogErrorWithSource(methodDefinition, "Method '\{method.FullName}' is already static.");
                 return;
             }
-            if (!method.CouldBeStatic())
+            if (!methodDefinition.CouldBeStatic())
             {
-                logger.LogErrorWithSource(method, "Method '\{method.FullName}' must be able to be static in order to make static version of it.");
+                logger.LogErrorWithSource(methodDefinition, "Method '\{method.FullName}' must be able to be static in order to make static version of it.");
                 return;
             }
 
-            var staticMethod = method.CreateStaticVersion();
+            var staticMethod = methodDefinition.CreateStaticVersion();
             staticMethod.Name = (string)attribute.ConstructorArguments[0].Value;
 
-            staticMethod.DeclaringType = declaringType;
-            if (declaringType.Methods.Any(m => m.FullName == staticMethod.FullName))
+            staticMethod.DeclaringType = method.DeclaringComponent.UnderlyingComponent;
+            if (staticMethod.DeclaringType.Methods.Any(m => m.FullName == staticMethod.FullName))
             {
                 staticMethod.DeclaringType = null;
-                logger.LogErrorWithSource(method, "Type '\{declaringType.FullName}' already contains method '\{staticMethod.FullName}'.");
+                logger.LogErrorWithSource(methodDefinition, "Type '\{method.DeclaringComponent.FullName}' already contains method '\{staticMethod.FullName}'.");
             }
             else
             {
-                declaringType.Methods.Add(staticMethod);
+                staticMethod.DeclaringType.Methods.Add(staticMethod);
             }
         }
     }

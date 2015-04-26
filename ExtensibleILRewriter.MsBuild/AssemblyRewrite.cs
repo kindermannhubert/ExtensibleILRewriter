@@ -109,11 +109,11 @@ namespace ExtensibleILRewriter.MsBuild
                     assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.Assembly),
                     configuration.Types.ToDictionary(t => t.Alias, t => new TypeAliasResolver.TypeAliasDefinition(t.AssemblyAlias, t.Name)));
 
-                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyDefinition, NoDeclaringComponent>(configuration.AssemblyProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleDefinition, AssemblyDefinition>(configuration.ModuleProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeDefinition, ModuleDefinition>(configuration.TypeProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodDefinition, TypeDefinition>(configuration.MethodProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.ParameterProcessors.AddRange(LoadProcessors<ParameterDefinition, MethodDefinition>(configuration.ParameterProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyProcessableComponent>(configuration.AssemblyProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleProcessableComponent>(configuration.ModuleProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeProcessableComponent>(configuration.TypeProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodProcessableComponent>(configuration.MethodProcessors, logger, assembliesDict, typeAliasResolver));
+                assemblyRewriter.ParameterProcessors.AddRange(LoadProcessors<MethodParameterProcessableComponent>(configuration.ParameterProcessors, logger, assembliesDict, typeAliasResolver));
             }
             finally
             {
@@ -121,9 +121,10 @@ namespace ExtensibleILRewriter.MsBuild
             }
         }
 
-        private static IEnumerable<IComponentProcessor<ComponentType, DeclaringComponentType, ComponentProcessorConfiguration>> LoadProcessors<ComponentType, DeclaringComponentType>(
+        private static IEnumerable<IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>> LoadProcessors<ProcessableComponentType>(
             ProcessorDefinition[] processorDefinitions, ILogger logger,
             Dictionary<string, LazyAssembly> assembliesDict, TypeAliasResolver typeAliasResolver)
+            where ProcessableComponentType : IProcessableComponent
         {
             foreach (var processorDefinition in processorDefinitions)
             {
@@ -131,7 +132,7 @@ namespace ExtensibleILRewriter.MsBuild
 
                 var assembly = assembliesDict[processorDefinition.AssemblyAlias].Assembly.Value;
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
+                if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'. Cannot find spcified type in assembly.");
 
                 var processorTypeGenericArgs = processorType.GetGenericArguments();
                 int numberOfProcessorGenericParameters = processorTypeGenericArgs.Where(arg => arg.IsGenericParameter).Count();
@@ -146,15 +147,15 @@ namespace ExtensibleILRewriter.MsBuild
 
                 var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
-                var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,,>));
+                var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
                 if (processorBaseGenericInterface == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' because it does not implement \{nameof(IComponentProcessor)} interface.");
 
-                var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[2];
+                var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
 
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);
                 processorConfiguration.LoadFromProperties(processorProperties, typeAliasResolver, processorDefinition.ProcessorName);
 
-                var processor = (IComponentProcessor<ComponentType, DeclaringComponentType, ComponentProcessorConfiguration>)Activator.CreateInstance(processorType, processorConfiguration, logger);
+                var processor = (IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>)Activator.CreateInstance(processorType, processorConfiguration, logger);
                 yield return processor;
             }
         }

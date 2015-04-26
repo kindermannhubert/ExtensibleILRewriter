@@ -2,11 +2,10 @@
 
 namespace ExtensibleILRewriter
 {
-    public interface IComponentProcessor<ComponentType, DeclaringComponentType, out ConfigurationType>
+    public interface IComponentProcessor<ProcessableComponentType, out ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
+        where ProcessableComponentType : IProcessableComponent
     {
-        void Process([NotNull]ComponentType component, DeclaringComponentType declaringComponent);
+        void Process([NotNull]ProcessableComponentType component);
     }
-
-    public class NoDeclaringComponent { }
 }

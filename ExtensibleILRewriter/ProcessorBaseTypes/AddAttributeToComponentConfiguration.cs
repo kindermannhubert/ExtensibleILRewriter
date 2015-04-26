@@ -4,16 +4,16 @@ using System;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes
 {
-    public class AddComponentAttributeConfiguration<AttributeProviderArgumentType> : ComponentProcessorConfiguration
+    public class AddAttributeToComponentConfiguration<AttributeProviderArgumentType> : ComponentProcessorConfiguration
     {
-        public AddComponentAttributeConfiguration()
+        public AddAttributeToComponentConfiguration()
         {
             AddSupportedPropertyNames(nameof(CustomAttributeProvider));
         }
 
         protected virtual AttributeProvider<AttributeProviderArgumentType> GetDefaultCodeProvider()
         {
-            throw new InvalidOperationException("General \{nameof(AddComponentAttributeConfiguration)} does not have any default attribute provider. You need to configure \{nameof(CustomAttributeProvider)} at processor properties.");
+            throw new InvalidOperationException("General \{nameof(AddAttributeToComponentConfiguration)} does not have any default attribute provider. You need to configure \{nameof(CustomAttributeProvider)} at processor properties.");
         }
 
         public AttributeProvider<AttributeProviderArgumentType> CustomAttributeProvider { get; private set; }

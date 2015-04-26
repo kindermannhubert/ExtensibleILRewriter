@@ -1,9 +1,8 @@
 ﻿using ExtensibleILRewriter.Processors.Parameters;
-using Mono.Cecil;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
-    public abstract class ParameterProcessor<ConfigurationType> : ComponentProcessor<ParameterDefinition, MethodDefinition, ConfigurationType>
+    public abstract class ParameterProcessor<ConfigurationType> : ComponentProcessor<MethodParameterProcessableComponent, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
     {
         public ParameterProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger) 

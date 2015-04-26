@@ -15,20 +15,20 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
         {
         }
 
-        public override void Process([NotNull]MethodDefinition method, TypeDefinition declaringType)
+        public override void Process([NotNull]MethodProcessableComponent method)
         {
             ModuleData moduleData;
-            if (!modulesData.TryGetValue(method.Module, out moduleData))
+            if (!modulesData.TryGetValue(method.DeclaringModule, out moduleData))
             {
                 moduleData = new ModuleData();
                 var codeProvider = Configuration.CustomValueHandlingCodeProvider;
-                moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(method.Module, codeProvider);
-                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, method.Module);
+                moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(method.DeclaringModule, codeProvider);
+                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, method.DeclaringModule);
 
-                modulesData.Add(method.Module, moduleData);
+                modulesData.Add(method.DeclaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(method, new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField), logger);
+            moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method.UnderlyingComponent, moduleData.StateHoldingField), logger);
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<MethodCodeInjectingCodeProviderArgument> codeProvider, ModuleDefinition module)

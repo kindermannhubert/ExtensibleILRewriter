@@ -45,9 +45,12 @@
     <Compile Include="CodeInjection\AttributeProviderInjectionInfo.cs" />
     <Compile Include="CodeInjection\AttributeProviderAttributeArgument.cs" />
     <Compile Include="CodeInjection\AttributeInjector.cs" />
+    <Compile Include="CodeInjection\IAttributeProviderArgument.cs" />
+    <Compile Include="IProcessableComponent.cs" />
+    <Compile Include="ProcessableComponent.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="ProcessorBaseTypes\AddComponentAttribute.cs" />
-    <Compile Include="ProcessorBaseTypes\AddComponentAttributeConfiguration.cs" />
+    <Compile Include="ProcessorBaseTypes\AddAttributeToComponent.cs" />
+    <Compile Include="ProcessorBaseTypes\AddAttributeToComponentConfiguration.cs" />
     <Compile Include="ProcessorBaseTypes\Assemblies\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
@@ -66,8 +69,9 @@
     <Compile Include="ProcessorBaseTypes\Parameters\ParameterProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Methods\MethodProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
-    <Compile Include="Processors\Assemblies\AddAssemblyAttribute.cs" />
-    <Compile Include="Processors\Assemblies\AddAssemblyAttributeConfiguration.cs" />
+    <Compile Include="Processors\Assemblies\AddAttributeToAssembly.cs" />
+    <Compile Include="Processors\Assemblies\AddAttributeToAssemblyConfiguration.cs" />
+    <Compile Include="ProcessableComponentType.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />

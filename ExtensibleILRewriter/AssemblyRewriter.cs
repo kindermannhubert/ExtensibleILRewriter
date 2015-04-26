@@ -15,11 +15,11 @@ namespace ExtensibleILRewriter
         private readonly string assemblyPath;
         private readonly ILogger logger;
 
-        public List<IComponentProcessor<AssemblyDefinition, NoDeclaringComponent, ComponentProcessorConfiguration>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyDefinition, NoDeclaringComponent, ComponentProcessorConfiguration>>();
-        public List<IComponentProcessor<ModuleDefinition, AssemblyDefinition, ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleDefinition, AssemblyDefinition, ComponentProcessorConfiguration>>();
-        public List<IComponentProcessor<TypeDefinition, ModuleDefinition, ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<TypeDefinition, ModuleDefinition, ComponentProcessorConfiguration>>();
-        public List<IComponentProcessor<MethodDefinition, TypeDefinition, ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<MethodDefinition, TypeDefinition, ComponentProcessorConfiguration>>();
-        public List<IComponentProcessor<ParameterDefinition, MethodDefinition, ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<ParameterDefinition, MethodDefinition, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<AssemblyProcessableComponent, ComponentProcessorConfiguration>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ModuleProcessableComponent, ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<TypeProcessableComponent, ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<TypeProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<MethodProcessableComponent, ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<MethodProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<MethodParameterProcessableComponent, ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<MethodParameterProcessableComponent, ComponentProcessorConfiguration>>();
 
         public AssemblyRewriter(string assemblyPath, ILogger logger = null)
         {
@@ -54,44 +54,44 @@ namespace ExtensibleILRewriter
             var assembly = LoadAssembly();
 
             logger.Progress("Processing assembly: '\{assembly.FullName}'.");
-            ProcessComponent(assembly, null, AssemblyProcessors, logger);
+            ProcessComponent(assembly.ToProcessableComponent(), AssemblyProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var modules = assembly.Modules.ToArray();
-            foreach (var module in modules) ProcessModule(module, assembly);
+            foreach (var module in modules) ProcessModule(module);
 
             logger.Progress("Processing assembly done.");
             return assembly;
         }
 
-        private void ProcessModule(ModuleDefinition module, AssemblyDefinition declaringAssembly)
+        private void ProcessModule(ModuleDefinition module)
         {
             logger.Progress("Processing module: '\{module.Name}'.");
-            ProcessComponent(module, declaringAssembly, ModuleProcessors, logger);
+            ProcessComponent(module.ToProcessableComponent(), ModuleProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var types = module.Types.ToArray();
-            foreach (var type in types) ProcessType(type, module);
+            foreach (var type in types) ProcessType(type);
 
             logger.Progress("Processing module done.");
         }
 
-        private void ProcessType(TypeDefinition type, ModuleDefinition declaringModule)
+        private void ProcessType(TypeDefinition type)
         {
             logger.Progress("Processing type: '\{type.Name}'.");
-            ProcessComponent(type, declaringModule, TypeProcessors, logger);
+            ProcessComponent(type.ToProcessableComponent(), TypeProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var methods = type.Methods.ToArray();
-            foreach (var method in methods) ProcessMethod(method, type);
+            foreach (var method in methods) ProcessMethod(method);
 
             logger.Progress("Processing type done.");
         }
 
-        private void ProcessMethod(MethodDefinition method, TypeDefinition declaringType)
+        private void ProcessMethod(MethodDefinition method)
         {
             logger.Notice("Processing method: '\{method.FullName}'.");
-            ProcessComponent(method, declaringType, MethodProcessors, logger);
+            ProcessComponent(method.ToProcessableComponent(), MethodProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
             var parameters = method.Parameters.ToArray();
@@ -102,24 +102,25 @@ namespace ExtensibleILRewriter
 
         private void ProcessParameter(ParameterDefinition parameter, MethodDefinition declaringMethod)
         {
-            ProcessComponent(parameter, declaringMethod, ParameterProcessors, logger);
+            ProcessComponent(parameter.ToProcessableComponent(declaringMethod), ParameterProcessors, logger);
         }
 
-        private static void ProcessComponent<ComponentType, DeclaringComponentType>(
-            ComponentType component,
-            DeclaringComponentType declaringComponent,
-            IEnumerable<IComponentProcessor<ComponentType, DeclaringComponentType, ComponentProcessorConfiguration>> componentProcessors,
+        private static void ProcessComponent<ProcessableComponentType>
+            (
+            ProcessableComponentType component,
+            IEnumerable<IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>> componentProcessors,
             ILogger logger)
+            where ProcessableComponentType : IProcessableComponent
         {
             foreach (var processor in componentProcessors)
             {
                 try
                 {
-                    processor.Process(component, declaringComponent);
+                    processor.Process(component);
                 }
                 catch (Exception e)
                 {
-                    logger.Error("There was an error while processing \{typeof(ComponentType).Name}: '\{component}' with processor '\{processor}'. Exception: \{e}");
+                    logger.Error("There was an error while processing '\{component.FullName}' with processor '\{processor}'. Exception: \{e}");
                 }
             }
         }

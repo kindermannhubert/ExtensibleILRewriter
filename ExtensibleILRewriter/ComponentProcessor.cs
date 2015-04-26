@@ -2,8 +2,9 @@
 
 namespace ExtensibleILRewriter
 {
-    public abstract class ComponentProcessor<ComponentType, DeclaringComponentType, ConfigurationType> : IComponentProcessor<ComponentType, DeclaringComponentType, ConfigurationType>
+    public abstract class ComponentProcessor<ProcessableComponentType, ConfigurationType> : IComponentProcessor<ProcessableComponentType, ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
+        where ProcessableComponentType : IProcessableComponent
     {
         protected readonly ILogger logger;
 
@@ -15,6 +16,6 @@ namespace ExtensibleILRewriter
             this.logger = logger;
         }
 
-        public abstract void Process([NotNull]ComponentType component, DeclaringComponentType declaringComponent);
+        public abstract void Process([NotNull]ProcessableComponentType component);
     }
 }

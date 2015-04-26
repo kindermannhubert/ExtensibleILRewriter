@@ -16,24 +16,20 @@ namespace ExtensibleILRewriter.Processors.Parameters
         {
         }
 
-        public override void Process(ParameterDefinition parameter, MethodDefinition declaringMethod)
+        public override void Process(MethodParameterProcessableComponent parameter)
         {
+            var parameterDefinition = parameter.UnderlyingComponent;
             if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == notNullAttributeFullName))
             {
-                var method = parameter.Method as MethodDefinition;
-                if (method == null)
+                var methodDefinition = parameter.DeclaringComponent.UnderlyingComponent;
+
+                if (parameterDefinition.ParameterType.IsValueType && !parameterDefinition.ParameterType.IsNullableValueType())
                 {
-                    logger.Error("Unable to get MethodDefinition from parameter '\{parameter.Name}' of method '\{method.FullName}'.");
+                    logger.LogErrorWithSource(methodDefinition, "Parameter '\{parameter.Name}' of method '\{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
                     return;
                 }
 
-                if (parameter.ParameterType.IsValueType && !parameter.ParameterType.IsNullableValueType())
-                {
-                    logger.LogErrorWithSource(method, "Parameter '\{parameter.Name}' of method '\{method.FullName}' cannot be non-nullable because it is a value type.");
-                    return;
-                }
-
-                base.Process(parameter, declaringMethod);
+                base.Process(parameter);
             }
         }
 

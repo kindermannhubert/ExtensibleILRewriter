@@ -3,7 +3,7 @@ using Mono.Cecil;
 
 namespace ExtensibleILRewriter.Processors.Assemblies
 {
-    public class AddAssemblyAttributeConfiguration : AddComponentAttributeConfiguration<AssemblyDefinition>
+    public class AddAttributeToAssemblyConfiguration : AddAttributeToComponentConfiguration<AssemblyProcessableComponent>
     {
     }
 }

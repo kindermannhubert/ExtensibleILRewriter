@@ -17,7 +17,7 @@ namespace ExtensibleILRewriter.Processors.Modules
         {
         }
 
-        public override void Process([NotNull]ModuleDefinition module, AssemblyDefinition declaringAssembly)
+        public override void Process([NotNull]ModuleProcessableComponent module)
         {
             var attribute = module.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == moduleInitializerAttributeFullName);
             if (attribute == null) return;
@@ -25,7 +25,9 @@ namespace ExtensibleILRewriter.Processors.Modules
             var typeName = (string)attribute.ConstructorArguments[0].Value;
             var methodName = (string)attribute.ConstructorArguments[1].Value;
 
-            var type = module.GetType(typeName);
+            var moduleDefinition = module.UnderlyingComponent;
+
+            var type = moduleDefinition.GetType(typeName);
             if (type == null) throw new InvalidOperationException("ModuleInitializerProcessor cannot find type '\{typeName}'.");
 
             var method = type.Methods.FirstOrDefault(m => m.Name == methodName);
@@ -33,10 +35,10 @@ namespace ExtensibleILRewriter.Processors.Modules
 
             if (!method.IsStatic) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must be static.");
             if (!method.IsPublic) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must be public.");
-            if (method.ReturnType != module.TypeSystem.Void) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must be void.");
+            if (method.ReturnType != moduleDefinition.TypeSystem.Void) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must be void.");
             if (method.Parameters.Count != 0) throw new InvalidOperationException("Method '\{method.FullName}' is marked to be called from module initializer so it must have 0 arguments.");
 
-            var cctor = FindOrCreateInitializer(module);
+            var cctor = FindOrCreateInitializer(moduleDefinition);
 
             cctor.Body.AddInstructionToBegining(Instruction.Create(OpCodes.Call, method));
         }
