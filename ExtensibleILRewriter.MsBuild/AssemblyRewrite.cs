@@ -133,9 +133,24 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
                 if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'.");
 
+                var processorTypeGenericArgs = processorType.GetGenericArguments();
+                int numberOfProcessorGenericParameters = processorTypeGenericArgs.Where(arg => arg.IsGenericParameter).Count();
+                if (numberOfProcessorGenericParameters != processorDefinition.GenericArguments.Length)
+                    throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'. Number of generic parameters (=\{numberOfProcessorGenericParameters}) is different from number of configured processor generic arguments (=\{processorDefinition.GenericArguments.Length}).");
+
+                if (numberOfProcessorGenericParameters > 0)
+                {
+                    var genericArgumentTypes = processorDefinition.GenericArguments.Select(arg => typeAliasResolver.ResolveType(arg)).ToArray();
+                    processorType = processorType.MakeGenericType(genericArgumentTypes);
+                }
+
                 var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
+
                 var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,,>));
+                if (processorBaseGenericInterface == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' because it does not implement \{nameof(IComponentProcessor)} interface.");
+
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[2];
+
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);
                 processorConfiguration.LoadFromProperties(processorProperties, typeAliasResolver, processorDefinition.ProcessorName);
 

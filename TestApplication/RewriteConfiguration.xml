@@ -2,13 +2,24 @@
 <AssemblyRewriteConfiguration>
   <Assemblies>
     <Assembly alias="ExtensibleILRewriter" path="ExtensibleILRewriter.dll" />
+    <Assembly alias="TestApplication" path="TestApplication.exe" />
   </Assemblies>
 
   <Types>
     <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Processors.Parameters.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
+    <Type alias="CustomAssemblyInfoAttributeProvider" name="TestApplication.CustomAssemblyInfoAttributeProvider" assemblyAlias="TestApplication" />
+    <Type alias="AddAssemblyAttributeConfiguration" name="ExtensibleILRewriter.Processors.Assemblies.AddAssemblyAttributeConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <AssemblyProcessors>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Assemblies.AddAssemblyAttribute`1">
+      <GenericArguments>
+        <TypeAlias>AddAssemblyAttributeConfiguration</TypeAlias>
+      </GenericArguments>
+      <Properties>
+        <Property key="CustomAttributeProvider" value="CustomAssemblyInfoAttributeProvider" />
+      </Properties>
+    </Processor>
   </AssemblyProcessors>
 
   <ModuleProcessors>

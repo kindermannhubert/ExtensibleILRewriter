@@ -40,12 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeInjection\AttributeProvider.cs" />
+    <Compile Include="CodeInjection\AttributeProviderAttributeArgumentType.cs" />
+    <Compile Include="CodeInjection\AttributeProviderInjectionInfo.cs" />
+    <Compile Include="CodeInjection\AttributeProviderAttributeArgument.cs" />
+    <Compile Include="CodeInjection\AttributeInjector.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="ProcessorBaseTypes\AddComponentAttribute.cs" />
+    <Compile Include="ProcessorBaseTypes\AddComponentAttributeConfiguration.cs" />
     <Compile Include="ProcessorBaseTypes\Assemblies\AssemblyProcessor.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgumentType.cs" />
     <Compile Include="CodeInjection\CodeProvider.cs" />
-    <Compile Include="CodeInjection\CodeProviderCallInfo.cs" />
+    <Compile Include="CodeInjection\CodeProviderInjectionInfo.cs" />
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
@@ -58,6 +66,8 @@
     <Compile Include="ProcessorBaseTypes\Parameters\ParameterProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Methods\MethodProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
+    <Compile Include="Processors\Assemblies\AddAssemblyAttribute.cs" />
+    <Compile Include="Processors\Assemblies\AddAssemblyAttributeConfiguration.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
@@ -67,7 +77,6 @@
     <Compile Include="HandlingInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
     <Compile Include="Processors\Parameters\NotNullAttributeProcessor.cs" />
-    <Compile Include="Processors\Parameters\NotNullParameterHandligCodeProvider.cs" />
     <Compile Include="Processors\Parameters\NotNullAttribute.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="ILogger.cs" />
@@ -94,7 +103,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Processors\Assemblies\" />
     <Folder Include="Processors\Methods\" />
     <Folder Include="Processors\Types\" />
   </ItemGroup>

@@ -55,6 +55,10 @@
       <Project>{b8631325-d271-4581-8d79-6c1bbdb83464}</Project>
       <Name>ExtensibleILRewriter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestApplication\TestApplication.csproj">
+      <Project>{30eec409-f411-4d9f-9ea5-593b5c26e697}</Project>
+      <Name>TestApplication</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

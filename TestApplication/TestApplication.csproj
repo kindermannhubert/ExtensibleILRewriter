@@ -42,15 +42,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomAssemblyInfoAttribute.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RewriteConfiguration.xml" />
-    <Content Include="RunRewrite.xml" />
+    <Content Include="RewriteConfiguration.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="RunRewrite.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\cecil\Mono.Cecil.csproj">
+      <Project>{d68133bd-1e63-496e-9ede-4fbdbf77b486}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExtensibleILRewriter.MsBuild\ExtensibleILRewriter.MsBuild.csproj">
       <Project>{83a13b00-286b-41c1-b632-2430dfe62707}</Project>
       <Name>ExtensibleILRewriter.MsBuild</Name>

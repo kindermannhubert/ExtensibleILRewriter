@@ -18,17 +18,17 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (string.IsNullOrWhiteSpace(AssemblyAlias))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(AssemblyAlias)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(AssemblyAlias)} attribute.");
             }
 
             if (string.IsNullOrWhiteSpace(Alias))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Alias)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Alias)} attribute.");
             }
 
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Name)} element.");
+                throw new InvalidOperationException("Configuration of \{nameof(TypeAliasDefinition)} must contain \{nameof(Name)} attribute.");
             }
         }
     }

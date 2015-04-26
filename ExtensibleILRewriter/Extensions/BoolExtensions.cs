@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExtensibleILRewriter.Extensions
+﻿namespace ExtensibleILRewriter.Extensions
 {
     public static class BoolExtensions
     {

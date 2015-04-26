@@ -28,7 +28,7 @@ namespace ExtensibleILRewriter.CodeInjection
             throw new NotImplementedException("For usage of generic code providing method \{nameof(GetCodeProvidingMethodGenericArgumentTypes)} must be properly implemented.");
         }
 
-        protected MethodReference GetAndCheckCodeProvidingMethodReference(string codeProvidingMethodName, CodeProviderCallArgument[] codeProvidingMethodArguments, ModuleDefinition injectionModule)
+        protected MethodReference GetAndCheckCodeProvidingMethodReference(string codeProvidingMethodName, CodeProviderCallArgument[] codeProvidingMethodArguments, ModuleDefinition destinationModule)
         {
             var handlingMethods = GetType()
                 .GetMethods(BindingFlags.Static | BindingFlags.Public)
@@ -50,7 +50,7 @@ namespace ExtensibleILRewriter.CodeInjection
             for (int i = 0; i < methodParams.Length; i++)
             {
                 if (methodParams[i].Name != codeProvidingMethodArguments[i].Name)
-                    throw new InvalidOperationException("Method '\{codeProvidingMethodName}' on type '\{GetType().FullName}' should be named '\{codeProvidingMethodArguments[i].Name}'.");
+                    throw new InvalidOperationException("\{i}. parameter of method '\{codeProvidingMethodName}' on type '\{GetType().FullName}' should be named '\{codeProvidingMethodArguments[i].Name}'.");
 
                 if (methodParams[i].ParameterType != codeProvidingMethodArguments[i].ClrType)
                 {
@@ -59,7 +59,7 @@ namespace ExtensibleILRewriter.CodeInjection
                 }
             }
 
-            return injectionModule.Import(method);
+            return destinationModule.Import(method);
         }
 
         public void CheckCodeProvidingMethodArguments(CodeProviderCallArgument[] requiredParameters)
@@ -73,13 +73,13 @@ namespace ExtensibleILRewriter.CodeInjection
                 throw new InvalidOperationException("Code provider '\{GetType().FullName}' contains more than one FieldDefinition required parameter.");
         }
 
-        public CodeProviderCallInfo GetCallInfo(CodeProviderArgumentType codeProviderArgument, ModuleDefinition injectionModule)
+        public CodeProviderInjectionInfo GetCallInfo(CodeProviderArgumentType codeProviderArgument, ModuleDefinition destinationModule)
         {
             if (ShouldBeInjected(codeProviderArgument))
             {
                 var methodName = GetCodeProvidingMethodName(codeProviderArgument);
                 var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument);
-                var methodReference = GetAndCheckCodeProvidingMethodReference(methodName, methodArguments, injectionModule);
+                var methodReference = GetAndCheckCodeProvidingMethodReference(methodName, methodArguments, destinationModule);
 
                 if (methodReference.ContainsGenericParameter)
                 {
@@ -90,11 +90,11 @@ namespace ExtensibleILRewriter.CodeInjection
                 }
 
                 CheckCodeProvidingMethodArguments(methodArguments);
-                return new CodeProviderCallInfo(true, methodReference, methodArguments);
+                return new CodeProviderInjectionInfo(true, methodReference, methodArguments);
             }
             else
             {
-                return new CodeProviderCallInfo(false, null, null);
+                return new CodeProviderInjectionInfo(false, null, null);
             }
         }
     }

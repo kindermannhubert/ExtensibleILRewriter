@@ -65,11 +65,5 @@ namespace ExtensibleILRewriter.CodeInjection
                     throw new NotImplementedException("Unknown \{nameof(CodeProviderCallArgument)} type '\{Type}'.");
             }
         }
-
-        public void SetValue(ParameterDefinition value) { parameterDefinition = value; }
-
-        public void SetValue(FieldDefinition value) { fieldDefinition = value; }
-
-        public void SetValue(string value) { text = value; }
     }
 }
