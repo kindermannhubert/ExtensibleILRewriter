@@ -79,17 +79,17 @@ namespace ExtensibleILRewriter
 
     public class NoDeclaringComponent : IProcessableComponent
     {
-        public Collection<CustomAttribute> CustomAttributes { get { throw new NotImplementedException(); } }
+        public Collection<CustomAttribute> CustomAttributes { get { throw new NotSupportedException(); } }
 
-        public IProcessableComponent DeclaringComponent { get { throw new NotImplementedException(); } }
+        public IProcessableComponent DeclaringComponent { get { throw new NotSupportedException(); } }
 
-        public ModuleDefinition DeclaringModule { get { throw new NotImplementedException(); } }
+        public ModuleDefinition DeclaringModule { get { throw new NotSupportedException(); } }
 
-        public string FullName { get { throw new NotImplementedException(); } }
+        public string FullName { get { throw new NotSupportedException(); } }
 
-        public string Name { get { throw new NotImplementedException(); } }
+        public string Name { get { throw new NotSupportedException(); } }
 
-        public ProcessableComponentType Type { get { throw new NotImplementedException(); } }
+        public ProcessableComponentType Type { get { throw new NotSupportedException(); } }
     }
 
     public static class ProcessableComponentExtensions

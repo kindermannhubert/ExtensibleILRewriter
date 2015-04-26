@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace ExtensibleILRewriter.CodeInjection
 {
-    public abstract class AttributeProvider<AttributeProviderArgumentType>
+    public abstract class AttributeProvider
     {
-        protected abstract bool ShouldBeInjected(AttributeProviderArgumentType attributeProviderArgument);
-        protected abstract Type GetAttributeType(AttributeProviderArgumentType attributeProviderArgument);
-        protected abstract AttributeProviderAttributeArgument[] GetAttributeArguments(AttributeProviderArgumentType attributeProviderArgument);
+        protected abstract bool ShouldBeInjected(IProcessableComponent component);
+        protected abstract Type GetAttributeType(IProcessableComponent component);
+        protected abstract AttributeProviderAttributeArgument[] GetAttributeArguments(IProcessableComponent component);
 
         protected CustomAttribute GetAndCheckCustomAttribute(Type attributeClrType, AttributeProviderAttributeArgument[] attributeArguments, ModuleDefinition destinationModule)
         {
@@ -52,15 +52,15 @@ namespace ExtensibleILRewriter.CodeInjection
             return customAttribute;
         }
 
-        public AttributeProviderInjectionInfo GetAttributeInfo(AttributeProviderArgumentType attributeProviderArgument, ModuleDefinition destinationModule)
+        public AttributeProviderInjectionInfo GetAttributeInfo(IProcessableComponent component)
         {
-            if (ShouldBeInjected(attributeProviderArgument))
+            if (ShouldBeInjected(component))
             {
-                var attributeArguments = GetAttributeArguments(attributeProviderArgument);
+                var attributeArguments = GetAttributeArguments(component);
                 if (attributeArguments == null) attributeArguments = new AttributeProviderAttributeArgument[0];
 
-                var attributeType = GetAttributeType(attributeProviderArgument);
-                var attribute = GetAndCheckCustomAttribute(attributeType, attributeArguments, destinationModule);
+                var attributeType = GetAttributeType(component);
+                var attribute = GetAndCheckCustomAttribute(attributeType, attributeArguments, component.DeclaringModule);
 
                 return new AttributeProviderInjectionInfo(true, attribute);
             }

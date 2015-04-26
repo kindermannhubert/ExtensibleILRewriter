@@ -5,24 +5,24 @@ using ExtensibleILRewriter;
 
 namespace TestApplication
 {
-    public class CustomAssemblyInfoAttributeProvider : AttributeProvider<AssemblyProcessableComponent>
+    public class CustomAssemblyInfoAttributeProvider : AttributeProvider
     {
-        protected override AttributeProviderAttributeArgument[] GetAttributeArguments(AssemblyProcessableComponent assembly)
+        protected override AttributeProviderAttributeArgument[] GetAttributeArguments(IProcessableComponent component)
         {
             return new AttributeProviderAttributeArgument[]
             {
-                AttributeProviderAttributeArgument.CreateParameterArgument("text", "hello")
+                AttributeProviderAttributeArgument.CreateParameterArgument("text", "hello from '\{component.Name}'!")
             };
         }
 
-        protected override Type GetAttributeType(AssemblyProcessableComponent assembly)
+        protected override Type GetAttributeType(IProcessableComponent component)
         {
             return typeof(CustomAssemblyInfoAttribute);
         }
 
-        protected override bool ShouldBeInjected(AssemblyProcessableComponent assembly)
+        protected override bool ShouldBeInjected(IProcessableComponent component)
         {
-            return true;
+            return component.Type == ProcessableComponentType.Assembly;
         }
     }
 

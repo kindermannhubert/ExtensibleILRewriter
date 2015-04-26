@@ -8,13 +8,13 @@
   <Types>
     <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Processors.Parameters.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
     <Type alias="CustomAssemblyInfoAttributeProvider" name="TestApplication.CustomAssemblyInfoAttributeProvider" assemblyAlias="TestApplication" />
-    <Type alias="AddAttributeToAssemblyConfiguration" name="ExtensibleILRewriter.Processors.Assemblies.AddAttributeToAssemblyConfiguration" assemblyAlias="ExtensibleILRewriter" />
+    <Type alias="AddAttributeToComponentConfiguration" name="ExtensibleILRewriter.ProcessorBaseTypes.AddAttributeToComponentConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <AssemblyProcessors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Assemblies.AddAttributeToAssembly`1">
       <GenericArguments>
-        <TypeAlias>AddAttributeToAssemblyConfiguration</TypeAlias>
+        <TypeAlias>AddAttributeToComponentConfiguration</TypeAlias>
       </GenericArguments>
       <Properties>
         <Property key="CustomAttributeProvider" value="CustomAssemblyInfoAttributeProvider" />

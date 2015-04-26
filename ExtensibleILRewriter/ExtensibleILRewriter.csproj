@@ -70,7 +70,6 @@
     <Compile Include="ProcessorBaseTypes\Methods\MethodProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
     <Compile Include="Processors\Assemblies\AddAttributeToAssembly.cs" />
-    <Compile Include="Processors\Assemblies\AddAttributeToAssemblyConfiguration.cs" />
     <Compile Include="ProcessableComponentType.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />

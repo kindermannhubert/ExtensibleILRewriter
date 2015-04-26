@@ -4,30 +4,24 @@ using ExtensibleILRewriter.Extensions;
 
 namespace ExtensibleILRewriter.CodeInjection
 {
-    public class AttributeInjector<AttributeProviderArgumentType>
+    public class AttributeInjector
     {
-        private readonly AttributeProvider<AttributeProviderArgumentType> attributeProvider;
+        private readonly AttributeProvider attributeProvider;
 
-        public AttributeInjector(AttributeProvider<AttributeProviderArgumentType> attributeProvider)
+        public AttributeInjector(AttributeProvider attributeProvider)
         {
             this.attributeProvider = attributeProvider;
         }
 
-        public void AddAttributeToComponent<ComponentType>(ComponentType component, AttributeProviderArgumentType attributeProviderArgument, ILogger logger)
-            where ComponentType : IProcessableComponent
+        public void AddAttributeToComponent(IProcessableComponent component, ILogger logger)
         {
-            AddAttributeToComponent(attributeProviderArgument, component.CustomAttributes, component.DeclaringModule, logger, component.FullName);
-        }
-
-        private void AddAttributeToComponent(AttributeProviderArgumentType attributeProviderArgument, Collection<CustomAttribute> componentAttributes, ModuleDefinition destinationModule, ILogger logger, string componentName)
-        {
-            var attributeInfo = attributeProvider.GetAttributeInfo(attributeProviderArgument, destinationModule);
+            var attributeInfo = attributeProvider.GetAttributeInfo(component);
 
             if (!attributeInfo.ShouldBeAttributeInjected) return;
 
-            logger.Notice("Injecting attribute to \{componentName}.");
+            logger.Notice("Injecting attribute to \{component.FullName}.");
 
-            componentAttributes.Add(attributeInfo.CustomAttribute);
+            component.CustomAttributes.Add(attributeInfo.CustomAttribute);
         }
     }
 }

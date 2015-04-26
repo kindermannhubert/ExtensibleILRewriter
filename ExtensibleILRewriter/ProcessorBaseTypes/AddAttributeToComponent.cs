@@ -5,19 +5,19 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes
 {
     public class AddAttributeToComponent<ProcessableComponentType, ConfigurationType> : ComponentProcessor<ProcessableComponentType, ConfigurationType>
         where ProcessableComponentType : IProcessableComponent
-        where ConfigurationType : AddAttributeToComponentConfiguration<ProcessableComponentType>
+        where ConfigurationType : AddAttributeToComponentConfiguration
     {
-        private AttributeInjector<ProcessableComponentType> attributeInjector;
+        private AttributeInjector attributeInjector;
 
         public AddAttributeToComponent(ConfigurationType configuration, ILogger logger)
         : base(configuration, logger)
         {
-            attributeInjector = new AttributeInjector<ProcessableComponentType>(configuration.CustomAttributeProvider);
+            attributeInjector = new AttributeInjector(configuration.CustomAttributeProvider);
         }
 
         public override void Process([NotNull]ProcessableComponentType component)
         {
-            attributeInjector.AddAttributeToComponent(component, component, logger);
+            attributeInjector.AddAttributeToComponent(component, logger);
         }
     }
 }
