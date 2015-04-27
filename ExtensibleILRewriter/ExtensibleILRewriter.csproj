@@ -71,6 +71,10 @@
     <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
     <Compile Include="Processors\Assemblies\AddAttributeToAssembly.cs" />
     <Compile Include="ProcessableComponentType.cs" />
+    <Compile Include="Processors\Methods\AddAttributeToMethod.cs" />
+    <Compile Include="Processors\Modules\AddAttributeToModule.cs" />
+    <Compile Include="Processors\Parameters\AddAttributeToParameter.cs" />
+    <Compile Include="Processors\Types\AddAttributeToType.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
@@ -105,10 +109,7 @@
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Processors\Methods\" />
-    <Folder Include="Processors\Types\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="RewriteConfiguration.xml" />
     <Content Include="RunRewrite.xml" />
