@@ -20,7 +20,7 @@ namespace TestRewriter
 
         static void Main(string[] args)
         {
-            const string ProjectName = "TestApplication";
+            const string ProjectName = "ExtensibleILRewriter.Tests";
             var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
             var projectBinariesPath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..", ProjectName, "bin", Configuration);
             var assemblyToRewritePath = Path.Combine(projectBinariesPath, ProjectName + ".exe");

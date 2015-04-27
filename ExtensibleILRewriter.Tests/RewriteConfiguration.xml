@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<AssemblyRewriteConfiguration>
+  <Assemblies>
+    <Assembly alias="ExtensibleILRewriter" path="ExtensibleILRewriter.dll" />
+  </Assemblies>
+
+  <Types>
+  </Types>
+
+  <AssemblyProcessors>
+  </AssemblyProcessors>
+
+  <ModuleProcessors>
+  </ModuleProcessors>
+
+  <TypeProcessors>
+  </TypeProcessors>
+
+  <MethodProcessors>
+  </MethodProcessors>
+
+  <ParameterProcessors>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Parameters.NotNullAttributeProcessor" />
+  </ParameterProcessors>
+</AssemblyRewriteConfiguration>

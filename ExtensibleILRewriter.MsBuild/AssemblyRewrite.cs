@@ -150,6 +150,9 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
                 if (processorBaseGenericInterface == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' because it does not implement \{nameof(IComponentProcessor)} interface.");
 
+                if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
+                    throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' as '\{typeof(ProcessableComponentType).Name}' processor because it is '\{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
+
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
 
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);

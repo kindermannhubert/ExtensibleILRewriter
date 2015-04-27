@@ -19,3 +19,5 @@
 /ExtensibleILRewriter.sln.ide
 /ExtensibleILRewriter.MsBuild/bin
 /ExtensibleILRewriter.MsBuild/obj
+/ExtensibleILRewriter.Tests/bin/Debug
+/ExtensibleILRewriter.Tests/obj/Debug
