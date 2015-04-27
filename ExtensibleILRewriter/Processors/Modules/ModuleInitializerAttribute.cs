@@ -2,7 +2,7 @@
 
 namespace ExtensibleILRewriter.Processors.Modules
 {
-    [AttributeUsage(AttributeTargets.Module | AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Module, AllowMultiple = true, Inherited = false)]
     public class ModuleInitializerAttribute : Attribute
     {
         public string TypeName { get; }

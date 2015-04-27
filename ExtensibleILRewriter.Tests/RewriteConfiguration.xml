@@ -11,6 +11,7 @@
   </AssemblyProcessors>
 
   <ModuleProcessors>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Modules.ModuleInitializerProcessor" />
   </ModuleProcessors>
 
   <TypeProcessors>

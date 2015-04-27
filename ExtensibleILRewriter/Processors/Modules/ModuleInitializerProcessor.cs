@@ -19,9 +19,15 @@ namespace ExtensibleILRewriter.Processors.Modules
 
         public override void Process([NotNull]ModuleProcessableComponent module)
         {
-            var attribute = module.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == moduleInitializerAttributeFullName);
-            if (attribute == null) return;
+            var attributes = module.CustomAttributes.Where(a => a.AttributeType.FullName == moduleInitializerAttributeFullName);
+            foreach (var attribute in attributes)
+            {
+                ProcessModuleInitializerAttribute(attribute, module);
+            }
+        }
 
+        private void ProcessModuleInitializerAttribute([NotNull]CustomAttribute attribute, [NotNull]ModuleProcessableComponent module)
+        {
             var typeName = (string)attribute.ConstructorArguments[0].Value;
             var methodName = (string)attribute.ConstructorArguments[1].Value;
 
