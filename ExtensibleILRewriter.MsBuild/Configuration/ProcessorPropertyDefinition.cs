@@ -15,12 +15,12 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Name)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(ProcessorPropertyDefinition)} must contain {nameof(Name)} attribute.");
             }
 
             if (string.IsNullOrWhiteSpace(Value))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorPropertyDefinition)} must contain \{nameof(Value)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(ProcessorPropertyDefinition)} must contain {nameof(Value)} attribute.");
             }
         }
     }

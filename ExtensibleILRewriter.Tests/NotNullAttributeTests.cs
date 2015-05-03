@@ -8,27 +8,27 @@ namespace ExtensibleILRewriter.Tests
     public class NotNullAttributeTests
     {
         [TestMethod]
-        public void TestReferenceType1()
+        public void TestNotNullReferenceType1()
         {
             Assert.IsTrue(CheckParams1(new object()));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestReferenceType2()
+        public void TestNotNullReferenceType2()
         {
             CheckParams1(null);
         }
 
         [TestMethod]
-        public void TestNullableStruct1()
+        public void TestNotNullNullableStruct1()
         {
             Assert.IsTrue(CheckParams2(7));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestNullableStruct2()
+        public void TestNotNullNullableStruct2()
         {
             CheckParams2(null);
         }

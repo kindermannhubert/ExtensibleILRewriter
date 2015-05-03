@@ -28,7 +28,7 @@ namespace ExtensibleILRewriter.Extensions
 
         public static MethodDefinition CreateStaticVersion(this MethodDefinition method)
         {
-            if (!method.CouldBeStatic()) throw new InvalidOperationException("Method '\{method.FullName}' cannot be made static.");
+            if (!method.CouldBeStatic()) throw new InvalidOperationException($"Method '{method.FullName}' cannot be made static.");
 
             //var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
             //attributes |= method.Attributes & MethodAttributes.Private;

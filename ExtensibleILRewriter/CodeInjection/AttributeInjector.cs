@@ -19,7 +19,7 @@ namespace ExtensibleILRewriter.CodeInjection
 
             if (!attributeInfo.ShouldBeAttributeInjected) return;
 
-            logger.Notice("Injecting attribute to \{component.FullName}.");
+            logger.Notice($"Injecting attribute to {component.FullName}.");
 
             component.CustomAttributes.Add(attributeInfo.CustomAttribute);
         }

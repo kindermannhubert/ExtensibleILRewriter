@@ -32,7 +32,7 @@ namespace ExtensibleILRewriter.MsBuild
                     msBuildLogger.LogError(message);
                     break;
                 default:
-                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+                    throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
         }
 
@@ -51,7 +51,7 @@ namespace ExtensibleILRewriter.MsBuild
                     msBuildLogger.LogError(null, null, null, file, lineNumber, columnNumber, endLineNumber, endColumnNumber, message);
                     break;
                 default:
-                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+                    throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
         }
     }

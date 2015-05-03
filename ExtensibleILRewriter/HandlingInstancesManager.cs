@@ -15,7 +15,7 @@ namespace ExtensibleILRewriter
         {
             lock (sync)
             {
-                if (instaces.ContainsKey(instanceName)) throw new InvalidOperationException("Instance with name '\{instanceName}' was already registered.");
+                if (instaces.ContainsKey(instanceName)) throw new InvalidOperationException($"Instance with name '{instanceName}' was already registered.");
                 instaces.Add(instanceName, instance);
 
                 IntPtr staticFieldAddress;
@@ -32,7 +32,7 @@ namespace ExtensibleILRewriter
             {
                 if (instanceHolderFieldAddresses.ContainsKey(instanceName))
                 {
-                    throw new InvalidOperationException("Instance holder field address was already added for instanceName = '\{instanceName}'.");
+                    throw new InvalidOperationException($"Instance holder field address was already added for instanceName = '{instanceName}'.");
                 }
                 else
                 {

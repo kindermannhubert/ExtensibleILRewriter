@@ -22,12 +22,12 @@ namespace TestApplication
     {
         public static void Test([NotNull]object o)
         {
-            Console.WriteLine("Is parameter null? \{o == null}");
+            Console.WriteLine($"Is parameter null? {o == null}");
         }
 
         public static void Test([NotNull]object a, [NotNull]string b)
         {
-            Console.WriteLine("Is parameter null? a: \{a == null}; b: \{b == null}");
+            Console.WriteLine($"Is parameter null? a: {a == null}; b: {b == null}");
         }
 
         public static void Test([NotNull]int? i)

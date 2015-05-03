@@ -13,7 +13,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes
 
         protected virtual AttributeProvider GetDefaultCodeProvider()
         {
-            throw new InvalidOperationException("General \{nameof(AddAttributeToComponentConfiguration)} does not have any default attribute provider. You need to configure \{nameof(CustomAttributeProvider)} at processor properties.");
+            throw new InvalidOperationException($"General {nameof(AddAttributeToComponentConfiguration)} does not have any default attribute provider. You need to configure {nameof(CustomAttributeProvider)} at processor properties.");
         }
 
         public AttributeProvider CustomAttributeProvider { get; private set; }

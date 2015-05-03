@@ -54,13 +54,13 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (Assemblies == null)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(Assemblies)} element.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {nameof(Assemblies)} element.");
             }
             foreach (var assembly in Assemblies) assembly.Check();
 
             if (Assemblies.Select(a => a.Alias).Distinct().Count() != Assemblies.Length)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct assembly definition names.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain only distinct assembly definition names.");
             }
         }
 
@@ -68,13 +68,13 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (Types == null)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{nameof(Types)} element.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {nameof(Types)} element.");
             }
             foreach (var type in Types) type.Check();
 
             if (Types.Select(t => t.Name).Distinct().Count() != Types.Length)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain only distinct type definition names.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain only distinct type definition names.");
             }
         }
 
@@ -82,7 +82,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (processors == null)
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task must contain \{elementName} element.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {elementName} element.");
             }
             foreach (var processor in processors) processor.Check(definedAssemblyAliases, definedTypeAliases);
         }

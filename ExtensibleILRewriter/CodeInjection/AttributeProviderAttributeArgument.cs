@@ -122,7 +122,7 @@ namespace ExtensibleILRewriter.CodeInjection
                 case AttributeProviderAttributeArgumentType.String:
                     return new CustomAttributeArgument(destinationModule.Import(typeof(String)), Value);
                 default:
-                    throw new NotImplementedException("Unknown \{nameof(CodeProviderCallArgument)} type '\{Type}'.");
+                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
             }
 
             //TODO arrays

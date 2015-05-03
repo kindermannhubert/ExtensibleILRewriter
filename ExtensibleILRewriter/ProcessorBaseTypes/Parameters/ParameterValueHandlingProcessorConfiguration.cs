@@ -12,7 +12,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 
         protected virtual CodeProvider<ParameterValueHandlingCodeProviderArgument> GetDefaultCodeProvider()
         {
-            throw new InvalidOperationException("General \{nameof(ParameterValueHandlingProcessor)} does not have any default code provider. You need to configure \{nameof(CustomValueHandlingCodeProvider)} at processor properties.");
+            throw new InvalidOperationException($"General {typeof(ParameterValueHandlingProcessor<>).FullName} does not have any default code provider. You need to configure {nameof(CustomValueHandlingCodeProvider)} at processor properties.");
         }
 
         public CodeProvider<ParameterValueHandlingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }

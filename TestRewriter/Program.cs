@@ -20,14 +20,14 @@ namespace TestRewriter
 
         static void Main(string[] args)
         {
-            const string ProjectName = "ExtensibleILRewriter.Tests";
+            const string ProjectName = "TestApplication";
             var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
             var projectBinariesPath = Path.Combine(Path.GetDirectoryName(executingAssemblyLocation), @"..\..\..", ProjectName, "bin", Configuration);
             var assemblyToRewritePath = Path.Combine(projectBinariesPath, ProjectName + ".exe");
             var rewrittenAssemblyPath = Path.Combine(projectBinariesPath, Path.GetFileNameWithoutExtension(assemblyToRewritePath) + "_Rewritten.exe");
 
-            Console.WriteLine("Rewriting:\t\{assemblyToRewritePath}");
-            Console.WriteLine("Output:\t\t\{rewrittenAssemblyPath}");
+            Console.WriteLine($"Rewriting:\t{assemblyToRewritePath}");
+            Console.WriteLine($"Output:\t\t{rewrittenAssemblyPath}");
             Console.WriteLine();
 
             //Environment.CurrentDirectory = @"D:\SourcesPrivate\ExtensibleILRewriter\TestApplication";
@@ -64,7 +64,7 @@ namespace TestRewriter
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 default:
-                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+                    throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
             Console.WriteLine(message);
             Console.ResetColor();
@@ -87,9 +87,9 @@ namespace TestRewriter
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 default:
-                    throw new NotSupportedException("Unknown \{nameof(LogLevel)}: '\{level}'");
+                    throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
-            Console.WriteLine("File: \{file}; lineNumber: \{lineNumber}; columnNumber: \{columnNumber}; endLineNumber: \{endLineNumber}; endColumnNumber: \{endColumnNumber}; \{message}");
+            Console.WriteLine($"File: {file}; lineNumber: {lineNumber}; columnNumber: {columnNumber}; endLineNumber: {endLineNumber}; endColumnNumber: {endColumnNumber}; {message}");
             Console.ResetColor();
         }
     }

@@ -62,7 +62,7 @@ namespace ExtensibleILRewriter.CodeInjection
                     if (text == null) throw new InvalidOperationException("String value must be set before generating load instruction.");
                     return Instruction.Create(OpCodes.Ldstr, text);
                 default:
-                    throw new NotImplementedException("Unknown \{nameof(CodeProviderCallArgument)} type '\{Type}'.");
+                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
             }
         }
     }

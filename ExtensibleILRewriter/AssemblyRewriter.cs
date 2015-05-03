@@ -31,7 +31,7 @@ namespace ExtensibleILRewriter
         {
             var rewrittenAssembly = ProcessAssembly();
 
-            logger.Progress("Saving assembly '\{rewrittenAssembly.FullName}' to '\{rewrittenAssemblyPath}'.");
+            logger.Progress($"Saving assembly '{rewrittenAssembly.FullName}' to '{rewrittenAssemblyPath}'.");
             try
             {
                 var symbolWriterProvider = new PdbWriterProvider();
@@ -44,7 +44,7 @@ namespace ExtensibleILRewriter
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException("Error while saving assembly '\{rewrittenAssemblyPath}'.", e);
+                throw new InvalidOperationException($"Error while saving assembly '{rewrittenAssemblyPath}'.", e);
             }
             logger.Progress("Saving assembly done.");
         }
@@ -53,7 +53,7 @@ namespace ExtensibleILRewriter
         {
             var assembly = LoadAssembly();
 
-            logger.Progress("Processing assembly: '\{assembly.FullName}'.");
+            logger.Progress($"Processing assembly: '{assembly.FullName}'.");
             ProcessComponent(assembly.ToProcessableComponent(), AssemblyProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
@@ -66,7 +66,7 @@ namespace ExtensibleILRewriter
 
         private void ProcessModule(ModuleDefinition module)
         {
-            logger.Progress("Processing module: '\{module.Name}'.");
+            logger.Progress($"Processing module: '{module.Name}'.");
             ProcessComponent(module.ToProcessableComponent(), ModuleProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
@@ -78,7 +78,7 @@ namespace ExtensibleILRewriter
 
         private void ProcessType(TypeDefinition type)
         {
-            logger.Progress("Processing type: '\{type.Name}'.");
+            logger.Progress($"Processing type: '{type.Name}'.");
             ProcessComponent(type.ToProcessableComponent(), TypeProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
@@ -90,7 +90,7 @@ namespace ExtensibleILRewriter
 
         private void ProcessMethod(MethodDefinition method)
         {
-            logger.Notice("Processing method: '\{method.FullName}'.");
+            logger.Notice($"Processing method: '{method.FullName}'.");
             ProcessComponent(method.ToProcessableComponent(), MethodProcessors, logger);
 
             //needs to copy out, because processors can modified the collection
@@ -120,7 +120,7 @@ namespace ExtensibleILRewriter
                 }
                 catch (Exception e)
                 {
-                    logger.Error("There was an error while processing '\{component.FullName}' with processor '\{processor}'. Exception: \{e}");
+                    logger.Error($"There was an error while processing '{component.FullName}' with processor '{processor}'. Exception: {e}");
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace ExtensibleILRewriter
 
                 var symbolReaderProvider = new PdbReaderProvider();
 
-                logger.Progress("Loading assembly: '\{assemblyPath}'");
+                logger.Progress($"Loading assembly: '{assemblyPath}'");
                 var readerParameters = new ReaderParameters(ReadingMode.Immediate)
                 {
                     ReadSymbols = true,
@@ -148,7 +148,7 @@ namespace ExtensibleILRewriter
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException("Error while loading assembly '\{assemblyPath}'.", e);
+                throw new InvalidOperationException($"Error while loading assembly '{assemblyPath}'.", e);
             }
         }
     }

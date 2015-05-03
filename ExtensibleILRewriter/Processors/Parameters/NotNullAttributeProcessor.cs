@@ -25,7 +25,7 @@ namespace ExtensibleILRewriter.Processors.Parameters
 
                 if (parameterDefinition.ParameterType.IsValueType && !parameterDefinition.ParameterType.IsNullableValueType())
                 {
-                    logger.LogErrorWithSource(methodDefinition, "Parameter '\{parameter.Name}' of method '\{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
+                    logger.LogErrorWithSource(methodDefinition, $"Parameter '{parameter.Name}' of method '{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
                     return;
                 }
 

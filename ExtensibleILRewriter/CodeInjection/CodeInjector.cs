@@ -25,7 +25,7 @@ namespace ExtensibleILRewriter.CodeInjection
             if (!callInfo.ShouldBeCallInjected) return;
             if (!method.HasBody) throw new ArgumentException("Method does not contain body.");
 
-            logger.Notice("Injecting method call into method '\{method.FullName}'.");
+            logger.Notice($"Injecting method call into method '{method.FullName}'.");
 
             newInstructions.Clear();
             foreach (var arg in callInfo.CallArguments) newInstructions.Add(arg.GenerateLoadInstruction());

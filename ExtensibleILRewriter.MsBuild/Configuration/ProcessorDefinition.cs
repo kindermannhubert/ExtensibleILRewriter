@@ -24,24 +24,24 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         public void Check(HashSet<string> definedAssemblyAliases, HashSet<string> definedTypeAliases)
         {
             if (string.IsNullOrWhiteSpace(AssemblyAlias))
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(AssemblyAlias)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(ProcessorDefinition)} must contain {nameof(AssemblyAlias)} attribute.");
 
             if (string.IsNullOrWhiteSpace(ProcessorName))
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain \{nameof(ProcessorName)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(ProcessorDefinition)} must contain {nameof(ProcessorName)} attribute.");
 
             if (!definedAssemblyAliases.Contains(AssemblyAlias))
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyRewrite)} task does not contain assembly definition with name '\{AssemblyAlias}'.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task does not contain assembly definition with name '{AssemblyAlias}'.");
 
             if (Properties == null) Properties = new ProcessorPropertyDefinition[0];
             foreach (var property in Properties) property.Check();
             if (Properties.Select(p => p.Name).Distinct().Count() != Properties.Length)
-                throw new InvalidOperationException("Configuration of \{nameof(ProcessorDefinition)} must contain only distinct property names.");
+                throw new InvalidOperationException($"Configuration of {nameof(ProcessorDefinition)} must contain only distinct property names.");
 
             if (GenericArguments == null) GenericArguments = new string[0];
             foreach (var argument in GenericArguments)
             {
                 if (string.IsNullOrWhiteSpace(argument))
-                    throw new InvalidOperationException("Configuration of \{nameof(GenericArguments)} element must contain type alias.");
+                    throw new InvalidOperationException($"Configuration of {nameof(GenericArguments)} element must contain type alias.");
             }
         }
     }

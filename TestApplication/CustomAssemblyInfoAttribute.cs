@@ -11,7 +11,7 @@ namespace TestApplication
         {
             return new AttributeProviderAttributeArgument[]
             {
-                AttributeProviderAttributeArgument.CreateParameterArgument("text", "hello from '\{component.Name}'!")
+                AttributeProviderAttributeArgument.CreateParameterArgument("text", $"hello from '{component.Name}'!")
             };
         }
 

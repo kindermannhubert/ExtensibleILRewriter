@@ -34,7 +34,7 @@ namespace ExtensibleILRewriter.MsBuild
 
             try
             {
-                logger.Progress("Loading configuration '\{ConfigurationPath ?? string.Empty}'.");
+                logger.Progress($"Loading configuration '{ConfigurationPath ?? string.Empty}'.");
                 var configuration = LoadConfiguration();
                 configuration.Check();
                 logger.Progress("Loading configuration done.");
@@ -60,12 +60,12 @@ namespace ExtensibleILRewriter.MsBuild
         {
             if (string.IsNullOrEmpty(ConfigurationPath))
             {
-                throw new InvalidOperationException("You have to specify \{nameof(ConfigurationPath)} for \{nameof(AssemblyRewrite)} task.");
+                throw new InvalidOperationException($"You have to specify {nameof(ConfigurationPath)} for {nameof(AssemblyRewrite)} task.");
             }
 
             if (!File.Exists(ConfigurationPath))
             {
-                throw new InvalidOperationException("Configuration file for rewriting task '\{ConfigurationPath}' does not exist.");
+                throw new InvalidOperationException($"Configuration file for rewriting task '{ConfigurationPath}' does not exist.");
             }
 
             var serializer = new XmlSerializer(typeof(AssemblyRewriteConfiguration));
@@ -128,16 +128,16 @@ namespace ExtensibleILRewriter.MsBuild
         {
             foreach (var processorDefinition in processorDefinitions)
             {
-                logger.Notice("Loading processor \{processorDefinition.ProcessorName}.");
+                logger.Notice($"Loading processor {processorDefinition.ProcessorName}.");
 
                 var assembly = assembliesDict[processorDefinition.AssemblyAlias].Assembly.Value;
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                if (processorType == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'. Cannot find spcified type in assembly.");
+                if (processorType == null) throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Cannot find spcified type in assembly.");
 
                 var processorTypeGenericArgs = processorType.GetGenericArguments();
                 int numberOfProcessorGenericParameters = processorTypeGenericArgs.Where(arg => arg.IsGenericParameter).Count();
                 if (numberOfProcessorGenericParameters != processorDefinition.GenericArguments.Length)
-                    throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}'. Number of generic parameters (=\{numberOfProcessorGenericParameters}) is different from number of configured processor generic arguments (=\{processorDefinition.GenericArguments.Length}).");
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Number of generic parameters (={numberOfProcessorGenericParameters}) is different from number of configured processor generic arguments (={processorDefinition.GenericArguments.Length}).");
 
                 if (numberOfProcessorGenericParameters > 0)
                 {
@@ -148,10 +148,10 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
                 var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
-                if (processorBaseGenericInterface == null) throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' because it does not implement \{nameof(IComponentProcessor)} interface.");
+                if (processorBaseGenericInterface == null) throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<,>).FullName} interface.");
 
                 if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
-                    throw new InvalidOperationException("Unable to load '\{processorDefinition.ProcessorName}' processor from assembly '\{assembly.FullName}' as '\{typeof(ProcessableComponentType).Name}' processor because it is '\{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' as '{typeof(ProcessableComponentType).Name}' processor because it is '{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
 
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
 
@@ -166,7 +166,7 @@ namespace ExtensibleILRewriter.MsBuild
         private Mono.Cecil.AssemblyDefinition LoadProcessorsAssemblyDefinition(string path, string currentPath)
         {
             if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
-            if (!File.Exists(path)) throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
+            if (!File.Exists(path)) throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
 
             return Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
         }
@@ -174,7 +174,7 @@ namespace ExtensibleILRewriter.MsBuild
         private Assembly LoadProcessorsAssembly(string path, string currentPath, Mono.Cecil.AssemblyDefinition assemblyDefinition)
         {
             if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
-            if (!File.Exists(path)) throw new FileNotFoundException("Assembly file '\{path}' with processors does not exist.");
+            if (!File.Exists(path)) throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
 
             var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == assemblyDefinition.FullName);
             if (loadedAssembly != null) return loadedAssembly;

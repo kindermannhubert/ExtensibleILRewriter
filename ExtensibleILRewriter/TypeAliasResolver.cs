@@ -29,7 +29,7 @@ namespace ExtensibleILRewriter
         {
             var assemblyDef = assemblyDefinitions[typeAliasDefinition.AssemblyAlias].Value;
             var typeDef = assemblyDef.MainModule.Types.FirstOrDefault(t => t.FullName == typeAliasDefinition.TypeName);
-            if (typeDef == null) throw new TypeLoadException("Unable to find type '\{typeAliasDefinition.TypeName}' within the assembly '\{assemblyDef.FullName}' with alias '\{typeAliasDefinition.AssemblyAlias}'.");
+            if (typeDef == null) throw new TypeLoadException($"Unable to find type '{typeAliasDefinition.TypeName}' within the assembly '{assemblyDef.FullName}' with alias '{typeAliasDefinition.AssemblyAlias}'.");
             return typeDef;
         }
 
@@ -37,7 +37,7 @@ namespace ExtensibleILRewriter
         {
             var assembly = assemblies[typeAliasDefinition.AssemblyAlias].Value;
             var type = assembly.GetTypes().FirstOrDefault(t => t.FullName == typeAliasDefinition.TypeName);
-            if (type == null) throw new TypeLoadException("Unable to find type '\{typeAliasDefinition.TypeName}' within the assembly '\{assembly.FullName}' with alias '\{typeAliasDefinition.AssemblyAlias}'.");
+            if (type == null) throw new TypeLoadException($"Unable to find type '{typeAliasDefinition.TypeName}' within the assembly '{assembly.FullName}' with alias '{typeAliasDefinition.AssemblyAlias}'.");
             return type;
         }
 

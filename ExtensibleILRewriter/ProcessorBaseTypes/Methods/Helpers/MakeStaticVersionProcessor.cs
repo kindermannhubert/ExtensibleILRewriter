@@ -22,17 +22,17 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers
             var methodDefinition = method.UnderlyingComponent;
             if (!methodDefinition.HasBody)
             {
-                logger.LogErrorWithSource(methodDefinition, "Cannot make static version of method '\{method.FullName}' which does not have body.");
+                logger.LogErrorWithSource(methodDefinition, $"Cannot make static version of method '{method.FullName}' which does not have body.");
                 return;
             }
             if (methodDefinition.IsStatic)
             {
-                logger.LogErrorWithSource(methodDefinition, "Method '\{method.FullName}' is already static.");
+                logger.LogErrorWithSource(methodDefinition, $"Method '{method.FullName}' is already static.");
                 return;
             }
             if (!methodDefinition.CouldBeStatic())
             {
-                logger.LogErrorWithSource(methodDefinition, "Method '\{method.FullName}' must be able to be static in order to make static version of it.");
+                logger.LogErrorWithSource(methodDefinition, $"Method '{method.FullName}' must be able to be static in order to make static version of it.");
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers
             if (staticMethod.DeclaringType.Methods.Any(m => m.FullName == staticMethod.FullName))
             {
                 staticMethod.DeclaringType = null;
-                logger.LogErrorWithSource(methodDefinition, "Type '\{method.DeclaringComponent.FullName}' already contains method '\{staticMethod.FullName}'.");
+                logger.LogErrorWithSource(methodDefinition, $"Type '{method.DeclaringComponent.FullName}' already contains method '{staticMethod.FullName}'.");
             }
             else
             {

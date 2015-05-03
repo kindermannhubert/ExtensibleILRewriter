@@ -51,6 +51,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AddAttributeToMethodTests.cs" />
+    <Compile Include="AddAttributeToComponentTests.cs" />
     <Compile Include="ModuleInitializerTests.cs" />
     <Compile Include="NotNullAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

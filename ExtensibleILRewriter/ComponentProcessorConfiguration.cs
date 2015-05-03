@@ -23,7 +23,7 @@ namespace ExtensibleILRewriter
             var supportedPropertyName = new HashSet<string>(SupportedPropertyNames);
             foreach (var property in properties)
             {
-                if (!supportedPropertyName.Contains(property.Key)) throw new InvalidOperationException("Not supported property '\{property.Key}' of '\{GetType().FullName}' configuration was specified for processor '\{processorName}'.");
+                if (!supportedPropertyName.Contains(property.Key)) throw new InvalidOperationException($"Not supported property '{property.Key}' of '{GetType().FullName}' configuration was specified for processor '{processorName}'.");
             }
         }
 
@@ -31,7 +31,7 @@ namespace ExtensibleILRewriter
         {
             if (!properties.ContainsProperty(property))
             {
-                throw new InvalidOperationException("\{GetType().FullName} processor configuration needs '\{property}' element in configuration specified.");
+                throw new InvalidOperationException($"{GetType().FullName} processor configuration needs '{property}' element in configuration specified.");
             }
         }
 

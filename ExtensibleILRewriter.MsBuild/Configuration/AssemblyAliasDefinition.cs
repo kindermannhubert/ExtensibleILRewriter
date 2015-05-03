@@ -15,12 +15,12 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
         {
             if (string.IsNullOrWhiteSpace(Alias))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyAliasDefinition)} must contain \{nameof(Alias)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyAliasDefinition)} must contain {nameof(Alias)} attribute.");
             }
 
             if (string.IsNullOrWhiteSpace(Path))
             {
-                throw new InvalidOperationException("Configuration of \{nameof(AssemblyAliasDefinition)} must contain \{nameof(Path)} attribute.");
+                throw new InvalidOperationException($"Configuration of {nameof(AssemblyAliasDefinition)} must contain {nameof(Path)} attribute.");
             }
         }
     }
