@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\ExtensibleILRewriter.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +33,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\ExtensibleILRewriter.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,6 +53,8 @@
     <Compile Include="CodeInjection\AttributeInjector.cs" />
     <Compile Include="CodeInjection\IAttributeProviderArgument.cs" />
     <Compile Include="IProcessableComponent.cs" />
+    <Compile Include="Logging\DummyLogger.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="ProcessableComponent.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="ProcessorBaseTypes\AddAttributeToComponent.cs" />
@@ -86,7 +94,7 @@
     <Compile Include="Processors\Parameters\NotNullAttributeProcessor.cs" />
     <Compile Include="Processors\Parameters\NotNullAttribute.cs" />
     <Compile Include="Extensions\MonoCollection.cs" />
-    <Compile Include="ILogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="ComponentProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionAttribute.cs" />
     <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionProcessor.cs" />
@@ -109,10 +117,15 @@
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="RewriteConfiguration.xml" />
     <Content Include="RunRewrite.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-alpha006\tools\analyzers\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

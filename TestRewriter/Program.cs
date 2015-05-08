@@ -1,4 +1,5 @@
 ﻿using ExtensibleILRewriter;
+using ExtensibleILRewriter.Logging;
 using ExtensibleILRewriter.MsBuild;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace TestRewriter
 {
-    class Program
+    internal class Program
     {
 #if DEBUG
         private const string Configuration = "Debug";
@@ -18,7 +19,7 @@ namespace TestRewriter
         private const string Configuration = "Release";
 #endif
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             const string ProjectName = "TestApplication";
             var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
@@ -30,12 +31,12 @@ namespace TestRewriter
             Console.WriteLine($"Output:\t\t{rewrittenAssemblyPath}");
             Console.WriteLine();
 
-            //Environment.CurrentDirectory = @"D:\SourcesPrivate\ExtensibleILRewriter\TestApplication";
+            // Environment.CurrentDirectory = @"D:\SourcesPrivate\ExtensibleILRewriter\TestApplication";
 
             var rewriteTask = new AssemblyRewrite()
             {
                 AssemblyPath = assemblyToRewritePath,
-                ConfigurationPath = Path.Combine( projectBinariesPath , @"..\..\RewriteConfiguration.xml")
+                ConfigurationPath = Path.Combine( projectBinariesPath, @"..\..\RewriteConfiguration.xml")
             };
             rewriteTask.Execute(rewrittenAssemblyPath, new ConsoleLogger());
 
@@ -45,7 +46,7 @@ namespace TestRewriter
         }
     }
 
-    class ConsoleLogger : ILogger
+    internal class ConsoleLogger : ILogger
     {
         public void Message(LogLevel level, string message)
         {
@@ -66,6 +67,7 @@ namespace TestRewriter
                 default:
                     throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
+
             Console.WriteLine(message);
             Console.ResetColor();
         }
@@ -89,6 +91,7 @@ namespace TestRewriter
                 default:
                     throw new NotSupportedException($"Unknown {nameof(LogLevel)}: '{level}'");
             }
+
             Console.WriteLine($"File: {file}; lineNumber: {lineNumber}; columnNumber: {columnNumber}; endLineNumber: {endLineNumber}; endColumnNumber: {endColumnNumber}; {message}");
             Console.ResetColor();
         }

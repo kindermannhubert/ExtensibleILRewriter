@@ -1,13 +1,13 @@
 ﻿using ExtensibleILRewriter.Processors.Parameters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ExtensibleILRewriter
 {
     public abstract class ComponentProcessorConfiguration
     {
         private readonly List<string> supportedPropertyNames = new List<string>();
+
         public IEnumerable<string> SupportedPropertyNames { get { return supportedPropertyNames; } }
 
         public void LoadFromProperties([NotNull]ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)
@@ -23,7 +23,10 @@ namespace ExtensibleILRewriter
             var supportedPropertyName = new HashSet<string>(SupportedPropertyNames);
             foreach (var property in properties)
             {
-                if (!supportedPropertyName.Contains(property.Key)) throw new InvalidOperationException($"Not supported property '{property.Key}' of '{GetType().FullName}' configuration was specified for processor '{processorName}'.");
+                if (!supportedPropertyName.Contains(property.Key))
+                {
+                    throw new InvalidOperationException($"Not supported property '{property.Key}' of '{GetType().FullName}' configuration was specified for processor '{processorName}'.");
+                }
             }
         }
 

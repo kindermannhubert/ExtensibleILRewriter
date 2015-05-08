@@ -3,6 +3,7 @@ using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 using ExtensibleILRewriter.Extensions;
 using System;
+using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.CodeInjection
 {
@@ -22,13 +23,24 @@ namespace ExtensibleILRewriter.CodeInjection
         {
             var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
 
-            if (!callInfo.ShouldBeCallInjected) return;
-            if (!method.HasBody) throw new ArgumentException("Method does not contain body.");
+            if (!callInfo.ShouldBeCallInjected)
+            {
+                return;
+            }
+
+            if (!method.HasBody)
+            {
+                throw new ArgumentException("Method does not contain body.");
+            }
 
             logger.Notice($"Injecting method call into method '{method.FullName}'.");
 
             newInstructions.Clear();
-            foreach (var arg in callInfo.CallArguments) newInstructions.Add(arg.GenerateLoadInstruction());
+            foreach (var arg in callInfo.CallArguments)
+            {
+                newInstructions.Add(arg.GenerateLoadInstruction());
+            }
+
             newInstructions.Add(Instruction.Create(OpCodes.Call, callInfo.MethodReferenceToBeCalled));
 
             method.Body.AddInstructionsToBegining(newInstructions);

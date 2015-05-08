@@ -1,6 +1,5 @@
 ﻿using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.MsBuild.Configuration;
-using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
 using System;
@@ -10,15 +9,18 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using ExtensibleILRewriter.Processors.Parameters;
+using ExtensibleILRewriter.Logging;
+
+using Ms = Microsoft.Build.Framework;
 
 namespace ExtensibleILRewriter.MsBuild
 {
     public class AssemblyRewrite : Task
     {
-        [Required]
+        [Ms.Required]
         public string AssemblyPath { get; set; }
 
-        [Required]
+        [Ms.Required]
         public string ConfigurationPath { get; set; }
 
         public override bool Execute()
@@ -30,7 +32,10 @@ namespace ExtensibleILRewriter.MsBuild
 
         public bool Execute(string outputPath, ILogger logger = null)
         {
-            if (logger == null) logger = new DummyLogger();
+            if (logger == null)
+            {
+                logger = new DummyLogger();
+            }
 
             try
             {
@@ -82,12 +87,24 @@ namespace ExtensibleILRewriter.MsBuild
                 (sender, args) =>
                 {
                     var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
-                    if (loadedAssembly != null) return loadedAssembly;
+                    if (loadedAssembly != null)
+                    {
+                        return loadedAssembly;
+                    }
 
                     var path = Path.Combine(executingAssemblyPath, GetAssemblyNameFromFullName(args.Name));
-                    if (File.Exists(path + ".dll")) path = path + ".dll";
-                    else if (File.Exists(path + ".exe")) path = path + ".exe";
-                    else return null;
+                    if (File.Exists(path + ".dll"))
+                    {
+                        path = path + ".dll";
+                    }
+                    else if (File.Exists(path + ".exe"))
+                    {
+                        path = path + ".exe";
+                    }
+                    else
+                    {
+                        return null;
+                    }
 
                     return Assembly.Load(File.ReadAllBytes(path));
                 };
@@ -132,12 +149,17 @@ namespace ExtensibleILRewriter.MsBuild
 
                 var assembly = assembliesDict[processorDefinition.AssemblyAlias].Assembly.Value;
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
-                if (processorType == null) throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Cannot find spcified type in assembly.");
+                if (processorType == null)
+                {
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Cannot find spcified type in assembly.");
+                }
 
                 var processorTypeGenericArgs = processorType.GetGenericArguments();
                 int numberOfProcessorGenericParameters = processorTypeGenericArgs.Where(arg => arg.IsGenericParameter).Count();
                 if (numberOfProcessorGenericParameters != processorDefinition.GenericArguments.Length)
+                {
                     throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Number of generic parameters (={numberOfProcessorGenericParameters}) is different from number of configured processor generic arguments (={processorDefinition.GenericArguments.Length}).");
+                }
 
                 if (numberOfProcessorGenericParameters > 0)
                 {
@@ -148,10 +170,15 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
                 var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
-                if (processorBaseGenericInterface == null) throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<,>).FullName} interface.");
+                if (processorBaseGenericInterface == null)
+                {
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<,>).FullName} interface.");
+                }
 
                 if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
+                {
                     throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' as '{typeof(ProcessableComponentType).Name}' processor because it is '{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
+                }
 
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
 
@@ -165,19 +192,36 @@ namespace ExtensibleILRewriter.MsBuild
 
         private Mono.Cecil.AssemblyDefinition LoadProcessorsAssemblyDefinition(string path, string currentPath)
         {
-            if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
-            if (!File.Exists(path)) throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
+            if (!Path.IsPathRooted(path))
+            {
+                path = Path.Combine(currentPath, path);
+            }
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
+            }
 
             return Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
         }
 
         private Assembly LoadProcessorsAssembly(string path, string currentPath, Mono.Cecil.AssemblyDefinition assemblyDefinition)
         {
-            if (!Path.IsPathRooted(path)) path = Path.Combine(currentPath, path);
-            if (!File.Exists(path)) throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
+            if (!Path.IsPathRooted(path))
+            {
+                path = Path.Combine(currentPath, path);
+            }
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
+            }
 
             var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == assemblyDefinition.FullName);
-            if (loadedAssembly != null) return loadedAssembly;
+            if (loadedAssembly != null)
+            {
+                return loadedAssembly;
+            }
 
             return Assembly.Load(File.ReadAllBytes(path));
         }
@@ -188,16 +232,17 @@ namespace ExtensibleILRewriter.MsBuild
             return fullName.Substring(0, firstComma);
         }
 
-        class LazyAssembly
+        private class LazyAssembly
         {
-            public Lazy<Assembly> Assembly { get; }
-            public Lazy<AssemblyDefinition> AssemblyDefinition { get; }
-
             public LazyAssembly(Lazy<Assembly> assembly, Lazy<AssemblyDefinition> assemblyDefinition)
             {
                 Assembly = assembly;
                 AssemblyDefinition = assemblyDefinition;
             }
+
+            public Lazy<Assembly> Assembly { get; }
+
+            public Lazy<AssemblyDefinition> AssemblyDefinition { get; }
         }
     }
 }

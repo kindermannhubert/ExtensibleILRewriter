@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
+using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
 {
@@ -28,7 +29,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
                 modulesData.Add(method.DeclaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method.UnderlyingComponent, moduleData.StateHoldingField), logger);
+            moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method.UnderlyingComponent, moduleData.StateHoldingField), Logger);
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<MethodCodeInjectingCodeProviderArgument> codeProvider, ModuleDefinition module)
@@ -43,7 +44,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
             }
         }
 
-        struct ModuleData
+        private struct ModuleData
         {
             public CodeInjector<MethodCodeInjectingCodeProviderArgument> CodeInjector;
             public FieldDefinition StateHoldingField;

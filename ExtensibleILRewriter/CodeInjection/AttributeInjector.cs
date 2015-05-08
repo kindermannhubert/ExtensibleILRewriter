@@ -1,6 +1,5 @@
-﻿using Mono.Cecil;
-using Mono.Collections.Generic;
-using ExtensibleILRewriter.Extensions;
+﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.CodeInjection
 {
@@ -17,7 +16,10 @@ namespace ExtensibleILRewriter.CodeInjection
         {
             var attributeInfo = attributeProvider.GetAttributeInfo(component);
 
-            if (!attributeInfo.ShouldBeAttributeInjected) return;
+            if (!attributeInfo.ShouldBeAttributeInjected)
+            {
+                return;
+            }
 
             logger.Notice($"Injecting attribute to {component.FullName}.");
 

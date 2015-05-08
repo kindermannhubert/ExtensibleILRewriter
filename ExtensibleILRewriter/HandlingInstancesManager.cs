@@ -7,19 +7,24 @@ namespace ExtensibleILRewriter
 {
     public static class HandlingInstancesManager
     {
-        private static readonly object sync = new object();
-        private static readonly Dictionary<string, object> instaces = new Dictionary<string, object>();
-        private static readonly Dictionary<string, IntPtr> instanceHolderFieldAddresses = new Dictionary<string, IntPtr>();
+        private static readonly object Sync = new object();
+        private static readonly Dictionary<string, object> Instaces = new Dictionary<string, object>();
+        private static readonly Dictionary<string, IntPtr> InstanceHolderFieldAddresses = new Dictionary<string, IntPtr>();
+        private static Action<IntPtr, object> setInstanceToStaticFieldAddress;
 
         public static void RegisterInstance(string instanceName, object instance)
         {
-            lock (sync)
+            lock (Sync)
             {
-                if (instaces.ContainsKey(instanceName)) throw new InvalidOperationException($"Instance with name '{instanceName}' was already registered.");
-                instaces.Add(instanceName, instance);
+                if (Instaces.ContainsKey(instanceName))
+                {
+                    throw new InvalidOperationException($"Instance with name '{instanceName}' was already registered.");
+                }
+
+                Instaces.Add(instanceName, instance);
 
                 IntPtr staticFieldAddress;
-                if (instanceHolderFieldAddresses.TryGetValue(instanceName, out staticFieldAddress))
+                if (InstanceHolderFieldAddresses.TryGetValue(instanceName, out staticFieldAddress))
                 {
                     SetInstanceToStaticFieldAddress(staticFieldAddress, instance);
                 }
@@ -28,18 +33,18 @@ namespace ExtensibleILRewriter
 
         public static void RegisterInstanceHolderFieldAddress(string instanceName, IntPtr instanceHolderFieldAddress)
         {
-            lock (sync)
+            lock (Sync)
             {
-                if (instanceHolderFieldAddresses.ContainsKey(instanceName))
+                if (InstanceHolderFieldAddresses.ContainsKey(instanceName))
                 {
                     throw new InvalidOperationException($"Instance holder field address was already added for instanceName = '{instanceName}'.");
                 }
                 else
                 {
-                    instanceHolderFieldAddresses.Add(instanceName, instanceHolderFieldAddress);
+                    InstanceHolderFieldAddresses.Add(instanceName, instanceHolderFieldAddress);
 
                     object alreadyExistingInstance;
-                    if (instaces.TryGetValue(instanceName, out alreadyExistingInstance))
+                    if (Instaces.TryGetValue(instanceName, out alreadyExistingInstance))
                     {
                         SetInstanceToStaticFieldAddress(instanceHolderFieldAddress, alreadyExistingInstance);
                     }
@@ -47,12 +52,11 @@ namespace ExtensibleILRewriter
             }
         }
 
-        private static Action<IntPtr, object> _setInstanceToStaticFieldAddress;
         private static void SetInstanceToStaticFieldAddress(IntPtr address, object instance)
         {
-            if (_setInstanceToStaticFieldAddress == null)
+            if (setInstanceToStaticFieldAddress == null)
             {
-                var dynamicMethod = new DynamicMethod(nameof(_setInstanceToStaticFieldAddress), null, new Type[] { typeof(IntPtr), typeof(object) }, MethodInfo.GetCurrentMethod().Module);
+                var dynamicMethod = new DynamicMethod(nameof(setInstanceToStaticFieldAddress), null, new Type[] { typeof(IntPtr), typeof(object) }, MethodInfo.GetCurrentMethod().Module);
                 var ilGen = dynamicMethod.GetILGenerator();
 
                 ilGen.Emit(OpCodes.Ldarg_0);
@@ -60,9 +64,10 @@ namespace ExtensibleILRewriter
                 ilGen.Emit(OpCodes.Stind_Ref);
                 ilGen.Emit(OpCodes.Ret);
 
-                _setInstanceToStaticFieldAddress = (Action<IntPtr, object>)dynamicMethod.CreateDelegate(typeof(Action<IntPtr, object>));
+                setInstanceToStaticFieldAddress = (Action<IntPtr, object>)dynamicMethod.CreateDelegate(typeof(Action<IntPtr, object>));
             }
-            _setInstanceToStaticFieldAddress(address, instance);
+
+            setInstanceToStaticFieldAddress(address, instance);
         }
     }
 }

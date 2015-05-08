@@ -2,27 +2,13 @@
 using Mono.Cecil;
 using Mono.Collections.Generic;
 
+#pragma warning disable SA1402 // File may only contain a single class
+
 namespace ExtensibleILRewriter
 {
     public abstract class ProcessableComponent<UnderlyingComponentType, DeclaringComponentType> : IProcessableComponent
         where DeclaringComponentType : IProcessableComponent
     {
-        public ProcessableComponentType Type { get; }
-
-        public string Name { get; }
-
-        public string FullName { get; }
-
-        public Collection<CustomAttribute> CustomAttributes { get; }
-
-        IProcessableComponent IProcessableComponent.DeclaringComponent { get { return DeclaringComponent; } }
-
-        public DeclaringComponentType DeclaringComponent { get; }
-
-        public ModuleDefinition DeclaringModule { get; }
-
-        public UnderlyingComponentType UnderlyingComponent { get; }
-
         protected ProcessableComponent(
             ProcessableComponentType type,
             UnderlyingComponentType underlyingComponent,
@@ -40,6 +26,22 @@ namespace ExtensibleILRewriter
             DeclaringComponent = declaringComponent;
             DeclaringModule = declaringModule;
         }
+
+        public ProcessableComponentType Type { get; }
+
+        public string Name { get; }
+
+        public string FullName { get; }
+
+        public Collection<CustomAttribute> CustomAttributes { get; }
+
+        IProcessableComponent IProcessableComponent.DeclaringComponent { get { return DeclaringComponent; } }
+
+        public DeclaringComponentType DeclaringComponent { get; }
+
+        public ModuleDefinition DeclaringModule { get; }
+
+        public UnderlyingComponentType UnderlyingComponent { get; }
     }
 
     public class AssemblyProcessableComponent : ProcessableComponent<AssemblyDefinition, NoDeclaringComponent>

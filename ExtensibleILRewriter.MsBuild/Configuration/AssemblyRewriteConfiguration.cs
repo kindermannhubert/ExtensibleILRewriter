@@ -56,7 +56,11 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             {
                 throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {nameof(Assemblies)} element.");
             }
-            foreach (var assembly in Assemblies) assembly.Check();
+
+            foreach (var assembly in Assemblies)
+            {
+                assembly.Check();
+            }
 
             if (Assemblies.Select(a => a.Alias).Distinct().Count() != Assemblies.Length)
             {
@@ -70,7 +74,11 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             {
                 throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {nameof(Types)} element.");
             }
-            foreach (var type in Types) type.Check();
+
+            foreach (var type in Types)
+            {
+                type.Check();
+            }
 
             if (Types.Select(t => t.Name).Distinct().Count() != Types.Length)
             {
@@ -84,7 +92,11 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             {
                 throw new InvalidOperationException($"Configuration of {nameof(AssemblyRewrite)} task must contain {elementName} element.");
             }
-            foreach (var processor in processors) processor.Check(definedAssemblyAliases, definedTypeAliases);
+
+            foreach (var processor in processors)
+            {
+                processor.Check(definedAssemblyAliases, definedTypeAliases);
+            }
         }
     }
 }

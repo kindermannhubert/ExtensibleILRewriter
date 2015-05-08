@@ -10,14 +10,14 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
             AddSupportedPropertyNames(nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName));
         }
 
+        public CodeProvider<ParameterValueHandlingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
+
+        public string StateInstanceName { get; private set; }
+
         protected virtual CodeProvider<ParameterValueHandlingCodeProviderArgument> GetDefaultCodeProvider()
         {
             throw new InvalidOperationException($"General {typeof(ParameterValueHandlingProcessor<>).FullName} does not have any default code provider. You need to configure {nameof(CustomValueHandlingCodeProvider)} at processor properties.");
         }
-
-        public CodeProvider<ParameterValueHandlingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
-
-        public string StateInstanceName { get; private set; }
 
         protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string procesorName)
         {
@@ -27,7 +27,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
                 var customValueHandlingCodeProviderType = typeAliasResolver.ResolveType(customValueHandlingCodeProviderAlias);
                 CustomValueHandlingCodeProvider = (CodeProvider<ParameterValueHandlingCodeProviderArgument>)Activator.CreateInstance(customValueHandlingCodeProviderType);
 
-                base.CheckIfContainsProperty(properties, nameof(StateInstanceName));
+                CheckIfContainsProperty(properties, nameof(StateInstanceName));
                 StateInstanceName = properties.GetProperty(nameof(StateInstanceName));
             }
             else

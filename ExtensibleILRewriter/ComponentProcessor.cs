@@ -1,4 +1,5 @@
-﻿using ExtensibleILRewriter.Processors.Parameters;
+﻿using ExtensibleILRewriter.Logging;
+using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter
 {
@@ -6,15 +7,15 @@ namespace ExtensibleILRewriter
         where ConfigurationType : ComponentProcessorConfiguration
         where ProcessableComponentType : IProcessableComponent
     {
-        protected readonly ILogger logger;
-
-        public ConfigurationType Configuration { get; }
-
         public ComponentProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
         {
-            this.Configuration = configuration;
-            this.logger = logger;
+            Configuration = configuration;
+            Logger = logger;
         }
+
+        public ILogger Logger { get; }
+
+        public ConfigurationType Configuration { get; }
 
         public abstract void Process([NotNull]ProcessableComponentType component);
     }

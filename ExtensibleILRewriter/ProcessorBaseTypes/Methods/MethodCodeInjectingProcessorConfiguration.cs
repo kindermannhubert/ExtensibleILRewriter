@@ -10,14 +10,14 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
             AddSupportedPropertyNames(nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName));
         }
 
+        public CodeProvider<MethodCodeInjectingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
+
+        public string StateInstanceName { get; private set; }
+
         protected virtual CodeProvider<MethodCodeInjectingCodeProviderArgument> GetDefaultCodeProvider()
         {
             throw new InvalidOperationException($"General {typeof(MethodCodeInjectingProcessor<>).FullName} does not have any default code provider. You need to configure {nameof(CustomValueHandlingCodeProvider)} at processor properties.");
         }
-
-        public CodeProvider<MethodCodeInjectingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
-
-        public string StateInstanceName { get; private set; }
 
         protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string procesorName)
         {
@@ -27,7 +27,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
                 var customValueHandlingCodeProviderType = typeAliasResolver.ResolveType(customValueHandlingCodeProviderAlias);
                 CustomValueHandlingCodeProvider = (CodeProvider<MethodCodeInjectingCodeProviderArgument>)Activator.CreateInstance(customValueHandlingCodeProviderType);
 
-                base.CheckIfContainsProperty(properties, nameof(StateInstanceName));
+                CheckIfContainsProperty(properties, nameof(StateInstanceName));
                 StateInstanceName = properties.GetProperty(nameof(StateInstanceName));
             }
             else

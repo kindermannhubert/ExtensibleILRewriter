@@ -11,8 +11,16 @@ namespace ExtensibleILRewriter.Extensions
     {
         public static bool CouldBeStatic(this MethodDefinition method)
         {
-            if (!method.HasBody) return false;
-            if (method.IsStatic) return true;
+            if (!method.HasBody)
+            {
+                return false;
+            }
+
+            if (method.IsStatic)
+            {
+                return true;
+            }
+
             return !AccessesThis(method.Body);
         }
 
@@ -20,23 +28,34 @@ namespace ExtensibleILRewriter.Extensions
         {
             foreach (var ins in methodBody.Instructions)
             {
-                if (ins.OpCode.Code == Code.Ldarg_0) return true;
-                if (ins.Operand as ParameterDefinition == methodBody.ThisParameter) return true;
+                if (ins.OpCode.Code == Code.Ldarg_0)
+                {
+                    return true;
+                }
+
+                if (ins.Operand as ParameterDefinition == methodBody.ThisParameter)
+                {
+                    return true;
+                }
             }
+
             return false;
         }
 
         public static MethodDefinition CreateStaticVersion(this MethodDefinition method)
         {
-            if (!method.CouldBeStatic()) throw new InvalidOperationException($"Method '{method.FullName}' cannot be made static.");
+            if (!method.CouldBeStatic())
+            {
+                throw new InvalidOperationException($"Method '{method.FullName}' cannot be made static.");
+            }
 
-            //var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
-            //attributes |= method.Attributes & MethodAttributes.Private;
-            //attributes |= method.Attributes & MethodAttributes.FamANDAssem;
-            //attributes |= method.Attributes & MethodAttributes.Assembly;
-            //attributes |= method.Attributes & MethodAttributes.Family;
-            //attributes |= method.Attributes & MethodAttributes.FamORAssem;
-            //attributes |= method.Attributes & MethodAttributes.Public;
+            // var attributes = MethodAttributes.Static | MethodAttributes.HideBySig;
+            // attributes |= method.Attributes & MethodAttributes.Private;
+            // attributes |= method.Attributes & MethodAttributes.FamANDAssem;
+            // attributes |= method.Attributes & MethodAttributes.Assembly;
+            // attributes |= method.Attributes & MethodAttributes.Family;
+            // attributes |= method.Attributes & MethodAttributes.FamORAssem;
+            // attributes |= method.Attributes & MethodAttributes.Public;
 
             var attributes = method.Attributes;
 
@@ -59,6 +78,7 @@ namespace ExtensibleILRewriter.Extensions
                 newIns.Operand = ins.Operand;
                 staticMethod.Body.Instructions.Add(newIns);
             }
+
             staticMethod.Body.OptimizeMacros();
             method.Body.OptimizeMacros();
 

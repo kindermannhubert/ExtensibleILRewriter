@@ -6,18 +6,18 @@ namespace ExtensibleILRewriter.CodeInjection
 {
     public struct AttributeProviderAttributeArgument
     {
-        public string Name { get; }
-
-        public AttributeProviderAttributeArgumentType Type { get; }
-
-        public object Value { get; }
-
         private AttributeProviderAttributeArgument([NotNull]string name, AttributeProviderAttributeArgumentType type, object value)
         {
             Name = name;
             Type = type;
             Value = value;
         }
+
+        public string Name { get; }
+
+        public AttributeProviderAttributeArgumentType Type { get; }
+
+        public object Value { get; }
 
         public static AttributeProviderAttributeArgument CreateParameterArgument([NotNull]string name, Byte value)
         {
@@ -125,9 +125,9 @@ namespace ExtensibleILRewriter.CodeInjection
                     throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
             }
 
-            //TODO arrays
-            //var byteArrayTypeReference = new ArrayType(byteTypeReference);
-            //var customAttributeArgument = new CustomAttributeArgument(byteArrayTypeReference, new byte[] { 1, 2, 3, 4, 5, 7 }.Select(v => new CustomAttributeArgument(byteTypeReference, v)).ToArray());
+            // TODO arrays
+            // var byteArrayTypeReference = new ArrayType(byteTypeReference);
+            // var customAttributeArgument = new CustomAttributeArgument(byteArrayTypeReference, new byte[] { 1, 2, 3, 4, 5, 7 }.Select(v => new CustomAttributeArgument(byteTypeReference, v)).ToArray());
         }
     }
 }

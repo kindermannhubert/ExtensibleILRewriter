@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{30EEC409-F411-4D9F-9EA5-593B5C26E697}"
 EndProject
@@ -20,6 +20,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensibleILRewriter.MsBuild", "ExtensibleILRewriter.MsBuild\ExtensibleILRewriter.MsBuild.csproj", "{83A13B00-286B-41C1-B632-2430DFE62707}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensibleILRewriter.Tests", "ExtensibleILRewriter.Tests\ExtensibleILRewriter.Tests.csproj", "{248ECEF0-D798-4E3A-AFFE-2F770DC4F18D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9EBAE889-371C-420C-9017-761B7D78F36E}"
+	ProjectSection(SolutionItems) = preProject
+		ExtensibleILRewriter.ruleset = ExtensibleILRewriter.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

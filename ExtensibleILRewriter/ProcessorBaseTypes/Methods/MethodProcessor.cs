@@ -1,4 +1,5 @@
-﻿using ExtensibleILRewriter.Processors.Parameters;
+﻿using ExtensibleILRewriter.Logging;
+using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
 {

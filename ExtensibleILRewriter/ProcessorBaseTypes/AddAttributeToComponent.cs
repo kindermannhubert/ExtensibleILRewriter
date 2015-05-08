@@ -1,5 +1,6 @@
 ﻿using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
+using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes
 {
@@ -17,7 +18,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes
 
         public override void Process([NotNull]ProcessableComponentType component)
         {
-            attributeInjector.AddAttributeToComponent(component, logger);
+            attributeInjector.AddAttributeToComponent(component, Logger);
         }
     }
 }

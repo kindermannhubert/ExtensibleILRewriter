@@ -4,12 +4,13 @@ using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.ProcessorBaseTypes.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 using System;
+using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class NotNullAttributeProcessor : ParameterValueHandlingProcessor<NotNullAttributeProcessor.ProcessorConfiguration>
     {
-        private readonly static string notNullAttributeFullName = typeof(NotNullAttribute).FullName;
+        private readonly static string NotNullAttributeFullName = typeof(NotNullAttribute).FullName;
 
         public NotNullAttributeProcessor([NotNull]ProcessorConfiguration configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
@@ -19,13 +20,13 @@ namespace ExtensibleILRewriter.Processors.Parameters
         public override void Process(MethodParameterProcessableComponent parameter)
         {
             var parameterDefinition = parameter.UnderlyingComponent;
-            if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == notNullAttributeFullName))
+            if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == NotNullAttributeFullName))
             {
                 var methodDefinition = parameter.DeclaringComponent.UnderlyingComponent;
 
                 if (parameterDefinition.ParameterType.IsValueType && !parameterDefinition.ParameterType.IsNullableValueType())
                 {
-                    logger.LogErrorWithSource(methodDefinition, $"Parameter '{parameter.Name}' of method '{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
+                    Logger.LogErrorWithSource(methodDefinition, $"Parameter '{parameter.Name}' of method '{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
                     return;
                 }
 
@@ -66,7 +67,10 @@ namespace ExtensibleILRewriter.Processors.Parameters
 
             public static void HandleParameter<ParameterType>(ParameterType parameter, string parameterName)
             {
-                if (parameter == null) throw new ArgumentNullException(parameterName);
+                if (parameter == null)
+                {
+                    throw new ArgumentNullException(parameterName);
+                }
             }
 
             protected override TypeReference[] GetCodeProvidingMethodGenericArgumentTypes(ParameterValueHandlingCodeProviderArgument codeProviderArgument)

@@ -6,10 +6,15 @@ namespace ExtensibleILRewriter
     public interface IProcessableComponent
     {
         ProcessableComponentType Type { get; }
+
         Collection<CustomAttribute> CustomAttributes { get; }
+
         string Name { get; }
+
         string FullName { get; }
+
         IProcessableComponent DeclaringComponent { get; }
+
         ModuleDefinition DeclaringModule { get; }
     }
 }

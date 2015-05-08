@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using ExtensibleILRewriter.Logging;
+using Mono.Cecil;
 using System.Linq;
 
 namespace ExtensibleILRewriter.Extensions
