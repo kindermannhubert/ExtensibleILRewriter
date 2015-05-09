@@ -25,6 +25,10 @@ namespace ExtensibleILRewriter
 
         public List<IComponentProcessor<ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> FieldProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
+
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> PropertyProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
+
         public List<IComponentProcessor<ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
         public List<IComponentProcessor<ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
@@ -59,7 +63,7 @@ namespace ExtensibleILRewriter
             logger.Progress($"Processing assembly: '{assembly.FullName}'.");
             ProcessComponent(assembly.ToProcessableComponent(), AssemblyProcessors, logger);
 
-            // needs to copy out, because processors can modified the collection
+            // needs to copy out, because processors could modify the collection
             var modules = assembly.Modules.ToArray();
             foreach (var module in modules)
             {
@@ -75,7 +79,7 @@ namespace ExtensibleILRewriter
             logger.Progress($"Processing module: '{module.Name}'.");
             ProcessComponent(module.ToProcessableComponent(), ModuleProcessors, logger);
 
-            // needs to copy out, because processors can modified the collection
+            // needs to copy out, because processors could modify the collection
             var types = module.Types.ToArray();
             foreach (var type in types)
             {
@@ -98,14 +102,47 @@ namespace ExtensibleILRewriter
             logger.Progress($"Processing type: '{type.Name}'.");
             ProcessComponent(type.ToProcessableComponent(), TypeProcessors, logger);
 
-            // needs to copy out, because processors can modified the collection
-            var methods = type.Methods.ToArray();
-            foreach (var method in methods)
+            if (type.HasFields)
             {
-                ProcessMethod(method);
+                // needs to copy out, because processors could modify the collection
+                var fields = type.Fields.ToArray();
+                foreach (var field in fields)
+                {
+                    ProcessField(field);
+                } 
+            }
+
+            if (type.HasProperties)
+            {
+                // needs to copy out, because processors could modify the collection
+                var properties = type.Properties.ToArray();
+                foreach (var property in properties)
+                {
+                    ProcessProperty(property);
+                }
+            }
+
+            if (type.HasMethods)
+            {
+                // needs to copy out, because processors could modify the collection
+                var methods = type.Methods.ToArray();
+                foreach (var method in methods)
+                {
+                    ProcessMethod(method);
+                }
             }
 
             logger.Progress("Processing type done.");
+        }
+
+        private void ProcessField(FieldDefinition field)
+        {
+            ProcessComponent(field.ToProcessableComponent(), FieldProcessors, logger);
+        }
+
+        private void ProcessProperty(PropertyDefinition property)
+        {
+            ProcessComponent(property.ToProcessableComponent(), PropertyProcessors, logger);
         }
 
         private void ProcessMethod(MethodDefinition method)
@@ -113,7 +150,7 @@ namespace ExtensibleILRewriter
             logger.Notice($"Processing method: '{method.FullName}'.");
             ProcessComponent(method.ToProcessableComponent(), MethodProcessors, logger);
 
-            // needs to copy out, because processors can modified the collection
+            // needs to copy out, because processors could modify the collection
             var parameters = method.Parameters.ToArray();
             foreach (var parameter in parameters)
             {

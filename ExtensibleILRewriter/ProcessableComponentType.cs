@@ -5,6 +5,8 @@
         Assembly,
         Module,
         Type,
+        Field,
+        Property,
         Method,
         MethodParameter
     }

@@ -17,6 +17,8 @@ namespace ExtensibleILRewriter.Processors
             AddSupportedComponent(ProcessableComponentType.Assembly);
             AddSupportedComponent(ProcessableComponentType.Module);
             AddSupportedComponent(ProcessableComponentType.Type);
+            AddSupportedComponent(ProcessableComponentType.Field);
+            AddSupportedComponent(ProcessableComponentType.Property);
             AddSupportedComponent(ProcessableComponentType.Method);
             AddSupportedComponent(ProcessableComponentType.MethodParameter);
         }

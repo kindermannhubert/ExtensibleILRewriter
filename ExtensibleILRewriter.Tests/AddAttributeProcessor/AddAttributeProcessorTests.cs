@@ -30,6 +30,48 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
         }
 
         [TestMethod]
+        public void AddAttributeToFieldTest()
+        {
+            foreach (var type in GetTestingTypes())
+            {
+                foreach (var field in type.GetFields())
+                {
+                    var name = field.Name;
+                    if (name.StartsWith(InjectAttributePrefix))
+                    {
+                        var attribute = field.CustomAttributes.Single();
+                        CheckAttribute(attribute, name, ProcessableComponentType.Field, null);
+                    }
+                    else
+                    {
+                        Assert.IsTrue(field.CustomAttributes.All(a => a.AttributeType != typeof(InjectedAttribute)));
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void AddAttributeToPropertyTest()
+        {
+            foreach (var type in GetTestingTypes())
+            {
+                foreach (var property in type.GetProperties())
+                {
+                    var name = property.Name;
+                    if (name.StartsWith(InjectAttributePrefix))
+                    {
+                        var attribute = property.CustomAttributes.Single();
+                        CheckAttribute(attribute, name, ProcessableComponentType.Property, null);
+                    }
+                    else
+                    {
+                        Assert.IsTrue(property.CustomAttributes.All(a => a.AttributeType != typeof(InjectedAttribute)));
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
         public void AddAttributeToMethodTest()
         {
             foreach (var type in GetTestingTypes())
@@ -68,7 +110,7 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
                         else
                         {
                             Assert.IsTrue(methodParameter.CustomAttributes.All(a => a.AttributeType != typeof(InjectedAttribute)));
-                        } 
+                        }
                     }
                 }
             }

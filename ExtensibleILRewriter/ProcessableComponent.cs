@@ -67,6 +67,20 @@ namespace ExtensibleILRewriter
         { }
     }
 
+    public class FieldProcessableComponent : ProcessableComponent<FieldDefinition, ModuleProcessableComponent>
+    {
+        public FieldProcessableComponent(FieldDefinition field)
+            : base(ProcessableComponentType.Field, field, field.Name, field.FullName, field.CustomAttributes, field.Module.ToProcessableComponent(), field.Module)
+        { }
+    }
+
+    public class PropertyProcessableComponent : ProcessableComponent<PropertyDefinition, ModuleProcessableComponent>
+    {
+        public PropertyProcessableComponent(PropertyDefinition property)
+            : base(ProcessableComponentType.Property, property, property.Name, property.FullName, property.CustomAttributes, property.Module.ToProcessableComponent(), property.Module)
+        { }
+    }
+
     public class MethodProcessableComponent : ProcessableComponent<MethodDefinition, TypeProcessableComponent>
     {
         public MethodProcessableComponent(MethodDefinition method)
@@ -113,6 +127,16 @@ namespace ExtensibleILRewriter
         public static TypeProcessableComponent ToProcessableComponent(this TypeDefinition type)
         {
             return new TypeProcessableComponent(type);
+        }
+
+        public static FieldProcessableComponent ToProcessableComponent(this FieldDefinition field)
+        {
+            return new FieldProcessableComponent(field);
+        }
+
+        public static PropertyProcessableComponent ToProcessableComponent(this PropertyDefinition property)
+        {
+            return new PropertyProcessableComponent(property);
         }
 
         public static MethodProcessableComponent ToProcessableComponent(this MethodDefinition method)

@@ -155,6 +155,12 @@ namespace ExtensibleILRewriter.MsBuild
                         case ProcessableComponentType.Type:
                             assemblyRewriter.TypeProcessors.Add(processor);
                             break;
+                        case ProcessableComponentType.Field:
+                            assemblyRewriter.FieldProcessors.Add(processor);
+                            break;
+                        case ProcessableComponentType.Property:
+                            assemblyRewriter.PropertyProcessors.Add(processor);
+                            break;
                         case ProcessableComponentType.Method:
                             assemblyRewriter.MethodProcessors.Add(processor);
                             break;
