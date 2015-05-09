@@ -17,8 +17,14 @@ namespace ExtensibleILRewriter.Processors.Parameters
         {
         }
 
-        public override void Process(MethodParameterProcessableComponent parameter)
+        public override void Process([NotNull]IProcessableComponent component)
         {
+            if (component.Type != ProcessableComponentType.MethodParameter)
+            {
+                throw new InvalidOperationException("Component is expected to be method parameter.");
+            }
+
+            var parameter = (MethodParameterProcessableComponent)component;
             var parameterDefinition = parameter.UnderlyingComponent;
             if (parameter.CustomAttributes.Any(a => a.AttributeType.FullName == NotNullAttributeFullName))
             {

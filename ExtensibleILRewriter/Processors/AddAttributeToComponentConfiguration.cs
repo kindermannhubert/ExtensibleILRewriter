@@ -2,7 +2,7 @@
 using ExtensibleILRewriter.Processors.Parameters;
 using System;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes
+namespace ExtensibleILRewriter.Processors
 {
     public class AddAttributeToComponentConfiguration : ComponentProcessorConfiguration
     {

@@ -2,20 +2,29 @@
 using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.Logging;
+using System;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers
 {
-    public class MakeStaticVersionProcessor : MethodProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
+    public class MakeStaticVersionProcessor : ComponentProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string MakeStaticVersionAttributeFullName = typeof(MakeStaticVersionAttribute).FullName;
 
         public MakeStaticVersionProcessor([NotNull]ComponentProcessorConfiguration.EmptyConfiguration configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
         {
+            AddSupportedComponent(ProcessableComponentType.Method);
         }
 
-        public override void Process([NotNull]MethodProcessableComponent method)
+        public override void Process([NotNull]IProcessableComponent component)
         {
+            if (component.Type != ProcessableComponentType.Method)
+            {
+                throw new InvalidOperationException("Component is expected to be method.");
+            }
+
+            var method = (MethodProcessableComponent)component;
+
             var attribute = method.CustomAttributes.FirstOrDefault(a => a.AttributeType.FullName == MakeStaticVersionAttributeFullName);
             if (attribute == null)
             {

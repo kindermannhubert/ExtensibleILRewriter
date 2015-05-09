@@ -8,11 +8,11 @@
   <Types>
     <Type alias="NonNullableDefaultHandler" name="ExtensibleILRewriter.Processors.Parameters.NotNullArgumentHandligCodeProvider" assemblyAlias="ExtensibleILRewriter" />
     <Type alias="CustomAssemblyInfoAttributeProvider" name="TestApplication.CustomAssemblyInfoAttributeProvider" assemblyAlias="TestApplication" />
-    <Type alias="AddAttributeToComponentConfiguration" name="ExtensibleILRewriter.ProcessorBaseTypes.AddAttributeToComponentConfiguration" assemblyAlias="ExtensibleILRewriter" />
+    <Type alias="AddAttributeToComponentConfiguration" name="ExtensibleILRewriter.Processors.AddAttributeToComponentConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
-  <AssemblyProcessors>
-    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Assemblies.AddAttributeToAssembly`1">
+  <Processors>
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.AddAttributeToComponent`1">
       <GenericArguments>
         <TypeAlias>AddAttributeToComponentConfiguration</TypeAlias>
       </GenericArguments>
@@ -20,24 +20,14 @@
         <Property key="CustomAttributeProvider" value="CustomAssemblyInfoAttributeProvider" />
       </Properties>
     </Processor>
-  </AssemblyProcessors>
 
-  <ModuleProcessors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Modules.ModuleInitializerProcessor" />
-  </ModuleProcessors>
 
-  <TypeProcessors>
-  </TypeProcessors>
-
-  <MethodProcessors>
-  </MethodProcessors>
-
-  <ParameterProcessors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Parameters.NotNullAttributeProcessor" >
       <!--<Properties>
         <Property key="CustomValueHandlingCodeProvider" value="NonNullableDefaultHandler" />
         <Property key="StateInstanceName" value="NonNullableDefaultHandlerState" />
       </Properties>-->
     </Processor>
-  </ParameterProcessors>
+  </Processors>
 </AssemblyRewriteConfiguration>

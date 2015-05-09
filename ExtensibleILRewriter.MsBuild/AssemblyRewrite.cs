@@ -126,11 +126,39 @@ namespace ExtensibleILRewriter.MsBuild
                     assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.Assembly),
                     configuration.Types.ToDictionary(t => t.Alias, t => new TypeAliasResolver.TypeAliasDefinition(t.AssemblyAlias, t.Name)));
 
-                assemblyRewriter.AssemblyProcessors.AddRange(LoadProcessors<AssemblyProcessableComponent>(configuration.AssemblyProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.ModuleProcessors.AddRange(LoadProcessors<ModuleProcessableComponent>(configuration.ModuleProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.TypeProcessors.AddRange(LoadProcessors<TypeProcessableComponent>(configuration.TypeProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.MethodProcessors.AddRange(LoadProcessors<MethodProcessableComponent>(configuration.MethodProcessors, logger, assembliesDict, typeAliasResolver));
-                assemblyRewriter.ParameterProcessors.AddRange(LoadProcessors<MethodParameterProcessableComponent>(configuration.ParameterProcessors, logger, assembliesDict, typeAliasResolver));
+                var processors = LoadProcessors(configuration.Processors, logger, assembliesDict, typeAliasResolver);
+
+                foreach (var processor in processors)
+                {
+                    if (processor.SupportedComponents.Count == 0)
+                    {
+                        throw new InvalidOperationException($"Processor '{processor.GetType().FullName}' contains no supported components.");
+                    }
+
+                    foreach (var supportedComponent in processor.SupportedComponents)
+                    {
+                        switch (supportedComponent)
+                        {
+                            case ProcessableComponentType.Assembly:
+                                assemblyRewriter.AssemblyProcessors.Add(processor);
+                                break;
+                            case ProcessableComponentType.Module:
+                                assemblyRewriter.ModuleProcessors.Add(processor);
+                                break;
+                            case ProcessableComponentType.Type:
+                                assemblyRewriter.TypeProcessors.Add(processor);
+                                break;
+                            case ProcessableComponentType.Method:
+                                assemblyRewriter.MethodProcessors.Add(processor);
+                                break;
+                            case ProcessableComponentType.MethodParameter:
+                                assemblyRewriter.ParameterProcessors.Add(processor);
+                                break;
+                            default:
+                                throw new InvalidOperationException($"Unknown {nameof(ProcessableComponentType)}: '{supportedComponent}'.");
+                        }
+                    }
+                }
             }
             finally
             {
@@ -138,10 +166,9 @@ namespace ExtensibleILRewriter.MsBuild
             }
         }
 
-        private static IEnumerable<IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>> LoadProcessors<ProcessableComponentType>(
+        private static IEnumerable<IComponentProcessor<ComponentProcessorConfiguration>> LoadProcessors(
             ProcessorDefinition[] processorDefinitions, ILogger logger,
             Dictionary<string, LazyAssembly> assembliesDict, TypeAliasResolver typeAliasResolver)
-            where ProcessableComponentType : IProcessableComponent
         {
             foreach (var processorDefinition in processorDefinitions)
             {
@@ -169,23 +196,23 @@ namespace ExtensibleILRewriter.MsBuild
 
                 var processorProperties = new ComponentProcessorProperties(processorDefinition.Properties.Select(p => Tuple.Create(p.Name, p.Value)));
 
-                var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<,>));
+                var processorBaseGenericInterface = processorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IComponentProcessor<>));
                 if (processorBaseGenericInterface == null)
                 {
-                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<,>).FullName} interface.");
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<>).FullName} interface.");
                 }
 
-                if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
-                {
-                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' as '{typeof(ProcessableComponentType).Name}' processor because it is '{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
-                }
+                // if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
+                // {
+                // throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' as '{typeof(ProcessableComponentType).Name}' processor because it is '{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
+                // }
 
-                var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[1];
+                var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[0];
 
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);
                 processorConfiguration.LoadFromProperties(processorProperties, typeAliasResolver, processorDefinition.ProcessorName);
 
-                var processor = (IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>)Activator.CreateInstance(processorType, processorConfiguration, logger);
+                var processor = (IComponentProcessor<ComponentProcessorConfiguration>)Activator.CreateInstance(processorType, processorConfiguration, logger);
                 yield return processor;
             }
         }

@@ -19,15 +19,15 @@ namespace ExtensibleILRewriter
             this.logger = logger ?? new DummyLogger();
         }
 
-        public List<IComponentProcessor<AssemblyProcessableComponent, ComponentProcessorConfiguration>> AssemblyProcessors { get; } = new List<IComponentProcessor<AssemblyProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> AssemblyProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
-        public List<IComponentProcessor<ModuleProcessableComponent, ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ModuleProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> ModuleProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
-        public List<IComponentProcessor<TypeProcessableComponent, ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<TypeProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> TypeProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
-        public List<IComponentProcessor<MethodProcessableComponent, ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<MethodProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> MethodProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
-        public List<IComponentProcessor<MethodParameterProcessableComponent, ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<MethodParameterProcessableComponent, ComponentProcessorConfiguration>>();
+        public List<IComponentProcessor<ComponentProcessorConfiguration>> ParameterProcessors { get; } = new List<IComponentProcessor<ComponentProcessorConfiguration>>();
 
         public void ProcessAssemblyAndSave(string rewrittenAssemblyPath)
         {
@@ -120,11 +120,10 @@ namespace ExtensibleILRewriter
             ProcessComponent(parameter.ToProcessableComponent(declaringMethod), ParameterProcessors, logger);
         }
 
-        private static void ProcessComponent<ProcessableComponentType>(
-            ProcessableComponentType component,
-            IEnumerable<IComponentProcessor<ProcessableComponentType, ComponentProcessorConfiguration>> componentProcessors,
+        private static void ProcessComponent(
+            IProcessableComponent component,
+            IEnumerable<IComponentProcessor<ComponentProcessorConfiguration>> componentProcessors,
             ILogger logger)
-            where ProcessableComponentType : IProcessableComponent
         {
             foreach (var processor in componentProcessors)
             {

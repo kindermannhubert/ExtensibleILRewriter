@@ -7,18 +7,6 @@
   <Types>
   </Types>
 
-  <AssemblyProcessors>
-  </AssemblyProcessors>
-
-  <ModuleProcessors>
-  </ModuleProcessors>
-
-  <TypeProcessors>
-  </TypeProcessors>
-
-  <MethodProcessors>
-  </MethodProcessors>
-
-  <ParameterProcessors>
-  </ParameterProcessors>
+  <Processors>
+  </Processors>
 </AssemblyRewriteConfiguration>

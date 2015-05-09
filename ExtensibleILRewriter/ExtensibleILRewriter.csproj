@@ -57,9 +57,8 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="ProcessableComponent.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="ProcessorBaseTypes\AddAttributeToComponent.cs" />
-    <Compile Include="ProcessorBaseTypes\AddAttributeToComponentConfiguration.cs" />
-    <Compile Include="ProcessorBaseTypes\Assemblies\AssemblyProcessor.cs" />
+    <Compile Include="Processors\AddAttributeToComponent.cs" />
+    <Compile Include="Processors\AddAttributeToComponentConfiguration.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgumentType.cs" />
@@ -74,15 +73,7 @@
     <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingCodeProviderArgument.cs" />
     <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessor.cs" />
     <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessorConfiguration.cs" />
-    <Compile Include="ProcessorBaseTypes\Parameters\ParameterProcessor.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\MethodProcessor.cs" />
-    <Compile Include="ProcessorBaseTypes\Modules\ModuleProcessor.cs" />
-    <Compile Include="Processors\Assemblies\AddAttributeToAssembly.cs" />
     <Compile Include="ProcessableComponentType.cs" />
-    <Compile Include="Processors\Methods\AddAttributeToMethod.cs" />
-    <Compile Include="Processors\Modules\AddAttributeToModule.cs" />
-    <Compile Include="Processors\Parameters\AddAttributeToParameter.cs" />
-    <Compile Include="Processors\Types\AddAttributeToType.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
     <Compile Include="ComponentProcessorProperties.cs" />
@@ -101,7 +92,6 @@
     <Compile Include="Processors\Modules\ModuleInitializerAttribute.cs" />
     <Compile Include="Processors\Modules\ModuleInitializerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProcessorBaseTypes\Types\TypeProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cecil\Mono.Cecil.csproj">
@@ -126,6 +116,14 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-alpha006\tools\analyzers\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ProcessorBaseTypes\Assemblies\" />
+    <Folder Include="ProcessorBaseTypes\Modules\" />
+    <Folder Include="ProcessorBaseTypes\Types\" />
+    <Folder Include="Processors\Assemblies\" />
+    <Folder Include="Processors\Methods\" />
+    <Folder Include="Processors\Types\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,12 +1,15 @@
-﻿using ExtensibleILRewriter.Logging;
+﻿using System;
+using ExtensibleILRewriter.Logging;
 using ExtensibleILRewriter.Processors.Parameters;
+using System.Collections.Generic;
 
 namespace ExtensibleILRewriter
 {
-    public abstract class ComponentProcessor<ProcessableComponentType, ConfigurationType> : IComponentProcessor<ProcessableComponentType, ConfigurationType>
+    public abstract class ComponentProcessor<ConfigurationType> : IComponentProcessor<ConfigurationType>
         where ConfigurationType : ComponentProcessorConfiguration
-        where ProcessableComponentType : IProcessableComponent
     {
+        private readonly List<ProcessableComponentType> supportedComponents = new List<ProcessableComponentType>();
+
         public ComponentProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
         {
             Configuration = configuration;
@@ -17,6 +20,16 @@ namespace ExtensibleILRewriter
 
         public ConfigurationType Configuration { get; }
 
-        public abstract void Process([NotNull]ProcessableComponentType component);
+        public IReadOnlyCollection<ProcessableComponentType> SupportedComponents { get { return supportedComponents; } }
+
+        protected void AddSupportedComponent(ProcessableComponentType componentType)
+        {
+            supportedComponents.Add(componentType);
+        }
+
+        public virtual void Process([NotNull]IProcessableComponent component)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

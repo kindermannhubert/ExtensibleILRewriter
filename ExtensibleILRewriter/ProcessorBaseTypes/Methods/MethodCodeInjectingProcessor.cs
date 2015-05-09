@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
+using System;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
 {
-    public class MethodCodeInjectingProcessor<ConfigurationType> : MethodProcessor<ConfigurationType>
+    public class MethodCodeInjectingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : MethodCodeInjectingProcessorConfiguration
     {
         private readonly Dictionary<ModuleDefinition, ModuleData> modulesData = new Dictionary<ModuleDefinition, ModuleData>();
@@ -14,19 +15,28 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
         public MethodCodeInjectingProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
         {
+            AddSupportedComponent(ProcessableComponentType.Method);
         }
 
-        public override void Process([NotNull]MethodProcessableComponent method)
+        public override void Process([NotNull]IProcessableComponent component)
         {
+            if (component.Type != ProcessableComponentType.Method)
+            {
+                throw new InvalidOperationException("Component is expected to be method.");
+            }
+
+            var method = (MethodProcessableComponent)component;
+            var declaringModule = method.DeclaringModule;
+
             ModuleData moduleData;
-            if (!modulesData.TryGetValue(method.DeclaringModule, out moduleData))
+            if (!modulesData.TryGetValue(declaringModule, out moduleData))
             {
                 moduleData = new ModuleData();
                 var codeProvider = Configuration.CustomValueHandlingCodeProvider;
-                moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(method.DeclaringModule, codeProvider);
-                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, method.DeclaringModule);
+                moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(declaringModule, codeProvider);
+                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringModule);
 
-                modulesData.Add(method.DeclaringModule, moduleData);
+                modulesData.Add(declaringModule, moduleData);
             }
 
             moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method.UnderlyingComponent, moduleData.StateHoldingField), Logger);

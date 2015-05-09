@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
+using System;
 
 namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 {
-    public class ParameterValueHandlingProcessor<ConfigurationType> : ParameterProcessor<ConfigurationType>
+    public class ParameterValueHandlingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : ParameterValueHandlingProcessorConfiguration
     {
         private readonly Dictionary<ModuleDefinition, ModuleData> modulesData = new Dictionary<ModuleDefinition, ModuleData>();
@@ -14,10 +15,18 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
         public ParameterValueHandlingProcessor([NotNull]ConfigurationType configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
         {
+            AddSupportedComponent(ProcessableComponentType.MethodParameter);
         }
 
-        public override void Process([NotNull]MethodParameterProcessableComponent parameter)
+        public override void Process([NotNull]IProcessableComponent component)
         {
+            if (component.Type != ProcessableComponentType.MethodParameter)
+            {
+                throw new InvalidOperationException("Component is expected to be method parameter.");
+            }
+
+            var parameter = (MethodParameterProcessableComponent)component;
+
             ModuleData moduleData;
             if (!modulesData.TryGetValue(parameter.DeclaringModule, out moduleData))
             {

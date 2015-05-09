@@ -2,10 +2,9 @@
 using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes
+namespace ExtensibleILRewriter.Processors
 {
-    public class AddAttributeToComponent<ProcessableComponentType, ConfigurationType> : ComponentProcessor<ProcessableComponentType, ConfigurationType>
-        where ProcessableComponentType : IProcessableComponent
+    public class AddAttributeToComponent<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : AddAttributeToComponentConfiguration
     {
         private AttributeInjector attributeInjector;
@@ -14,9 +13,15 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes
         : base(configuration, logger)
         {
             attributeInjector = new AttributeInjector(configuration.CustomAttributeProvider);
+
+            AddSupportedComponent(ProcessableComponentType.Assembly);
+            AddSupportedComponent(ProcessableComponentType.Module);
+            AddSupportedComponent(ProcessableComponentType.Type);
+            AddSupportedComponent(ProcessableComponentType.Method);
+            AddSupportedComponent(ProcessableComponentType.MethodParameter);
         }
 
-        public override void Process([NotNull]ProcessableComponentType component)
+        public override void Process([NotNull]IProcessableComponent component)
         {
             attributeInjector.AddAttributeToComponent(component, Logger);
         }

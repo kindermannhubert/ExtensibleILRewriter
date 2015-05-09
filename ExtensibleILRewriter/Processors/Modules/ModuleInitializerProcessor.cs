@@ -4,22 +4,28 @@ using System.Linq;
 using Mono.Cecil.Cil;
 using ExtensibleILRewriter.Extensions;
 using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.ProcessorBaseTypes.Modules;
 using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.Processors.Modules
 {
-    public class ModuleInitializerProcessor : ModuleProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
+    public class ModuleInitializerProcessor : ComponentProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {
         private readonly static string ModuleInitializerAttributeFullName = typeof(ModuleInitializerAttribute).FullName;
 
         public ModuleInitializerProcessor([NotNull]ComponentProcessorConfiguration.EmptyConfiguration configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
         {
+            AddSupportedComponent(ProcessableComponentType.Module);
         }
 
-        public override void Process([NotNull]ModuleProcessableComponent module)
+        public override void Process([NotNull]IProcessableComponent component)
         {
+            if (component.Type != ProcessableComponentType.Module)
+            {
+                throw new InvalidOperationException("Component is expected to be module.");
+            }
+
+            var module = (ModuleProcessableComponent)component;
             var attributes = module.CustomAttributes.Where(a => a.AttributeType.FullName == ModuleInitializerAttributeFullName);
             foreach (var attribute in attributes)
             {

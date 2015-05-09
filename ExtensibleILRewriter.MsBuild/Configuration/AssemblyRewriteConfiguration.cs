@@ -17,23 +17,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
 
         [XmlArray]
         [XmlArrayItem("Processor")]
-        public ProcessorDefinition[] AssemblyProcessors { get; set; }
-
-        [XmlArray]
-        [XmlArrayItem("Processor")]
-        public ProcessorDefinition[] ModuleProcessors { get; set; }
-
-        [XmlArray]
-        [XmlArrayItem("Processor")]
-        public ProcessorDefinition[] TypeProcessors { get; set; }
-
-        [XmlArray]
-        [XmlArrayItem("Processor")]
-        public ProcessorDefinition[] MethodProcessors { get; set; }
-
-        [XmlArray]
-        [XmlArrayItem("Processor")]
-        public ProcessorDefinition[] ParameterProcessors { get; set; }
+        public ProcessorDefinition[] Processors { get; set; }
 
         public void Check()
         {
@@ -43,11 +27,7 @@ namespace ExtensibleILRewriter.MsBuild.Configuration
             var definedAssemblyAliases = new HashSet<string>(Assemblies.Select(a => a.Alias));
             var definedTypeAliases = new HashSet<string>(Types.Select(t => t.Alias));
 
-            CheckProcessorDefinitions(AssemblyProcessors, nameof(AssemblyProcessors), definedAssemblyAliases, definedTypeAliases);
-            CheckProcessorDefinitions(ModuleProcessors, nameof(ModuleProcessors), definedAssemblyAliases, definedTypeAliases);
-            CheckProcessorDefinitions(TypeProcessors, nameof(TypeProcessors), definedAssemblyAliases, definedTypeAliases);
-            CheckProcessorDefinitions(MethodProcessors, nameof(MethodProcessors), definedAssemblyAliases, definedTypeAliases);
-            CheckProcessorDefinitions(ParameterProcessors, nameof(ParameterProcessors), definedAssemblyAliases, definedTypeAliases);
+            CheckProcessorDefinitions(Processors, nameof(Processors), definedAssemblyAliases, definedTypeAliases);
         }
 
         private void CheckAssemblies()

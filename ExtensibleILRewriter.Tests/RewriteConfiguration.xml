@@ -7,20 +7,8 @@
   <Types>
   </Types>
 
-  <AssemblyProcessors>
-  </AssemblyProcessors>
-
-  <ModuleProcessors>
+  <Processors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Modules.ModuleInitializerProcessor" />
-  </ModuleProcessors>
-
-  <TypeProcessors>
-  </TypeProcessors>
-
-  <MethodProcessors>
-  </MethodProcessors>
-
-  <ParameterProcessors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Parameters.NotNullAttributeProcessor" />
-  </ParameterProcessors>
+  </Processors>
 </AssemblyRewriteConfiguration>
