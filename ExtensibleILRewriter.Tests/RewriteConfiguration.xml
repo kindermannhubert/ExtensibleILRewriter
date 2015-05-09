@@ -2,13 +2,26 @@
 <AssemblyRewriteConfiguration>
   <Assemblies>
     <Assembly alias="ExtensibleILRewriter" path="ExtensibleILRewriter.dll" />
+    <Assembly alias="ExtensibleILRewriter.Tests" path="ExtensibleILRewriter.Tests.dll" />
   </Assemblies>
 
   <Types>
+    <Type alias="InjectedAttributeProvider" name="ExtensibleILRewriter.Tests.AddAttributeProcessor.InjectedAttributeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
+    <Type alias="AddAttributeProcessorConfiguration" name="ExtensibleILRewriter.Processors.AddAttributeProcessorConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <Processors>
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Modules.ModuleInitializerProcessor" />
+    
     <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Parameters.NotNullAttributeProcessor" />
+
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.AddAttributeProcessor`1">
+      <GenericArguments>
+        <TypeAlias>AddAttributeProcessorConfiguration</TypeAlias>
+      </GenericArguments>
+      <Properties>
+        <Property key="CustomAttributeProvider" value="InjectedAttributeProvider" />
+      </Properties>
+    </Processor>
   </Processors>
 </AssemblyRewriteConfiguration>

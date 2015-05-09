@@ -4,9 +4,9 @@ using System;
 
 namespace ExtensibleILRewriter.Processors
 {
-    public class AddAttributeToComponentConfiguration : ComponentProcessorConfiguration
+    public class AddAttributeProcessorConfiguration : ComponentProcessorConfiguration
     {
-        public AddAttributeToComponentConfiguration()
+        public AddAttributeProcessorConfiguration()
         {
             AddSupportedPropertyNames(nameof(CustomAttributeProvider));
         }
@@ -15,7 +15,7 @@ namespace ExtensibleILRewriter.Processors
 
         protected virtual AttributeProvider GetDefaultCodeProvider()
         {
-            throw new InvalidOperationException($"General {nameof(AddAttributeToComponentConfiguration)} does not have any default attribute provider. You need to configure {nameof(CustomAttributeProvider)} at processor properties.");
+            throw new InvalidOperationException($"General {nameof(AddAttributeProcessorConfiguration)} does not have any default attribute provider. You need to configure {nameof(CustomAttributeProvider)} at processor properties.");
         }
 
         protected override void LoadFromPropertiesInternal([NotNull]ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string processorName)

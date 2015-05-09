@@ -4,12 +4,12 @@ using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.Processors
 {
-    public class AddAttributeToComponent<ConfigurationType> : ComponentProcessor<ConfigurationType>
-        where ConfigurationType : AddAttributeToComponentConfiguration
+    public class AddAttributeProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
+        where ConfigurationType : AddAttributeProcessorConfiguration
     {
         private AttributeInjector attributeInjector;
 
-        public AddAttributeToComponent(ConfigurationType configuration, ILogger logger)
+        public AddAttributeProcessor(ConfigurationType configuration, ILogger logger)
         : base(configuration, logger)
         {
             attributeInjector = new AttributeInjector(configuration.CustomAttributeProvider);
@@ -23,7 +23,7 @@ namespace ExtensibleILRewriter.Processors
 
         public override void Process([NotNull]IProcessableComponent component)
         {
-            attributeInjector.AddAttributeToComponent(component, Logger);
+            attributeInjector.AddAttributeProcessor(component, Logger);
         }
     }
 }

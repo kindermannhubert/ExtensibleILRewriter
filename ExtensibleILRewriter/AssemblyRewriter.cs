@@ -80,6 +80,14 @@ namespace ExtensibleILRewriter
             foreach (var type in types)
             {
                 ProcessType(type);
+
+                if (type.HasNestedTypes)
+                {
+                    foreach (var nestedType in type.NestedTypes)
+                    {
+                        ProcessType(nestedType);
+                    }
+                }
             }
 
             logger.Progress("Processing module done.");
@@ -133,7 +141,7 @@ namespace ExtensibleILRewriter
                 }
                 catch (Exception e)
                 {
-                    logger.Error($"There was an error while processing '{component.FullName}' with processor '{processor}'. Exception: {e}");
+                    logger.Error($"There was an error while processing '{component.FullName}' with processor '{processor}'. CurrentDir: '{Environment.CurrentDirectory}'. Exception: {e}");
                 }
             }
         }

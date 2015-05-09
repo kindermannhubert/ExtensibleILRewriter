@@ -74,7 +74,7 @@ namespace ExtensibleILRewriter.CodeInjection
             return new AttributeProviderAttributeArgument(name, AttributeProviderAttributeArgumentType.Double, value);
         }
 
-        public static AttributeProviderAttributeArgument CreateParameterArgument([NotNull]string name, Type value)
+        public static AttributeProviderAttributeArgument CreateParameterArgument([NotNull]string name, TypeReference value)
         {
             return new AttributeProviderAttributeArgument(name, AttributeProviderAttributeArgumentType.Type, value);
         }

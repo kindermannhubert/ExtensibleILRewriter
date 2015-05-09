@@ -42,6 +42,8 @@ namespace ExtensibleILRewriter
         public ModuleDefinition DeclaringModule { get; }
 
         public UnderlyingComponentType UnderlyingComponent { get; }
+
+        object IProcessableComponent.UnderlyingComponent { get { return UnderlyingComponent; } }
     }
 
     public class AssemblyProcessableComponent : ProcessableComponent<AssemblyDefinition, NoDeclaringComponent>
@@ -92,6 +94,8 @@ namespace ExtensibleILRewriter
         public string Name { get { throw new NotSupportedException(); } }
 
         public ProcessableComponentType Type { get { throw new NotSupportedException(); } }
+
+        public object UnderlyingComponent { get { throw new NotImplementedException(); } }
     }
 
     public static class ProcessableComponentExtensions

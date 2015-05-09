@@ -57,8 +57,8 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="ProcessableComponent.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Processors\AddAttributeToComponent.cs" />
-    <Compile Include="Processors\AddAttributeToComponentConfiguration.cs" />
+    <Compile Include="Processors\AddAttributeProcessor.cs" />
+    <Compile Include="Processors\AddAttributeProcessorConfiguration.cs" />
     <Compile Include="AssemblyRewriter.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgument.cs" />
     <Compile Include="CodeInjection\CodeProviderCallArgumentType.cs" />

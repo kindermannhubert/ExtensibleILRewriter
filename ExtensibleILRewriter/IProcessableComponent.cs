@@ -16,5 +16,7 @@ namespace ExtensibleILRewriter
         IProcessableComponent DeclaringComponent { get; }
 
         ModuleDefinition DeclaringModule { get; }
+
+        object UnderlyingComponent { get; }
     }
 }

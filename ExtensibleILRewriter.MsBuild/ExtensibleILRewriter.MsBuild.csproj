@@ -54,6 +54,7 @@
     <Compile Include="Configuration\ProcessorDefinition.cs" />
     <Compile Include="Configuration\AssemblyRewriteConfiguration.cs" />
     <Compile Include="AssemblyRewrite.cs" />
+    <Compile Include="FilePathResolver.cs" />
     <Compile Include="MsBuildLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

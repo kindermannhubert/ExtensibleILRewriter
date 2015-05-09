@@ -17,6 +17,8 @@ namespace ExtensibleILRewriter.MsBuild
 {
     public class AssemblyRewrite : Task
     {
+        private readonly FilePathResolver filePathResolver = new FilePathResolver();
+
         [Ms.Required]
         public string AssemblyPath { get; set; }
 
@@ -39,12 +41,26 @@ namespace ExtensibleILRewriter.MsBuild
 
             try
             {
+                if (string.IsNullOrEmpty(AssemblyPath))
+                {
+                    throw new InvalidOperationException($"You have to specify {nameof(AssemblyPath)} for {nameof(AssemblyRewrite)} task.");
+                }
+
+                if (!File.Exists(AssemblyPath))
+                {
+                    throw new FileNotFoundException($"Unable to find assembly '{AssemblyPath}'.");
+                }
+
+                filePathResolver.AddSearchPath(Path.GetDirectoryName(Path.GetFullPath(AssemblyPath)));
+
                 logger.Progress($"Loading configuration '{ConfigurationPath ?? string.Empty}'.");
                 var configuration = LoadConfiguration();
                 configuration.Check();
                 logger.Progress("Loading configuration done.");
 
                 var rewriter = new AssemblyRewriter(AssemblyPath, logger);
+
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
                 logger.Progress("Loading processors.");
                 LoadProcessors(rewriter, configuration, logger);
@@ -59,6 +75,28 @@ namespace ExtensibleILRewriter.MsBuild
             }
 
             return true;
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+            if (loadedAssembly != null)
+            {
+                return loadedAssembly;
+            }
+
+            string assemblyPath;
+            string assemblyName = GetAssemblyNameFromFullName(args.Name);
+
+            if (!filePathResolver.TryResolveFilePath(assemblyName + ".dll", out assemblyPath))
+            {
+                if (!filePathResolver.TryResolveFilePath(assemblyName + ".exe", out assemblyPath))
+                {
+                    throw new FileNotFoundException($"Unable to find assembly '{assemblyName}' at search paths.");
+                }
+            }
+
+            return Assembly.Load(File.ReadAllBytes(assemblyPath));
         }
 
         private AssemblyRewriteConfiguration LoadConfiguration()
@@ -82,87 +120,51 @@ namespace ExtensibleILRewriter.MsBuild
 
         private void LoadProcessors(AssemblyRewriter assemblyRewriter, AssemblyRewriteConfiguration configuration, [NotNull]ILogger logger)
         {
-            var executingAssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            ResolveEventHandler currentDomain_AssemblyResolve =
-                (sender, args) =>
-                {
-                    var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
-                    if (loadedAssembly != null)
-                    {
-                        return loadedAssembly;
-                    }
-
-                    var path = Path.Combine(executingAssemblyPath, GetAssemblyNameFromFullName(args.Name));
-                    if (File.Exists(path + ".dll"))
-                    {
-                        path = path + ".dll";
-                    }
-                    else if (File.Exists(path + ".exe"))
-                    {
-                        path = path + ".exe";
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
-                    return Assembly.Load(File.ReadAllBytes(path));
-                };
-
-            try
+            var assembliesDict = new Dictionary<string, LazyAssembly>();
+            foreach (var assemblyCfg in configuration.Assemblies)
             {
-                AppDomain.CurrentDomain.AssemblyResolve += currentDomain_AssemblyResolve;
-
-                var assembliesDict = new Dictionary<string, LazyAssembly>();
-                foreach (var assemblyCfg in configuration.Assemblies)
-                {
-                    var lazyAssemblyDefinition = new Lazy<AssemblyDefinition>(() => LoadProcessorsAssemblyDefinition(assemblyCfg.Path, executingAssemblyPath));
-                    var lazyAssembly = new Lazy<Assembly>(() => LoadProcessorsAssembly(assemblyCfg.Path, executingAssemblyPath, lazyAssemblyDefinition.Value));
-                    assembliesDict.Add(assemblyCfg.Alias, new LazyAssembly(lazyAssembly, lazyAssemblyDefinition));
-                }
-
-                var typeAliasResolver = new TypeAliasResolver(
-                    assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.AssemblyDefinition),
-                    assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.Assembly),
-                    configuration.Types.ToDictionary(t => t.Alias, t => new TypeAliasResolver.TypeAliasDefinition(t.AssemblyAlias, t.Name)));
-
-                var processors = LoadProcessors(configuration.Processors, logger, assembliesDict, typeAliasResolver);
-
-                foreach (var processor in processors)
-                {
-                    if (processor.SupportedComponents.Count == 0)
-                    {
-                        throw new InvalidOperationException($"Processor '{processor.GetType().FullName}' contains no supported components.");
-                    }
-
-                    foreach (var supportedComponent in processor.SupportedComponents)
-                    {
-                        switch (supportedComponent)
-                        {
-                            case ProcessableComponentType.Assembly:
-                                assemblyRewriter.AssemblyProcessors.Add(processor);
-                                break;
-                            case ProcessableComponentType.Module:
-                                assemblyRewriter.ModuleProcessors.Add(processor);
-                                break;
-                            case ProcessableComponentType.Type:
-                                assemblyRewriter.TypeProcessors.Add(processor);
-                                break;
-                            case ProcessableComponentType.Method:
-                                assemblyRewriter.MethodProcessors.Add(processor);
-                                break;
-                            case ProcessableComponentType.MethodParameter:
-                                assemblyRewriter.ParameterProcessors.Add(processor);
-                                break;
-                            default:
-                                throw new InvalidOperationException($"Unknown {nameof(ProcessableComponentType)}: '{supportedComponent}'.");
-                        }
-                    }
-                }
+                var lazyAssemblyDefinition = new Lazy<AssemblyDefinition>(() => LoadProcessorsAssemblyDefinition(assemblyCfg.Path));
+                var lazyAssembly = new Lazy<Assembly>(() => LoadProcessorsAssembly(assemblyCfg.Path, lazyAssemblyDefinition.Value));
+                assembliesDict.Add(assemblyCfg.Alias, new LazyAssembly(lazyAssembly, lazyAssemblyDefinition));
             }
-            finally
+
+            var typeAliasResolver = new TypeAliasResolver(
+                assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.AssemblyDefinition),
+                assembliesDict.ToDictionary(kv => kv.Key, kv => kv.Value.Assembly),
+                configuration.Types.ToDictionary(t => t.Alias, t => new TypeAliasResolver.TypeAliasDefinition(t.AssemblyAlias, t.Name)));
+
+            var processors = LoadProcessors(configuration.Processors, logger, assembliesDict, typeAliasResolver);
+
+            foreach (var processor in processors)
             {
-                AppDomain.CurrentDomain.AssemblyResolve -= currentDomain_AssemblyResolve;
+                if (processor.SupportedComponents.Count == 0)
+                {
+                    throw new InvalidOperationException($"Processor '{processor.GetType().FullName}' contains no supported components.");
+                }
+
+                foreach (var supportedComponent in processor.SupportedComponents)
+                {
+                    switch (supportedComponent)
+                    {
+                        case ProcessableComponentType.Assembly:
+                            assemblyRewriter.AssemblyProcessors.Add(processor);
+                            break;
+                        case ProcessableComponentType.Module:
+                            assemblyRewriter.ModuleProcessors.Add(processor);
+                            break;
+                        case ProcessableComponentType.Type:
+                            assemblyRewriter.TypeProcessors.Add(processor);
+                            break;
+                        case ProcessableComponentType.Method:
+                            assemblyRewriter.MethodProcessors.Add(processor);
+                            break;
+                        case ProcessableComponentType.MethodParameter:
+                            assemblyRewriter.ParameterProcessors.Add(processor);
+                            break;
+                        default:
+                            throw new InvalidOperationException($"Unknown {nameof(ProcessableComponentType)}: '{supportedComponent}'.");
+                    }
+                }
             }
         }
 
@@ -202,11 +204,6 @@ namespace ExtensibleILRewriter.MsBuild
                     throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' because it does not implement {typeof(IComponentProcessor<>).FullName} interface.");
                 }
 
-                // if (processorBaseGenericInterface.GenericTypeArguments[0] != typeof(ProcessableComponentType))
-                // {
-                // throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}' as '{typeof(ProcessableComponentType).Name}' processor because it is '{processorBaseGenericInterface.GenericTypeArguments[0].Name}' processor.");
-                // }
-
                 var processorConfigurationType = processorBaseGenericInterface.GenericTypeArguments[0];
 
                 var processorConfiguration = (ComponentProcessorConfiguration)Activator.CreateInstance(processorConfigurationType);
@@ -217,32 +214,16 @@ namespace ExtensibleILRewriter.MsBuild
             }
         }
 
-        private Mono.Cecil.AssemblyDefinition LoadProcessorsAssemblyDefinition(string path, string currentPath)
+        private Mono.Cecil.AssemblyDefinition LoadProcessorsAssemblyDefinition(string path)
         {
-            if (!Path.IsPathRooted(path))
-            {
-                path = Path.Combine(currentPath, path);
-            }
-
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
-            }
+            path = filePathResolver.ResolveFilePath(path);
 
             return Mono.Cecil.AssemblyDefinition.ReadAssembly(path);
         }
 
-        private Assembly LoadProcessorsAssembly(string path, string currentPath, Mono.Cecil.AssemblyDefinition assemblyDefinition)
+        private Assembly LoadProcessorsAssembly(string path, Mono.Cecil.AssemblyDefinition assemblyDefinition)
         {
-            if (!Path.IsPathRooted(path))
-            {
-                path = Path.Combine(currentPath, path);
-            }
-
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException($"Assembly file '{path}' with processors does not exist.");
-            }
+            path = filePathResolver.ResolveFilePath(path);
 
             var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == assemblyDefinition.FullName);
             if (loadedAssembly != null)
