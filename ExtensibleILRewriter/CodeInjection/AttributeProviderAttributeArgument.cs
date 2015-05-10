@@ -31,6 +31,73 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public bool IsArray { get; }
 
+        public Type ClrType
+        {
+            get
+            {
+                if (Type == AttributeProviderAttributeArgumentType.Enum && Value != null)
+                {
+                    if (IsArray)
+                    {
+                        var values = (object[])Value;
+                        if (values.Length > 0)
+                        {
+                            return values[0].GetType().MakeArrayType();
+                        }
+                    }
+                    else
+                    {
+                        return Value.GetType();
+                    }
+                }
+
+                var type = GetElementClrType();
+                if (IsArray)
+                {
+                    type = type.MakeArrayType();
+                }
+
+                return type;
+            }
+        }
+
+        private Type GetElementClrType()
+        {
+            switch (Type)
+            {
+                case AttributeProviderAttributeArgumentType.Byte:
+                    return typeof(Byte);
+                case AttributeProviderAttributeArgumentType.SByte:
+                    return typeof(SByte);
+                case AttributeProviderAttributeArgumentType.Int16:
+                    return typeof(Int16);
+                case AttributeProviderAttributeArgumentType.UInt16:
+                    return typeof(UInt16);
+                case AttributeProviderAttributeArgumentType.Char:
+                    return typeof(Char);
+                case AttributeProviderAttributeArgumentType.Int32:
+                    return typeof(Int32);
+                case AttributeProviderAttributeArgumentType.UInt32:
+                    return typeof(UInt32);
+                case AttributeProviderAttributeArgumentType.Single:
+                    return typeof(Single);
+                case AttributeProviderAttributeArgumentType.Int64:
+                    return typeof(Int64);
+                case AttributeProviderAttributeArgumentType.UInt64:
+                    return typeof(UInt64);
+                case AttributeProviderAttributeArgumentType.Double:
+                    return typeof(Double);
+                case AttributeProviderAttributeArgumentType.Type:
+                    return typeof(Type);
+                case AttributeProviderAttributeArgumentType.Enum:
+                    return typeof(Enum);
+                case AttributeProviderAttributeArgumentType.String:
+                    return typeof(String);
+                default:
+                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
+            }
+        }
+
         public static AttributeProviderAttributeArgument CreateParameterArgument([NotNull]string name, Byte value)
         {
             return new AttributeProviderAttributeArgument(name, AttributeProviderAttributeArgumentType.Byte, value);
@@ -173,50 +240,15 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public CustomAttributeArgument GenerateCustomAttributeArgument([NotNull]ModuleDefinition destinationModule)
         {
-            switch (Type)
-            {
-                case AttributeProviderAttributeArgumentType.Byte:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Byte));
-                case AttributeProviderAttributeArgumentType.SByte:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(SByte));
-                case AttributeProviderAttributeArgumentType.Int16:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Int16));
-                case AttributeProviderAttributeArgumentType.UInt16:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(UInt16));
-                case AttributeProviderAttributeArgumentType.Char:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Char));
-                case AttributeProviderAttributeArgumentType.Int32:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Int32));
-                case AttributeProviderAttributeArgumentType.UInt32:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(UInt32));
-                case AttributeProviderAttributeArgumentType.Single:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Single));
-                case AttributeProviderAttributeArgumentType.Int64:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Int64));
-                case AttributeProviderAttributeArgumentType.UInt64:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(UInt64));
-                case AttributeProviderAttributeArgumentType.Double:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Double));
-                case AttributeProviderAttributeArgumentType.Type:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Type));
-                case AttributeProviderAttributeArgumentType.Enum:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(Enum));
-                case AttributeProviderAttributeArgumentType.String:
-                    return GenerateCustomAttributeArgument(destinationModule, typeof(String));
-                default:
-                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
-            }
-        }
+            var elementType = GetElementClrType();
 
-        private CustomAttributeArgument GenerateCustomAttributeArgument([NotNull]ModuleDefinition destinationModule, [NotNull]Type valueType)
-        {
             if (IsArray)
             {
-                return GenerateArrayCustomAttributeArgument(destinationModule, valueType, (object[])Value);
+                return GenerateArrayCustomAttributeArgument(destinationModule, elementType, (object[])Value);
             }
             else
             {
-                return GenerateElementCustomAttributeArgument(destinationModule, valueType, Value);
+                return GenerateElementCustomAttributeArgument(destinationModule, elementType, Value);
             }
         }
 

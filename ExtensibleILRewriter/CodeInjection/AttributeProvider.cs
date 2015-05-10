@@ -44,12 +44,12 @@ namespace ExtensibleILRewriter.CodeInjection
                     throw new InvalidOperationException($"Parameter {i} of ctor of attribute '{attributeClrType.FullName}' is named '{attributeParams[i].Name}' but attribute provider returns parameter with name '{attributeArguments[i].Name}'.");
                 }
 
-                // TODO
-                // if (attributeParams[i].ParameterType.FullName != attributeArguments[i].ClrType.FullName)
-                // {
-                // if (attributeArguments[i].ClrType != null || !attributeParams[i].ParameterType.IsGenericParameter)
-                // throw new InvalidOperationException("Parameter '\{attributeArguments[i].Name}' of of attribute '\{attributeName}' in assembly '\{attributeAssembly.FullName}' should generic.");
-                // }
+                var argumentClrType = attributeArguments[i].ClrType;
+                if (attributeParams[i].ParameterType != argumentClrType)
+                {
+                    throw new InvalidOperationException($"Type of parameter '{attributeParams[i].Name}' of ctor of attribute '{attributeClrType.FullName}' is '{attributeParams[i].ParameterType.FullName}'." +
+                        $"Type of argument returned from attribute provider is '{attributeArguments[i].ClrType.FullName}'. This two types must match.");
+                }
             }
 
             var customAttribute = new CustomAttribute(attributeCtor);
