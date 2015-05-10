@@ -59,7 +59,8 @@
   <ItemGroup>
     <Compile Include="AddAttributeProcessor\AddAttributeProcessorTests.cs" />
     <Compile Include="AddAttributeProcessor\DecorableClass.cs" />
-    <Compile Include="AddAttributeProcessor\InjectedAttribute.cs" />
+    <Compile Include="AddAttributeProcessor\Injected2Attribute.cs" />
+    <Compile Include="AddAttributeProcessor\Injected1Attribute.cs" />
     <Compile Include="AddAttributeProcessor\InjectedAttributeProvider.cs" />
     <Compile Include="ModuleInitializerTests.cs" />
     <Compile Include="NotNullAttributeTests.cs" />

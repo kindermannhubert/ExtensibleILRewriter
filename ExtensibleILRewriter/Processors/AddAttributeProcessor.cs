@@ -25,7 +25,7 @@ namespace ExtensibleILRewriter.Processors
 
         public override void Process([NotNull]IProcessableComponent component)
         {
-            attributeInjector.AddAttributeProcessor(component, Logger);
+            attributeInjector.AddAttributeFromProvider(component, Logger);
         }
     }
 }

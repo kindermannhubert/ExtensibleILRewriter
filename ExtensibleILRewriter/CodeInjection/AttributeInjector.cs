@@ -12,7 +12,7 @@ namespace ExtensibleILRewriter.CodeInjection
             this.attributeProvider = attributeProvider;
         }
 
-        public void AddAttributeProcessor(IProcessableComponent component, ILogger logger)
+        public void AddAttributeFromProvider(IProcessableComponent component, ILogger logger)
         {
             var attributeInfo = attributeProvider.GetAttributeInfo(component);
 

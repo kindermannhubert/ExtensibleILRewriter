@@ -8,30 +8,53 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
     {
         protected override AttributeProviderAttributeArgument[] GetAttributeArguments(IProcessableComponent component)
         {
-            return Xxx(component);
-        }
-
-        private static AttributeProviderAttributeArgument[] Xxx(IProcessableComponent component)
-        {
             var typeDefinition = component.Type == ProcessableComponentType.Type ? ((TypeDefinition)component.UnderlyingComponent) : null;
 
-            return new AttributeProviderAttributeArgument[]
+            if (component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute1Prefix))
             {
-                AttributeProviderAttributeArgument.CreateParameterArgument("component", component.Type),
-                AttributeProviderAttributeArgument.CreateParameterArgument("type", typeDefinition),
-                AttributeProviderAttributeArgument.CreateParameterArgument("nameHash", component.Name.GetHashCode()),
-                AttributeProviderAttributeArgument.CreateParameterArgument("name", component.Name)
-            };
+                return new AttributeProviderAttributeArgument[]
+                {
+                    AttributeProviderAttributeArgument.CreateParameterArgument("component", component.Type),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("type", typeDefinition),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("nameHash", component.Name.GetHashCode()),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("name", component.Name)
+                };
+            }
+            else if (component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute2Prefix))
+            {
+                return new AttributeProviderAttributeArgument[]
+                {
+                    AttributeProviderAttributeArgument.CreateParameterArgument("component", new Enum[] { component.Type, component.Type, component.Type }),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("type", new TypeReference[] { typeDefinition, typeDefinition, typeDefinition }),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("nameHash", new int[] { component.Name.GetHashCode(), component.Name.GetHashCode(), component.Name.GetHashCode()}),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("name", new string[] {component.Name, component.Name, component.Name })
+                };
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         protected override Type GetAttributeType(IProcessableComponent component)
         {
-            return typeof(InjectedAttribute);
+            if (component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute1Prefix))
+            {
+                return typeof(Injected1Attribute);
+            }
+            else if (component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute2Prefix))
+            {
+                return typeof(Injected2Attribute);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         protected override bool ShouldBeInjected(IProcessableComponent component)
         {
-            return component.Name.StartsWith("Decorate_");
+            return component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute1Prefix) || component.Name.StartsWith(AddAttributeProcessorTests.InjectAttribute2Prefix);
         }
     }
 }

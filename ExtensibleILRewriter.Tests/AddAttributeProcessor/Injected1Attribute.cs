@@ -3,9 +3,9 @@
 namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
 {
     [AttributeUsage(AttributeTargets.All)]
-    public class InjectedAttribute : Attribute
+    public class Injected1Attribute : Attribute
     {
-        public InjectedAttribute(ProcessableComponentType component, Type type, int nameHash, string name)
+        public Injected1Attribute(ProcessableComponentType component, Type type, int nameHash, string name)
         {
         }
     }
