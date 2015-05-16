@@ -1,6 +1,5 @@
 ﻿using System;
 using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.ProcessorBaseTypes.Methods.Helpers;
 
 namespace TestApplication
 {
@@ -41,15 +40,6 @@ namespace TestApplication
             // Console.WriteLine("Is parameter null? \{a == null}");
         }
 
-        [MakeStaticVersion("__static_" + nameof(HandleParameter))]
-        public void HandleParameter<ParameterType>(object state, ParameterType parameter, string parameterName)
-        {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(parameterName);
-            }
-        }
-
         public static void IfObjectNull(object o)
         {
             if (o == null)
@@ -57,25 +47,5 @@ namespace TestApplication
                 throw new ArgumentNullException("xxx");
             }
         }
-
-        // [MakeStaticVersion("__static_" + nameof(Hello))]
-        // public void Hello(string text)
-        // {
-        // Console.WriteLine(text);
-        // }
     }
-
-    // public class NotNullArgumentHandligCodeProvider<ArgumentType>
-    // {
-    // [MakeStaticVersion("__static_" + nameof(HandleArgument))]
-    // public void HandleArgument(ArgumentType argument, string argumentName)
-    // {
-    // if (argument == null) throw new ArgumentNullException(argumentName);
-    // }
-    // }
-
-    // public interface II
-    // {
-    // void Foo([NotNull] object o);
-    // }
 }

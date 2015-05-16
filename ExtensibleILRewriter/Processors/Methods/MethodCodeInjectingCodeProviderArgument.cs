@@ -1,16 +1,16 @@
 ﻿using Mono.Cecil;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
+namespace ExtensibleILRewriter.Processors.Methods
 {
     public struct MethodCodeInjectingCodeProviderArgument
     {
-        public MethodCodeInjectingCodeProviderArgument(MethodDefinition method, FieldDefinition stateField)
+        public MethodCodeInjectingCodeProviderArgument(MethodProcessableComponent method, FieldDefinition stateField)
         {
             Method = method;
             StateField = stateField;
         }
 
-        public MethodDefinition Method { get; }
+        public MethodProcessableComponent Method { get; }
 
         public FieldDefinition StateField { get; }
     }

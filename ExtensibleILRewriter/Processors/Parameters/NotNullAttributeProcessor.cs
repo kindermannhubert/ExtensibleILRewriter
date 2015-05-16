@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Mono.Cecil;
 using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.ProcessorBaseTypes.Parameters;
+using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 using System;
 using ExtensibleILRewriter.Logging;
@@ -33,10 +33,11 @@ namespace ExtensibleILRewriter.Processors.Parameters
                 if (parameterDefinition.ParameterType.IsValueType && !parameterDefinition.ParameterType.IsNullableValueType())
                 {
                     Logger.LogErrorWithSource(methodDefinition, $"Parameter '{parameter.Name}' of method '{methodDefinition.FullName}' cannot be non-nullable because it is a value type.");
-                    return;
                 }
-
-                base.Process(parameter);
+                else
+                {
+                    base.Process(parameter);
+                }
             }
         }
 
@@ -66,8 +67,8 @@ namespace ExtensibleILRewriter.Processors.Parameters
             {
                 return new CodeProviderCallArgument[]
                 {
-                CodeProviderCallArgument.CreateGenericParameterArgument("parameter", codeProviderArgument.Parameter),
-                CodeProviderCallArgument.CreateTextArgument("parameterName", codeProviderArgument.Parameter.Name)
+                    CodeProviderCallArgument.CreateGenericParameterArgument("parameter", codeProviderArgument.Parameter.UnderlyingComponent),
+                    CodeProviderCallArgument.CreateTextArgument("parameterName", codeProviderArgument.Parameter.Name)
                 };
             }
 
@@ -81,7 +82,7 @@ namespace ExtensibleILRewriter.Processors.Parameters
 
             protected override TypeReference[] GetCodeProvidingMethodGenericArgumentTypes(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
             {
-                return new TypeReference[] { codeProviderArgument.Parameter.ParameterType };
+                return new TypeReference[] { codeProviderArgument.Parameter.UnderlyingComponent.ParameterType };
             }
         }
     }

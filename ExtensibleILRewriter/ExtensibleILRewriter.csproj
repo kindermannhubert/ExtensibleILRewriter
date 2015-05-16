@@ -57,6 +57,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="ProcessableComponent.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Processors\Methods\MethodInjectionPlace.cs" />
     <Compile Include="Processors\AddAttributeProcessor.cs" />
     <Compile Include="Processors\AddAttributeProcessorConfiguration.cs" />
     <Compile Include="AssemblyRewriter.cs" />
@@ -67,12 +68,12 @@
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
     <Compile Include="HandlingInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingCodeProviderArgument.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingProcessor.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\MethodCodeInjectingProcessorConfiguration.cs" />
-    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingCodeProviderArgument.cs" />
-    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessor.cs" />
-    <Compile Include="ProcessorBaseTypes\Parameters\ParameterValueHandlingProcessorConfiguration.cs" />
+    <Compile Include="Processors\Methods\MethodCodeInjectingCodeProviderArgument.cs" />
+    <Compile Include="Processors\Methods\MethodCodeInjectingProcessor.cs" />
+    <Compile Include="Processors\Methods\MethodCodeInjectingProcessorConfiguration.cs" />
+    <Compile Include="Processors\Parameters\ParameterValueHandlingCodeProviderArgument.cs" />
+    <Compile Include="Processors\Parameters\ParameterValueHandlingProcessor.cs" />
+    <Compile Include="Processors\Parameters\ParameterValueHandlingProcessorConfiguration.cs" />
     <Compile Include="ProcessableComponentType.cs" />
     <Compile Include="TypeAliasResolver.cs" />
     <Compile Include="IComponentProcessor.cs" />
@@ -87,8 +88,6 @@
     <Compile Include="Extensions\MonoCollection.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="ComponentProcessor.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionAttribute.cs" />
-    <Compile Include="ProcessorBaseTypes\Methods\Helpers\MakeStaticVersionProcessor.cs" />
     <Compile Include="Processors\Modules\ModuleInitializerAttribute.cs" />
     <Compile Include="Processors\Modules\ModuleInitializerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,11 +117,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-alpha006\tools\analyzers\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ProcessorBaseTypes\Assemblies\" />
-    <Folder Include="ProcessorBaseTypes\Modules\" />
-    <Folder Include="ProcessorBaseTypes\Types\" />
     <Folder Include="Processors\Assemblies\" />
-    <Folder Include="Processors\Methods\" />
     <Folder Include="Processors\Types\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

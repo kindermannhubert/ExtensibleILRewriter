@@ -24,6 +24,11 @@ namespace ExtensibleILRewriter
             return properties.ContainsKey(name);
         }
 
+        public bool TryGetProperty(string name, out string value)
+        {
+            return properties.TryGetValue(name, out value);
+        }
+
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             return properties.GetEnumerator();

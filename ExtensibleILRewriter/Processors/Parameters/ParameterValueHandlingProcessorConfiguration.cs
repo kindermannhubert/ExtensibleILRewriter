@@ -1,10 +1,12 @@
 ﻿using ExtensibleILRewriter.CodeInjection;
 using System;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
+namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class ParameterValueHandlingProcessorConfiguration : ComponentProcessorConfiguration
     {
+        private string stateInstanceName;
+
         public ParameterValueHandlingProcessorConfiguration()
         {
             AddSupportedPropertyNames(nameof(CustomValueHandlingCodeProvider), nameof(StateInstanceName));
@@ -12,7 +14,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
 
         public CodeProvider<ParameterValueHandlingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
 
-        public string StateInstanceName { get; private set; }
+        public string StateInstanceName { get { return stateInstanceName; } }
 
         protected virtual CodeProvider<ParameterValueHandlingCodeProviderArgument> GetDefaultCodeProvider()
         {
@@ -26,14 +28,13 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
                 var customValueHandlingCodeProviderAlias = properties.GetProperty(nameof(CustomValueHandlingCodeProvider));
                 var customValueHandlingCodeProviderType = typeAliasResolver.ResolveType(customValueHandlingCodeProviderAlias);
                 CustomValueHandlingCodeProvider = (CodeProvider<ParameterValueHandlingCodeProviderArgument>)Activator.CreateInstance(customValueHandlingCodeProviderType);
-
-                CheckIfContainsProperty(properties, nameof(StateInstanceName));
-                StateInstanceName = properties.GetProperty(nameof(StateInstanceName));
             }
             else
             {
                 CustomValueHandlingCodeProvider = GetDefaultCodeProvider();
             }
+
+            properties.TryGetProperty(nameof(StateInstanceName), out stateInstanceName);
         }
     }
 }

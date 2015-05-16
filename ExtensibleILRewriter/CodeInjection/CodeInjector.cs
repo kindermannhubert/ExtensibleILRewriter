@@ -33,17 +33,46 @@ namespace ExtensibleILRewriter.CodeInjection
                 throw new ArgumentException("Method does not contain body.");
             }
 
-            logger.Notice($"Injecting method call into method '{method.FullName}'.");
+            logger.Notice($"Injecting method call at begining of method '{method.FullName}'.");
 
             newInstructions.Clear();
-            foreach (var arg in callInfo.CallArguments)
-            {
-                newInstructions.Add(arg.GenerateLoadInstruction());
-            }
 
-            newInstructions.Add(Instruction.Create(OpCodes.Call, callInfo.MethodReferenceToBeCalled));
+            InjectCall(newInstructions, callInfo.MethodReferenceToBeCalled, callInfo.CallArguments);
 
             method.Body.AddInstructionsToBegining(newInstructions);
+        }
+
+        public void InjectBeforeExit(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
+        {
+            var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
+
+            if (!callInfo.ShouldBeCallInjected)
+            {
+                return;
+            }
+
+            if (!method.HasBody)
+            {
+                throw new ArgumentException("Method does not contain body.");
+            }
+
+            logger.Notice($"Injecting method call before exit of method '{method.FullName}'.");
+
+            newInstructions.Clear();
+
+            InjectCall(newInstructions, callInfo.MethodReferenceToBeCalled, callInfo.CallArguments);
+
+            method.Body.AddInstructionsBeforeExit(newInstructions);
+        }
+
+        private static void InjectCall(Collection<Instruction> instructions, MethodReference methodCall, CodeProviderCallArgument[] arguments)
+        {
+            foreach (var arg in arguments)
+            {
+                instructions.Add(arg.GenerateLoadInstruction());
+            }
+
+            instructions.Add(Instruction.Create(OpCodes.Call, methodCall));
         }
     }
 }

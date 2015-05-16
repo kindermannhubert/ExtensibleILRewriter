@@ -5,7 +5,7 @@ using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
 using System;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
+namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class ParameterValueHandlingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : ParameterValueHandlingProcessorConfiguration
@@ -38,7 +38,7 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Parameters
                 modulesData.Add(parameter.DeclaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, new ParameterValueHandlingCodeProviderArgument(parameter.UnderlyingComponent, parameter.DeclaringComponent.UnderlyingComponent, moduleData.StateHoldingField), Logger);
+            moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, new ParameterValueHandlingCodeProviderArgument(parameter, moduleData.StateHoldingField), Logger);
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<ParameterValueHandlingCodeProviderArgument> codeProvider, ModuleDefinition module)

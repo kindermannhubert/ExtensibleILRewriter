@@ -5,7 +5,7 @@ using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
 using System;
 
-namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
+namespace ExtensibleILRewriter.Processors.Methods
 {
     public class MethodCodeInjectingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : MethodCodeInjectingProcessorConfiguration
@@ -39,7 +39,17 @@ namespace ExtensibleILRewriter.ProcessorBaseTypes.Methods
                 modulesData.Add(declaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method.UnderlyingComponent, moduleData.StateHoldingField), Logger);
+            switch (Configuration.InjectionPlace)
+            {
+                case MethodInjectionPlace.Begining:
+                    moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField), Logger);
+                    break;
+                case MethodInjectionPlace.Exit:
+                    moduleData.CodeInjector.InjectBeforeExit(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField), Logger);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unknown injection place '{Configuration.InjectionPlace}' specified.");
+            }
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<MethodCodeInjectingCodeProviderArgument> codeProvider, ModuleDefinition module)
