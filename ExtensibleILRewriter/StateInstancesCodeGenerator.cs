@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ExtensibleILRewriter
 {
-    public static class HandlingInstancesCodeGenerator
+    public static class StateInstancesCodeGenerator
     {
         private const string NamespaceName = "__ExtensibleILRewriter";
         private const string TypeName = "__HandlingInstacesHolder";
@@ -38,7 +38,7 @@ namespace ExtensibleILRewriter
         {
             var moduleInitializer = ModuleInitializerProcessor.FindOrCreateInitializer(module);
 
-            Action<string, IntPtr> registerMethod = HandlingInstancesManager.RegisterInstanceHolderFieldAddress;
+            Action<string, IntPtr> registerMethod = StateInstancesManager.RegisterInstanceHolderFieldAddress;
             var registerMethodReference = module.Import(registerMethod.Method);
 
             var newInstructions = new Collection<Instruction>();

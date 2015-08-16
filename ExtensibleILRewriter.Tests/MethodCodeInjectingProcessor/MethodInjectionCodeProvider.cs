@@ -2,10 +2,7 @@
 using ExtensibleILRewriter.Processors.Methods;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
 {
@@ -13,11 +10,14 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
     {
         public const string InjectionPrefix = "Inject_";
 
-        public override bool HasState { get { return false; } }
+        public override bool HasState { get { return true; } }
 
         protected override CodeProviderCallArgument[] GetCodeProvidingMethodArguments(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
         {
-            return null;
+            return new CodeProviderCallArgument[]
+            {
+                CodeProviderCallArgument.CreateStateArgument("state", GetStateType(), codeProviderArgument.StateField)
+            };
         }
 
         protected override MethodInfo GetCodeProvidingMethod(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
@@ -30,9 +30,19 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             return codeProviderArgument.Method.Name.StartsWith(InjectionPrefix);
         }
 
-        public static void InjectedMethod()
+        public override Type GetStateType()
         {
+            return typeof(State);
+        }
 
+        public static void InjectedMethod(State state)
+        {
+            state.Items.Add("item");
+        }
+
+        internal class State
+        {
+            public List<string> Items { get; } = new List<string>();
         }
     }
 }

@@ -4,14 +4,14 @@
 
 namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
 {
-    public class Decorate1_DecorableClass1
+    public class Decorate1_TestClass1
     {
         private string field1;
         private double field2;
         private Type Decorate1_Field1;
         private double Decorate1_Field2;
 
-        public Decorate1_DecorableClass1()
+        public Decorate1_TestClass1()
         {
             field1 = null;
             field2 = 0;
@@ -32,14 +32,14 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
         }
     }
 
-    public class Decorate2_DecorableClass2
+    public class Decorate2_TestClass2
     {
         private string field1;
         private double field2;
         private Type Decorate2_Field1;
         private double Decorate2_Field2;
 
-        public Decorate2_DecorableClass2()
+        public Decorate2_TestClass2()
         {
             field1 = null;
             field2 = 0;

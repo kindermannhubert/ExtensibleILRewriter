@@ -33,6 +33,7 @@
       </GenericArguments>
       <Properties>
         <Property key="CodeProvider" value="MethodInjectionCodeProvider" />
+        <Property key="StateInstanceName" value="TestsInjectionState" />
       </Properties>
     </Processor>
   </Processors>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
 {
-    public class InjectableClass
+    public class Injection_TestClass1
     {
         public void Inject_Method1()
         {

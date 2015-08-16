@@ -66,7 +66,7 @@
     <Compile Include="CodeInjection\CodeProvider.cs" />
     <Compile Include="CodeInjection\CodeProviderInjectionInfo.cs" />
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
-    <Compile Include="HandlingInstancesCodeGenerator.cs" />
+    <Compile Include="StateInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
     <Compile Include="Processors\Methods\MethodCodeInjectingCodeProviderArgument.cs" />
     <Compile Include="Processors\Methods\MethodCodeInjectingProcessor.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ILoggerExtensions.cs" />
     <Compile Include="Extensions\MethodDefinitionExtensions.cs" />
-    <Compile Include="HandlingInstancesManager.cs" />
+    <Compile Include="StateInstancesManager.cs" />
     <Compile Include="ComponentProcessorConfiguration.cs" />
     <Compile Include="Processors\Parameters\NotNullAttributeProcessor.cs" />
     <Compile Include="Processors\Parameters\NotNullAttribute.cs" />

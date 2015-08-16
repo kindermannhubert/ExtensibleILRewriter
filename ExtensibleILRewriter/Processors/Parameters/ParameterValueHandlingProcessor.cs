@@ -45,7 +45,7 @@ namespace ExtensibleILRewriter.Processors.Parameters
         {
             if (codeProvider.HasState)
             {
-                return HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
+                return StateInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
             }
             else
             {

@@ -58,11 +58,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AddAttributeProcessor\AddAttributeProcessorTests.cs" />
-    <Compile Include="AddAttributeProcessor\DecorableClass.cs" />
+    <Compile Include="AddAttributeProcessor\TestClasses.cs" />
     <Compile Include="AddAttributeProcessor\Injected2Attribute.cs" />
     <Compile Include="AddAttributeProcessor\Injected1Attribute.cs" />
     <Compile Include="AddAttributeProcessor\InjectedAttributeProvider.cs" />
-    <Compile Include="MethodCodeInjectingProcessor\InjectableClass.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\TestClasses.cs" />
     <Compile Include="MethodCodeInjectingProcessor\MethodCodeInjectingProcessorTests.cs" />
     <Compile Include="MethodCodeInjectingProcessor\MethodInjectionCodeProvider.cs" />
     <Compile Include="ModuleInitializerTests.cs" />

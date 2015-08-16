@@ -56,7 +56,12 @@ namespace ExtensibleILRewriter.Processors.Methods
         {
             if (codeProvider.HasState)
             {
-                return HandlingInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
+                if (string.IsNullOrWhiteSpace(Configuration.StateInstanceName))
+                {
+                    throw new InvalidOperationException($"Code provider '{codeProvider.GetType().FullName}' has state but '{nameof(Configuration.StateInstanceName)}' is not defined in configuration of processor.");
+                }
+
+                return StateInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
             }
             else
             {

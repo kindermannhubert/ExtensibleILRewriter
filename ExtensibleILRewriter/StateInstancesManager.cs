@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace ExtensibleILRewriter
 {
-    public static class HandlingInstancesManager
+    public static class StateInstancesManager
     {
         private static readonly object Sync = new object();
         private static readonly Dictionary<string, object> Instaces = new Dictionary<string, object>();

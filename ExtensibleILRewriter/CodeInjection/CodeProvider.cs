@@ -49,28 +49,28 @@ namespace ExtensibleILRewriter.CodeInjection
 
             if (method.ReturnParameter.ParameterType != typeof(void))
             {
-                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' must have Void return type to be injected. Now it is '{method.ReturnParameter.ParameterType.FullName}'.");
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' must have Void return type to be injected. Now it returns '{method.ReturnParameter.ParameterType.FullName}'.");
             }
 
             var methodParams = method.GetParameters();
 
             if (methodParams.Length != codeProvidingMethodArguments.Length)
             {
-                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' should contain {codeProvidingMethodArguments.Length} parameters to be injected.");
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' is configured to contain {codeProvidingMethodArguments.Length} parameters but it has {methodParams.Length} parameters.");
             }
 
             for (int i = 0; i < methodParams.Length; i++)
             {
                 if (methodParams[i].Name != codeProvidingMethodArguments[i].Name)
                 {
-                    throw new InvalidOperationException($"{i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be named '{codeProvidingMethodArguments[i].Name}'.");
+                    throw new InvalidOperationException($"Name of {i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' is configured to be '{codeProvidingMethodArguments[i].Name}' but it is '{methodParams[i].Name}'.");
                 }
 
                 if (methodParams[i].ParameterType != codeProvidingMethodArguments[i].ClrType)
                 {
                     if (codeProvidingMethodArguments[i].ClrType != null)
                     {
-                        throw new InvalidOperationException($"Type of {i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be named '{codeProvidingMethodArguments[i].ClrType.FullName}'.");
+                        throw new InvalidOperationException($"Type of {i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be '{codeProvidingMethodArguments[i].ClrType.FullName}' but is '{methodParams[i].ParameterType.FullName}'.");
                     }
 
                     if (!methodParams[i].ParameterType.IsGenericParameter)
