@@ -5,6 +5,7 @@ using ExtensibleILRewriter.Processors.Parameters;
 using ExtensibleILRewriter.CodeInjection;
 using System;
 using ExtensibleILRewriter.Logging;
+using System.Reflection;
 
 namespace ExtensibleILRewriter.Processors.Parameters
 {
@@ -58,9 +59,9 @@ namespace ExtensibleILRewriter.Processors.Parameters
                 return true;
             }
 
-            protected override string GetCodeProvidingMethodName(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
+            protected override MethodInfo GetCodeProvidingMethod(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
             {
-                return nameof(HandleParameter);
+                return GetType().GetMethod(nameof(HandleParameter));
             }
 
             protected override CodeProviderCallArgument[] GetCodeProvidingMethodArguments(ParameterValueHandlingCodeProviderArgument codeProviderArgument)

@@ -1,4 +1,5 @@
 ﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Processors.Parameters;
 using Mono.Cecil;
 using System;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace ExtensibleILRewriter.CodeInjection
 
         protected abstract bool ShouldBeInjected(CodeProviderArgumentType codeProviderArgument);
 
-        protected abstract string GetCodeProvidingMethodName(CodeProviderArgumentType codeProviderArgument);
+        protected abstract MethodInfo GetCodeProvidingMethod(CodeProviderArgumentType codeProviderArgument);
 
         protected abstract CodeProviderCallArgument[] GetCodeProvidingMethodArguments(CodeProviderArgumentType codeProviderArgument);
 
@@ -32,47 +33,49 @@ namespace ExtensibleILRewriter.CodeInjection
             throw new NotImplementedException($"For usage of generic code providing method {nameof(GetCodeProvidingMethodGenericArgumentTypes)} must be properly implemented.");
         }
 
-        protected MethodReference GetAndCheckCodeProvidingMethodReference(string codeProvidingMethodName, CodeProviderCallArgument[] codeProvidingMethodArguments, ModuleDefinition destinationModule)
+        protected MethodReference GetAndCheckCodeProvidingMethodReference([NotNull]MethodInfo method, [NotNull]CodeProviderCallArgument[] codeProvidingMethodArguments, [NotNull]ModuleDefinition destinationModule)
         {
-            var handlingMethods = GetType()
-                .GetMethods(BindingFlags.Static | BindingFlags.Public)
-                .Where(m => m.Name == codeProvidingMethodName).ToArray();
+            var methodDeclaringType = method.DeclaringType;
 
-            if (handlingMethods.Length == 0)
+            if (!method.IsStatic)
             {
-                throw new InvalidOperationException($"Unable to find public static method '{codeProvidingMethodName}' on type '{GetType().FullName}'.");
-            }
-            else if (handlingMethods.Length > 1)
-            {
-                throw new InvalidOperationException($"Found more than one public static method with name '{codeProvidingMethodName}' on type '{GetType().FullName}'.");
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' must be static to be injected.");
             }
 
-            var method = handlingMethods[0];
+            if (!method.IsPublic)
+            {
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' must be public to be injected.");
+            }
 
             if (method.ReturnParameter.ParameterType != typeof(void))
             {
-                throw new InvalidOperationException($"Method '{codeProvidingMethodName}' on type '{GetType().FullName}' must have Void return type. Now it is '{method.ReturnParameter.ParameterType.FullName}'.");
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' must have Void return type to be injected. Now it is '{method.ReturnParameter.ParameterType.FullName}'.");
             }
 
             var methodParams = method.GetParameters();
 
             if (methodParams.Length != codeProvidingMethodArguments.Length)
             {
-                throw new InvalidOperationException($"Method '{codeProvidingMethodName}' on type '{GetType().FullName}' should contain {codeProvidingMethodArguments.Length} parameters.");
+                throw new InvalidOperationException($"Method '{method.Name}' on type '{methodDeclaringType.FullName}' should contain {codeProvidingMethodArguments.Length} parameters to be injected.");
             }
 
             for (int i = 0; i < methodParams.Length; i++)
             {
                 if (methodParams[i].Name != codeProvidingMethodArguments[i].Name)
                 {
-                    throw new InvalidOperationException($"{i}. parameter of method '{codeProvidingMethodName}' on type '{GetType().FullName}' should be named '{codeProvidingMethodArguments[i].Name}'.");
+                    throw new InvalidOperationException($"{i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be named '{codeProvidingMethodArguments[i].Name}'.");
                 }
 
                 if (methodParams[i].ParameterType != codeProvidingMethodArguments[i].ClrType)
                 {
-                    if (codeProvidingMethodArguments[i].ClrType != null || !methodParams[i].ParameterType.IsGenericParameter)
+                    if (codeProvidingMethodArguments[i].ClrType != null)
                     {
-                        throw new InvalidOperationException($"Parameter '{codeProvidingMethodArguments[i].Name}' of method '{codeProvidingMethodName}' on type '{GetType().FullName}' should generic.");
+                        throw new InvalidOperationException($"Type of {i}. parameter of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be named '{codeProvidingMethodArguments[i].ClrType.FullName}'.");
+                    }
+
+                    if (!methodParams[i].ParameterType.IsGenericParameter)
+                    {
+                        throw new InvalidOperationException($"Parameter '{codeProvidingMethodArguments[i].Name}' of method '{method.Name}' on type '{methodDeclaringType.FullName}' should be generic.");
                     }
                 }
             }
@@ -99,9 +102,9 @@ namespace ExtensibleILRewriter.CodeInjection
         {
             if (ShouldBeInjected(codeProviderArgument))
             {
-                var methodName = GetCodeProvidingMethodName(codeProviderArgument);
+                var methodInfo = GetCodeProvidingMethod(codeProviderArgument);
                 var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
-                var methodReference = GetAndCheckCodeProvidingMethodReference(methodName, methodArguments, destinationModule);
+                var methodReference = GetAndCheckCodeProvidingMethodReference(methodInfo, methodArguments, destinationModule);
 
                 if (methodReference.ContainsGenericParameter)
                 {

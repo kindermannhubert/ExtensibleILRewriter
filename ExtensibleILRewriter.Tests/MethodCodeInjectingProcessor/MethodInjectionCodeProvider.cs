@@ -3,6 +3,7 @@ using ExtensibleILRewriter.Processors.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,9 +20,9 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             return null;
         }
 
-        protected override string GetCodeProvidingMethodName(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
+        protected override MethodInfo GetCodeProvidingMethod(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
         {
-            return nameof(InjectedMethod);
+            return GetType().GetMethod(nameof(InjectedMethod));
         }
 
         protected override bool ShouldBeInjected(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
