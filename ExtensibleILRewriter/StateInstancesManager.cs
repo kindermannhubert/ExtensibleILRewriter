@@ -12,6 +12,19 @@ namespace ExtensibleILRewriter
         private static readonly Dictionary<string, IntPtr> InstanceHolderFieldAddresses = new Dictionary<string, IntPtr>();
         private static Action<IntPtr, object> setInstanceToStaticFieldAddress;
 
+        public static void ClearInstanceRegistrations()
+        {
+            lock (Sync)
+            {
+                Instaces.Clear();
+
+                foreach (var staticFieldAddress in InstanceHolderFieldAddresses.Values)
+                {
+                    SetInstanceToStaticFieldAddress(staticFieldAddress, null);
+                }
+            }
+        }
+
         public static void RegisterInstance(string instanceName, object instance)
         {
             lock (Sync)

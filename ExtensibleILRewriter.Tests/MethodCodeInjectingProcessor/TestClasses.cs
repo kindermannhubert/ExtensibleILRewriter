@@ -12,5 +12,10 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
         {
             return;
         }
+
+        public void Inject_Method2(int value)
+        {
+            return;
+        }
     }
 }
