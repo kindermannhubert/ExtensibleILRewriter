@@ -62,6 +62,9 @@
     <Compile Include="AddAttributeProcessor\Injected2Attribute.cs" />
     <Compile Include="AddAttributeProcessor\Injected1Attribute.cs" />
     <Compile Include="AddAttributeProcessor\InjectedAttributeProvider.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\InjectableClass.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\MethodCodeInjectingProcessorTests.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\MethodInjectionCodeProvider.cs" />
     <Compile Include="ModuleInitializerTests.cs" />
     <Compile Include="NotNullAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,7 +84,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RewriteConfiguration.xml" />
+    <Content Include="RewriteConfiguration.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="RunRewrite.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +95,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-alpha006\tools\analyzers\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

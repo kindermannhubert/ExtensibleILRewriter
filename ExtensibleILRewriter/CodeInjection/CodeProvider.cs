@@ -100,7 +100,7 @@ namespace ExtensibleILRewriter.CodeInjection
             if (ShouldBeInjected(codeProviderArgument))
             {
                 var methodName = GetCodeProvidingMethodName(codeProviderArgument);
-                var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument);
+                var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
                 var methodReference = GetAndCheckCodeProvidingMethodReference(methodName, methodArguments, destinationModule);
 
                 if (methodReference.ContainsGenericParameter)

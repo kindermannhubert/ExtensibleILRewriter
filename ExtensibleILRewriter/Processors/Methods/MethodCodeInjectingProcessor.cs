@@ -32,7 +32,7 @@ namespace ExtensibleILRewriter.Processors.Methods
             if (!modulesData.TryGetValue(declaringModule, out moduleData))
             {
                 moduleData = new ModuleData();
-                var codeProvider = Configuration.CustomValueHandlingCodeProvider;
+                var codeProvider = Configuration.CodeProvider;
                 moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(declaringModule, codeProvider);
                 moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringModule);
 

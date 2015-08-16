@@ -28,6 +28,8 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public Type ClrType { get; }
 
+        public static CodeProviderCallArgument[] EmptyCollection { get; } = new CodeProviderCallArgument[0];
+
         public static CodeProviderCallArgument CreateParameterArgument([NotNull]string name, [NotNull]Type clrType, [NotNull]ParameterDefinition parameterDefinition)
         {
             return new CodeProviderCallArgument(name, CodeProviderCallArgumentType.ParameterDefinition, clrType) { parameterDefinition = parameterDefinition };

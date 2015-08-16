@@ -186,7 +186,7 @@ namespace ExtensibleILRewriter.MsBuild
                 var processorType = assembly.GetType(processorDefinition.ProcessorName);
                 if (processorType == null)
                 {
-                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Cannot find spcified type in assembly.");
+                    throw new InvalidOperationException($"Unable to load '{processorDefinition.ProcessorName}' processor from assembly '{assembly.FullName}'. Cannot find specified type in assembly.");
                 }
 
                 var processorTypeGenericArgs = processorType.GetGenericArguments();

@@ -11,12 +11,12 @@ namespace ExtensibleILRewriter.Processors.Methods
         public MethodCodeInjectingProcessorConfiguration()
         {
             AddSupportedPropertyNames(
-                nameof(CustomValueHandlingCodeProvider),
+                nameof(CodeProvider),
                 nameof(StateInstanceName),
                 nameof(InjectionPlace));
         }
 
-        public CodeProvider<MethodCodeInjectingCodeProviderArgument> CustomValueHandlingCodeProvider { get; private set; }
+        public CodeProvider<MethodCodeInjectingCodeProviderArgument> CodeProvider { get; private set; }
 
         public string StateInstanceName { get { return stateInstanceName; } }
 
@@ -24,20 +24,20 @@ namespace ExtensibleILRewriter.Processors.Methods
 
         protected virtual CodeProvider<MethodCodeInjectingCodeProviderArgument> GetDefaultCodeProvider()
         {
-            throw new InvalidOperationException($"General {typeof(MethodCodeInjectingProcessor<>).FullName} does not have any default code provider. You need to configure {nameof(CustomValueHandlingCodeProvider)} at processor properties.");
+            throw new InvalidOperationException($"General {typeof(MethodCodeInjectingProcessor<>).FullName} does not have any default code provider. You need to configure {nameof(CodeProvider)} at processor properties.");
         }
 
         protected override void LoadFromPropertiesInternal(ComponentProcessorProperties properties, TypeAliasResolver typeAliasResolver, string procesorName)
         {
-            if (properties.ContainsProperty(nameof(CustomValueHandlingCodeProvider)))
+            if (properties.ContainsProperty(nameof(CodeProvider)))
             {
-                var customValueHandlingCodeProviderAlias = properties.GetProperty(nameof(CustomValueHandlingCodeProvider));
-                var customValueHandlingCodeProviderType = typeAliasResolver.ResolveType(customValueHandlingCodeProviderAlias);
-                CustomValueHandlingCodeProvider = (CodeProvider<MethodCodeInjectingCodeProviderArgument>)Activator.CreateInstance(customValueHandlingCodeProviderType);
+                var odeProviderAlias = properties.GetProperty(nameof(CodeProvider));
+                var codeProviderType = typeAliasResolver.ResolveType(odeProviderAlias);
+                CodeProvider = (CodeProvider<MethodCodeInjectingCodeProviderArgument>)Activator.CreateInstance(codeProviderType);
             }
             else
             {
-                CustomValueHandlingCodeProvider = GetDefaultCodeProvider();
+                CodeProvider = GetDefaultCodeProvider();
             }
 
             properties.TryGetProperty(nameof(StateInstanceName), out stateInstanceName);

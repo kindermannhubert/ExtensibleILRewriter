@@ -8,6 +8,9 @@
   <Types>
     <Type alias="InjectedAttributeProvider" name="ExtensibleILRewriter.Tests.AddAttributeProcessor.InjectedAttributeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
     <Type alias="AddAttributeProcessorConfiguration" name="ExtensibleILRewriter.Processors.AddAttributeProcessorConfiguration" assemblyAlias="ExtensibleILRewriter" />
+
+    <Type alias="MethodInjectionCodeProvider" name="ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor.MethodInjectionCodeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
+    <Type alias="MethodCodeInjectingProcessorConfiguration" name="ExtensibleILRewriter.Processors.Methods.MethodCodeInjectingProcessorConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
   <Processors>
@@ -21,6 +24,15 @@
       </GenericArguments>
       <Properties>
         <Property key="CustomAttributeProvider" value="InjectedAttributeProvider" />
+      </Properties>
+    </Processor>
+
+    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Methods.MethodCodeInjectingProcessor`1">
+      <GenericArguments>
+        <TypeAlias>MethodCodeInjectingProcessorConfiguration</TypeAlias>
+      </GenericArguments>
+      <Properties>
+        <Property key="CodeProvider" value="MethodInjectionCodeProvider" />
       </Properties>
     </Processor>
   </Processors>
