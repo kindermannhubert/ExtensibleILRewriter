@@ -54,7 +54,7 @@ namespace ExtensibleILRewriter.Processors.Parameters
         {
             public override bool HasState { get { return false; } }
 
-            protected override bool ShouldBeInjected(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
+            public override bool ShouldBeInjected(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
             {
                 return true;
             }

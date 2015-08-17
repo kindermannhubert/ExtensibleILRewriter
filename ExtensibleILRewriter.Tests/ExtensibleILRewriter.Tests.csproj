@@ -62,9 +62,10 @@
     <Compile Include="AddAttributeProcessor\Injected2Attribute.cs" />
     <Compile Include="AddAttributeProcessor\Injected1Attribute.cs" />
     <Compile Include="AddAttributeProcessor\InjectedAttributeProvider.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\MethodCodeInjectingTestProcessor.cs" />
+    <Compile Include="MethodCodeInjectingProcessor\MethodInjectionTestCodeProvider.cs" />
     <Compile Include="MethodCodeInjectingProcessor\TestClasses.cs" />
     <Compile Include="MethodCodeInjectingProcessor\MethodCodeInjectingProcessorTests.cs" />
-    <Compile Include="MethodCodeInjectingProcessor\MethodInjectionCodeProvider.cs" />
     <Compile Include="ModuleInitializerTests.cs" />
     <Compile Include="NotNullAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

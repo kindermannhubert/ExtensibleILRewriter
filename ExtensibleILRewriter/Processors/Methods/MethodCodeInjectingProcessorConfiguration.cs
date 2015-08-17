@@ -5,22 +5,12 @@ namespace ExtensibleILRewriter.Processors.Methods
 {
     public class MethodCodeInjectingProcessorConfiguration : ComponentProcessorConfiguration
     {
-        private string stateInstanceName;
-        private MethodInjectionPlace injectionPlace = MethodInjectionPlace.Begining;
-
         public MethodCodeInjectingProcessorConfiguration()
         {
-            AddSupportedPropertyNames(
-                nameof(CodeProvider),
-                nameof(StateInstanceName),
-                nameof(InjectionPlace));
+            AddSupportedPropertyNames(nameof(CodeProvider));
         }
 
         public CodeProvider<MethodCodeInjectingCodeProviderArgument> CodeProvider { get; private set; }
-
-        public string StateInstanceName { get { return stateInstanceName; } }
-
-        public MethodInjectionPlace InjectionPlace { get { return injectionPlace; } }
 
         protected virtual CodeProvider<MethodCodeInjectingCodeProviderArgument> GetDefaultCodeProvider()
         {
@@ -38,17 +28,6 @@ namespace ExtensibleILRewriter.Processors.Methods
             else
             {
                 CodeProvider = GetDefaultCodeProvider();
-            }
-
-            properties.TryGetProperty(nameof(StateInstanceName), out stateInstanceName);
-
-            string injectionPlaceText;
-            if (properties.TryGetProperty(nameof(InjectionPlace), out injectionPlaceText))
-            {
-                if (!Enum.TryParse(injectionPlaceText, out injectionPlace))
-                {
-                    throw new InvalidOperationException($"Unable to parse value '{injectionPlaceText}' from configuration to {typeof(MethodInjectionPlace).FullName} enum.");
-                }
             }
         }
     }

@@ -38,7 +38,11 @@ namespace ExtensibleILRewriter.Processors.Parameters
                 modulesData.Add(parameter.DeclaringModule, moduleData);
             }
 
-            moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, new ParameterValueHandlingCodeProviderArgument(parameter, moduleData.StateHoldingField), Logger);
+            var codeProviderArgument = new ParameterValueHandlingCodeProviderArgument(parameter, moduleData.StateHoldingField);
+            if (moduleData.CodeInjector.ShouldBeCallInjected(codeProviderArgument))
+            {
+                moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, codeProviderArgument, Logger); 
+            }
         }
 
         private FieldDefinition PrepareStateHoldingField(CodeProvider<ParameterValueHandlingCodeProviderArgument> codeProvider, ModuleDefinition module)

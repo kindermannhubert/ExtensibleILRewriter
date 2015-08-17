@@ -19,14 +19,14 @@ namespace ExtensibleILRewriter.CodeInjection
             this.codeProvider = codeProvider;
         }
 
+        public bool ShouldBeCallInjected(CodeProviderArgumentType codeProviderArgument)
+        {
+            return codeProvider.ShouldBeInjected(codeProviderArgument);
+        }
+
         public void InjectAtBegining(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
         {
             var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
-
-            if (!callInfo.ShouldBeCallInjected)
-            {
-                return;
-            }
 
             if (!method.HasBody)
             {
@@ -45,11 +45,6 @@ namespace ExtensibleILRewriter.CodeInjection
         public void InjectBeforeExit(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
         {
             var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
-
-            if (!callInfo.ShouldBeCallInjected)
-            {
-                return;
-            }
 
             if (!method.HasBody)
             {

@@ -9,7 +9,7 @@
     <Type alias="InjectedAttributeProvider" name="ExtensibleILRewriter.Tests.AddAttributeProcessor.InjectedAttributeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
     <Type alias="AddAttributeProcessorConfiguration" name="ExtensibleILRewriter.Processors.AddAttributeProcessorConfiguration" assemblyAlias="ExtensibleILRewriter" />
 
-    <Type alias="MethodInjectionCodeProvider" name="ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor.MethodInjectionCodeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
+    <Type alias="MethodInjectionTestCodeProvider" name="ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor.MethodInjectionTestCodeProvider" assemblyAlias="ExtensibleILRewriter.Tests" />
     <Type alias="MethodCodeInjectingProcessorConfiguration" name="ExtensibleILRewriter.Processors.Methods.MethodCodeInjectingProcessorConfiguration" assemblyAlias="ExtensibleILRewriter" />
   </Types>
 
@@ -27,13 +27,9 @@
       </Properties>
     </Processor>
 
-    <Processor assemblyAlias="ExtensibleILRewriter" name="ExtensibleILRewriter.Processors.Methods.MethodCodeInjectingProcessor`1">
-      <GenericArguments>
-        <TypeAlias>MethodCodeInjectingProcessorConfiguration</TypeAlias>
-      </GenericArguments>
+    <Processor assemblyAlias="ExtensibleILRewriter.Tests" name="ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor.MethodCodeInjectingTestProcessor">
       <Properties>
-        <Property key="CodeProvider" value="MethodInjectionCodeProvider" />
-        <Property key="StateInstanceName" value="TestsInjectionState" />
+        <Property key="CodeProvider" value="MethodInjectionTestCodeProvider" />
       </Properties>
     </Processor>
   </Processors>

@@ -7,7 +7,7 @@ using System;
 
 namespace ExtensibleILRewriter.Processors.Methods
 {
-    public class MethodCodeInjectingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
+    public abstract class MethodCodeInjectingProcessor<ConfigurationType> : ComponentProcessor<ConfigurationType>
         where ConfigurationType : MethodCodeInjectingProcessorConfiguration
     {
         private readonly Dictionary<ModuleDefinition, ModuleData> modulesData = new Dictionary<ModuleDefinition, ModuleData>();
@@ -33,35 +33,45 @@ namespace ExtensibleILRewriter.Processors.Methods
             {
                 moduleData = new ModuleData();
                 var codeProvider = Configuration.CodeProvider;
+                var stateInstanceName = GetStateInstanceName(method);
                 moduleData.CodeInjector = new CodeInjector<MethodCodeInjectingCodeProviderArgument>(declaringModule, codeProvider);
-                moduleData.StateHoldingField = PrepareStateHoldingField(codeProvider, declaringModule);
+                moduleData.StateHoldingField = PrepareStateHoldingField(stateInstanceName, codeProvider, declaringModule);
 
                 modulesData.Add(declaringModule, moduleData);
             }
 
-            switch (Configuration.InjectionPlace)
+            var codeProviderArgument = new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField);
+            if (moduleData.CodeInjector.ShouldBeCallInjected(codeProviderArgument))
             {
-                case MethodInjectionPlace.Begining:
-                    moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField), Logger);
-                    break;
-                case MethodInjectionPlace.Exit:
-                    moduleData.CodeInjector.InjectBeforeExit(method.UnderlyingComponent, new MethodCodeInjectingCodeProviderArgument(method, moduleData.StateHoldingField), Logger);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unknown injection place '{Configuration.InjectionPlace}' specified.");
+                var injectionPlace = GetInjectionPlace(method);
+                switch (injectionPlace)
+                {
+                    case MethodInjectionPlace.Begining:
+                        moduleData.CodeInjector.InjectAtBegining(method.UnderlyingComponent, codeProviderArgument, Logger);
+                        break;
+                    case MethodInjectionPlace.Exit:
+                        moduleData.CodeInjector.InjectBeforeExit(method.UnderlyingComponent, codeProviderArgument, Logger);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unknown injection place '{injectionPlace}' specified.");
+                }
             }
         }
 
-        private FieldDefinition PrepareStateHoldingField(CodeProvider<MethodCodeInjectingCodeProviderArgument> codeProvider, ModuleDefinition module)
+        protected abstract MethodInjectionPlace GetInjectionPlace(MethodProcessableComponent method);
+
+        protected abstract string GetStateInstanceName(MethodProcessableComponent method);
+
+        private FieldDefinition PrepareStateHoldingField(string stateInstanceName, CodeProvider<MethodCodeInjectingCodeProviderArgument> codeProvider, ModuleDefinition module)
         {
             if (codeProvider.HasState)
             {
-                if (string.IsNullOrWhiteSpace(Configuration.StateInstanceName))
+                if (string.IsNullOrWhiteSpace(stateInstanceName))
                 {
-                    throw new InvalidOperationException($"Code provider '{codeProvider.GetType().FullName}' has state but '{nameof(Configuration.StateInstanceName)}' is not defined in configuration of processor.");
+                    throw new InvalidOperationException($"Code provider '{codeProvider.GetType().FullName}' has state but '{nameof(stateInstanceName)}' is not defined in configuration of processor.");
                 }
 
-                return StateInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), Configuration.StateInstanceName, Configuration.StateInstanceName);
+                return StateInstancesCodeGenerator.PrepareInstanceHoldingField(module, codeProvider.GetStateType(), stateInstanceName, stateInstanceName);
             }
             else
             {

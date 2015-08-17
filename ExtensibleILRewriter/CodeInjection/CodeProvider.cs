@@ -22,7 +22,7 @@ namespace ExtensibleILRewriter.CodeInjection
             throw new NotImplementedException($"Method '{nameof(GetStateType)}' has to be overriden and implemented in order to support state for code provider '{GetType().FullName}'.");
         }
 
-        protected abstract bool ShouldBeInjected(CodeProviderArgumentType codeProviderArgument);
+        public abstract bool ShouldBeInjected(CodeProviderArgumentType codeProviderArgument);
 
         protected abstract MethodInfo GetCodeProvidingMethod(CodeProviderArgumentType codeProviderArgument);
 
@@ -100,27 +100,20 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public CodeProviderInjectionInfo GetCallInfo(CodeProviderArgumentType codeProviderArgument, ModuleDefinition destinationModule)
         {
-            if (ShouldBeInjected(codeProviderArgument))
-            {
-                var methodInfo = GetCodeProvidingMethod(codeProviderArgument);
-                var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
-                var methodReference = GetAndCheckCodeProvidingMethodReference(methodInfo, methodArguments, destinationModule);
+            var methodInfo = GetCodeProvidingMethod(codeProviderArgument);
+            var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
+            var methodReference = GetAndCheckCodeProvidingMethodReference(methodInfo, methodArguments, destinationModule);
 
-                if (methodReference.ContainsGenericParameter)
-                {
-                    var genericArgumentTypes = GetCodeProvidingMethodGenericArgumentTypes(codeProviderArgument);
-                    var genericMethod = new GenericInstanceMethod(methodReference);
-                    genericMethod.GenericArguments.AddRange(genericArgumentTypes);
-                    methodReference = genericMethod;
-                }
-
-                CheckCodeProvidingMethodArguments(methodArguments);
-                return new CodeProviderInjectionInfo(true, methodReference, methodArguments);
-            }
-            else
+            if (methodReference.ContainsGenericParameter)
             {
-                return new CodeProviderInjectionInfo(false, null, null);
+                var genericArgumentTypes = GetCodeProvidingMethodGenericArgumentTypes(codeProviderArgument);
+                var genericMethod = new GenericInstanceMethod(methodReference);
+                genericMethod.GenericArguments.AddRange(genericArgumentTypes);
+                methodReference = genericMethod;
             }
+
+            CheckCodeProvidingMethodArguments(methodArguments);
+            return new CodeProviderInjectionInfo(methodReference, methodArguments);
         }
     }
 }

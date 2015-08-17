@@ -6,9 +6,10 @@ using System.Reflection;
 
 namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
 {
-    internal class MethodInjectionCodeProvider : CodeProvider<MethodCodeInjectingCodeProviderArgument>
+    internal class MethodInjectionTestCodeProvider : CodeProvider<MethodCodeInjectingCodeProviderArgument>
     {
-        public const string InjectionPrefix = "Inject_";
+        public const string InjectAtBeginingPrefix = "InjectAtBegining_";
+        public const string InjectOnExitPrefix = "InjectOnExit_";
         public const string NoInputItem = "no input";
 
         public override bool HasState { get { return true; } }
@@ -46,9 +47,10 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             }
         }
 
-        protected override bool ShouldBeInjected(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
+        public override bool ShouldBeInjected(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
         {
-            return codeProviderArgument.Method.Name.StartsWith(InjectionPrefix);
+            var name = codeProviderArgument.Method.Name;
+            return name.StartsWith(InjectAtBeginingPrefix) || name.StartsWith(InjectOnExitPrefix);
         }
 
         public override Type GetStateType()
