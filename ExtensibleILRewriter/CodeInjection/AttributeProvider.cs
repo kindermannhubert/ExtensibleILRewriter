@@ -8,6 +8,27 @@ namespace ExtensibleILRewriter.CodeInjection
 {
     public abstract class AttributeProvider
     {
+        public AttributeProviderInjectionInfo GetAttributeInfo(IProcessableComponent component)
+        {
+            if (ShouldBeInjected(component))
+            {
+                var attributeArguments = GetAttributeArguments(component);
+                if (attributeArguments == null)
+                {
+                    attributeArguments = new AttributeProviderAttributeArgument[0];
+                }
+
+                var attributeType = GetAttributeType(component);
+                var attribute = GetAndCheckCustomAttribute(attributeType, attributeArguments, component.DeclaringModule);
+
+                return new AttributeProviderInjectionInfo(true, attribute);
+            }
+            else
+            {
+                return new AttributeProviderInjectionInfo(false, null);
+            }
+        }
+
         protected abstract bool ShouldBeInjected(IProcessableComponent component);
 
         protected abstract Type GetAttributeType(IProcessableComponent component);
@@ -61,27 +82,6 @@ namespace ExtensibleILRewriter.CodeInjection
             }
 
             return customAttribute;
-        }
-
-        public AttributeProviderInjectionInfo GetAttributeInfo(IProcessableComponent component)
-        {
-            if (ShouldBeInjected(component))
-            {
-                var attributeArguments = GetAttributeArguments(component);
-                if (attributeArguments == null)
-                {
-                    attributeArguments = new AttributeProviderAttributeArgument[0];
-                }
-
-                var attributeType = GetAttributeType(component);
-                var attribute = GetAndCheckCustomAttribute(attributeType, attributeArguments, component.DeclaringModule);
-
-                return new AttributeProviderInjectionInfo(true, attribute);
-            }
-            else
-            {
-                return new AttributeProviderInjectionInfo(false, null);
-            }
         }
     }
 }

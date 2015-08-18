@@ -1,9 +1,9 @@
-﻿using Mono.Cecil;
+﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Logging;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
-using ExtensibleILRewriter.Extensions;
 using System;
-using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.CodeInjection
 {

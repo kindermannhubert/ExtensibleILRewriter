@@ -23,19 +23,6 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
             }
         }
 
-        private static void CheckType(Type type, string name, string decorationPrefix, Type attributeType)
-        {
-            if (name.StartsWith(decorationPrefix))
-            {
-                var attribute = type.CustomAttributes.Where(a => a.AttributeType == attributeType).Single();
-                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Type, type);
-            }
-            else
-            {
-                Assert.IsTrue(type.CustomAttributes.All(a => a.AttributeType != attributeType));
-            }
-        }
-
         [TestMethod]
         public void AddAttributeToFieldTest()
         {
@@ -47,19 +34,6 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
                     CheckField(field, name, InjectAttribute1Prefix, typeof(Injected1Attribute));
                     CheckField(field, name, InjectAttribute2Prefix, typeof(Injected2Attribute));
                 }
-            }
-        }
-
-        private static void CheckField(FieldInfo field, string name, string decorationPrefix, Type attributeType)
-        {
-            if (name.StartsWith(decorationPrefix))
-            {
-                var attribute = field.CustomAttributes.Single();
-                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Field, null);
-            }
-            else
-            {
-                Assert.IsTrue(field.CustomAttributes.All(a => a.AttributeType != attributeType));
             }
         }
 
@@ -77,19 +51,6 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
             }
         }
 
-        private static void CheckProperty(PropertyInfo property, string name, string decorationPrefix, Type attributeType)
-        {
-            if (name.StartsWith(decorationPrefix))
-            {
-                var attribute = property.CustomAttributes.Single();
-                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Property, null);
-            }
-            else
-            {
-                Assert.IsTrue(property.CustomAttributes.All(a => a.AttributeType != attributeType));
-            }
-        }
-
         [TestMethod]
         public void AddAttributeToMethodTest()
         {
@@ -101,19 +62,6 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
                     CheckMethod(method, name, InjectAttribute1Prefix, typeof(Injected1Attribute));
                     CheckMethod(method, name, InjectAttribute2Prefix, typeof(Injected2Attribute));
                 }
-            }
-        }
-
-        private static void CheckMethod(MethodInfo method, string name, string decorationPrefix, Type attributeType)
-        {
-            if (name.StartsWith(decorationPrefix))
-            {
-                var attribute = method.CustomAttributes.Single();
-                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Method, null);
-            }
-            else
-            {
-                Assert.IsTrue(method.CustomAttributes.All(a => a.AttributeType != attributeType));
             }
         }
 
@@ -131,6 +79,58 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
                         CheckMethodParameter(methodParameter, name, InjectAttribute2Prefix, typeof(Injected2Attribute));
                     }
                 }
+            }
+        }
+
+        private static void CheckType(Type type, string name, string decorationPrefix, Type attributeType)
+        {
+            if (name.StartsWith(decorationPrefix))
+            {
+                var attribute = type.CustomAttributes.Where(a => a.AttributeType == attributeType).Single();
+                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Type, type);
+            }
+            else
+            {
+                Assert.IsTrue(type.CustomAttributes.All(a => a.AttributeType != attributeType));
+            }
+        }
+
+        private static void CheckProperty(PropertyInfo property, string name, string decorationPrefix, Type attributeType)
+        {
+            if (name.StartsWith(decorationPrefix))
+            {
+                var attribute = property.CustomAttributes.Single();
+                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Property, null);
+            }
+            else
+            {
+                Assert.IsTrue(property.CustomAttributes.All(a => a.AttributeType != attributeType));
+            }
+        }
+
+        private static void CheckMethod(MethodInfo method, string name, string decorationPrefix, Type attributeType)
+        {
+            if (name.StartsWith(decorationPrefix))
+            {
+                var attribute = method.CustomAttributes.Single();
+                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Method, null);
+            }
+            else
+            {
+                Assert.IsTrue(method.CustomAttributes.All(a => a.AttributeType != attributeType));
+            }
+        }
+
+        private static void CheckField(FieldInfo field, string name, string decorationPrefix, Type attributeType)
+        {
+            if (name.StartsWith(decorationPrefix))
+            {
+                var attribute = field.CustomAttributes.Single();
+                CheckAttribute(attribute, attributeType, name, ProcessableComponentType.Field, null);
+            }
+            else
+            {
+                Assert.IsTrue(field.CustomAttributes.All(a => a.AttributeType != attributeType));
             }
         }
 

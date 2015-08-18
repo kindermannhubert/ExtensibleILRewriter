@@ -14,6 +14,27 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
 
         public override bool HasState { get { return true; } }
 
+        public override bool ShouldBeInjected(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
+        {
+            var name = codeProviderArgument.Method.Name;
+            return name.StartsWith(InjectAtBeginingPrefix) || name.StartsWith(InjectOnExitPrefix);
+        }
+
+        public override Type GetStateType()
+        {
+            return typeof(State);
+        }
+
+        public static void InjectedMethod_NoValue(State state)
+        {
+            state.Items.Add(NoInputItem);
+        }
+
+        public static void InjectedMethod_Value(State state, int value)
+        {
+            state.Items.Add(value.ToString());
+        }
+
         protected override CodeProviderCallArgument[] GetCodeProvidingMethodArguments(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
         {
             var parameters = codeProviderArgument.Method.UnderlyingComponent.Parameters;
@@ -45,27 +66,6 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             {
                 return GetType().GetMethod(nameof(InjectedMethod_NoValue));
             }
-        }
-
-        public override bool ShouldBeInjected(MethodCodeInjectingCodeProviderArgument codeProviderArgument)
-        {
-            var name = codeProviderArgument.Method.Name;
-            return name.StartsWith(InjectAtBeginingPrefix) || name.StartsWith(InjectOnExitPrefix);
-        }
-
-        public override Type GetStateType()
-        {
-            return typeof(State);
-        }
-
-        public static void InjectedMethod_NoValue(State state)
-        {
-            state.Items.Add(NoInputItem);
-        }
-
-        public static void InjectedMethod_Value(State state, int value)
-        {
-            state.Items.Add(value.ToString());
         }
 
         internal class State

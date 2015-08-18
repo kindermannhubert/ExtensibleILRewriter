@@ -1,9 +1,9 @@
-﻿using Mono.Cecil;
-using System.Collections.Generic;
-using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.CodeInjection;
+﻿using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
+using ExtensibleILRewriter.Processors.Parameters;
+using Mono.Cecil;
 using System;
+using System.Collections.Generic;
 
 namespace ExtensibleILRewriter.Processors.Methods
 {

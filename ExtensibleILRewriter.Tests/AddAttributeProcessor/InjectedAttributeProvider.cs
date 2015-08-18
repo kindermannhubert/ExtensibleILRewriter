@@ -26,8 +26,8 @@ namespace ExtensibleILRewriter.Tests.AddAttributeProcessor
                 {
                     AttributeProviderAttributeArgument.CreateParameterArgument("component", new Enum[] { component.Type, component.Type, component.Type }),
                     AttributeProviderAttributeArgument.CreateParameterArgument("type", new TypeReference[] { typeDefinition, typeDefinition, typeDefinition }),
-                    AttributeProviderAttributeArgument.CreateParameterArgument("nameHash", new int[] { component.Name.GetHashCode(), component.Name.GetHashCode(), component.Name.GetHashCode()}),
-                    AttributeProviderAttributeArgument.CreateParameterArgument("name", new string[] {component.Name, component.Name, component.Name })
+                    AttributeProviderAttributeArgument.CreateParameterArgument("nameHash", new int[] { component.Name.GetHashCode(), component.Name.GetHashCode(), component.Name.GetHashCode() }),
+                    AttributeProviderAttributeArgument.CreateParameterArgument("name", new string[] { component.Name, component.Name, component.Name })
                 };
             }
             else

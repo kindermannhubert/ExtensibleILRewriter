@@ -1,9 +1,9 @@
-﻿using Mono.Cecil;
+﻿using ExtensibleILRewriter.Processors.Parameters;
+using Mono.Cecil;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter
 {
@@ -23,6 +23,16 @@ namespace ExtensibleILRewriter
             this.assemblies = assemblies;
             typeDefinitions = typeAliasDefinitions.ToDictionary(kv => kv.Key, kv => new Lazy<TypeDefinition>(() => LoadTypeDefinition(kv.Value)));
             types = typeAliasDefinitions.ToDictionary(kv => kv.Key, kv => new Lazy<Type>(() => LoadType(kv.Value)));
+        }
+
+        public TypeDefinition ResolveTypeDefinition(string typeAlias)
+        {
+            return typeDefinitions[typeAlias].Value;
+        }
+
+        public Type ResolveType(string typeAlias)
+        {
+            return types[typeAlias].Value;
         }
 
         private TypeDefinition LoadTypeDefinition(TypeAliasDefinition typeAliasDefinition)
@@ -47,16 +57,6 @@ namespace ExtensibleILRewriter
             }
 
             return type;
-        }
-
-        public TypeDefinition ResolveTypeDefinition(string typeAlias)
-        {
-            return typeDefinitions[typeAlias].Value;
-        }
-
-        public Type ResolveType(string typeAlias)
-        {
-            return types[typeAlias].Value;
         }
 
         public struct TypeAliasDefinition

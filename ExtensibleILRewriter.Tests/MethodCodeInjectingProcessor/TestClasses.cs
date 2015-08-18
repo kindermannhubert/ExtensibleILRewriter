@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
 {
@@ -34,7 +30,7 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             value *= 2;
         }
 
-        public void InjectAtBegining_Method6(int value, Action<string> action)
+        public void InjectOnExit_MoreExits(int value, Action<string> action)
         {
             if (value >= 0)
             {
@@ -43,11 +39,25 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
             else
             {
                 action("else");
-                action("exit 1");
+                action("exit 2");
                 return;
             }
 
-            action("exit 2");
+            action("exit 1");
+        }
+
+        public void InjectOnExit_WithJumpToEnd()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (i == 5)
+                {
+                    goto END;
+                }
+            }
+
+            END:
+            return;
         }
     }
 }

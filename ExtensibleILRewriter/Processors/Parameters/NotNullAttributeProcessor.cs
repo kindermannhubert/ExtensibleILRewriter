@@ -1,17 +1,16 @@
-﻿using System.Linq;
-using Mono.Cecil;
+﻿using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.CodeInjection;
-using System;
 using ExtensibleILRewriter.Logging;
+using Mono.Cecil;
+using System;
+using System.Linq;
 using System.Reflection;
 
 namespace ExtensibleILRewriter.Processors.Parameters
 {
     public class NotNullAttributeProcessor : ParameterValueHandlingProcessor<NotNullAttributeProcessor.ProcessorConfiguration>
     {
-        private readonly static string NotNullAttributeFullName = typeof(NotNullAttribute).FullName;
+        private static readonly string NotNullAttributeFullName = typeof(NotNullAttribute).FullName;
 
         public NotNullAttributeProcessor([NotNull]ProcessorConfiguration configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
@@ -59,6 +58,14 @@ namespace ExtensibleILRewriter.Processors.Parameters
                 return true;
             }
 
+            public static void HandleParameter<ParameterType>(ParameterType parameter, string parameterName)
+            {
+                if (parameter == null)
+                {
+                    throw new ArgumentNullException(parameterName);
+                }
+            }
+
             protected override MethodInfo GetCodeProvidingMethod(ParameterValueHandlingCodeProviderArgument codeProviderArgument)
             {
                 return GetType().GetMethod(nameof(HandleParameter));
@@ -71,14 +78,6 @@ namespace ExtensibleILRewriter.Processors.Parameters
                     CodeProviderCallArgument.CreateGenericParameterArgument("parameter", codeProviderArgument.Parameter.UnderlyingComponent),
                     CodeProviderCallArgument.CreateTextArgument("parameterName", codeProviderArgument.Parameter.Name)
                 };
-            }
-
-            public static void HandleParameter<ParameterType>(ParameterType parameter, string parameterName)
-            {
-                if (parameter == null)
-                {
-                    throw new ArgumentNullException(parameterName);
-                }
             }
 
             protected override TypeReference[] GetCodeProvidingMethodGenericArgumentTypes(ParameterValueHandlingCodeProviderArgument codeProviderArgument)

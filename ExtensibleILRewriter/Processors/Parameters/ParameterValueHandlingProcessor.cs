@@ -1,9 +1,8 @@
-﻿using Mono.Cecil;
-using System.Collections.Generic;
-using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.CodeInjection;
+﻿using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
+using Mono.Cecil;
 using System;
+using System.Collections.Generic;
 
 namespace ExtensibleILRewriter.Processors.Parameters
 {
@@ -41,7 +40,7 @@ namespace ExtensibleILRewriter.Processors.Parameters
             var codeProviderArgument = new ParameterValueHandlingCodeProviderArgument(parameter, moduleData.StateHoldingField);
             if (moduleData.CodeInjector.ShouldBeCallInjected(codeProviderArgument))
             {
-                moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, codeProviderArgument, Logger); 
+                moduleData.CodeInjector.InjectAtBegining(parameter.DeclaringComponent.UnderlyingComponent, codeProviderArgument, Logger);
             }
         }
 

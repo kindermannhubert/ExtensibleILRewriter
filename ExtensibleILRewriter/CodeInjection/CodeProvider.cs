@@ -24,6 +24,39 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public abstract bool ShouldBeInjected(CodeProviderArgumentType codeProviderArgument);
 
+        public void CheckCodeProvidingMethodArguments(CodeProviderCallArgument[] requiredParameters)
+        {
+            var stateParametersCount = requiredParameters.Count(p => p.Type == CodeProviderCallArgumentType.FieldDefinition);
+
+            if (HasState && stateParametersCount == 0)
+            {
+                throw new InvalidOperationException($"Code provider '{GetType().FullName}' declares it has state but contains zero FieldDefinition required parameters.");
+            }
+
+            if (stateParametersCount > 1)
+            {
+                throw new InvalidOperationException($"Code provider '{GetType().FullName}' contains more than one FieldDefinition required parameter.");
+            }
+        }
+
+        public CodeProviderInjectionInfo GetCallInfo(CodeProviderArgumentType codeProviderArgument, ModuleDefinition destinationModule)
+        {
+            var methodInfo = GetCodeProvidingMethod(codeProviderArgument);
+            var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
+            var methodReference = GetAndCheckCodeProvidingMethodReference(methodInfo, methodArguments, destinationModule);
+
+            if (methodReference.ContainsGenericParameter)
+            {
+                var genericArgumentTypes = GetCodeProvidingMethodGenericArgumentTypes(codeProviderArgument);
+                var genericMethod = new GenericInstanceMethod(methodReference);
+                genericMethod.GenericArguments.AddRange(genericArgumentTypes);
+                methodReference = genericMethod;
+            }
+
+            CheckCodeProvidingMethodArguments(methodArguments);
+            return new CodeProviderInjectionInfo(methodReference, methodArguments);
+        }
+
         protected abstract MethodInfo GetCodeProvidingMethod(CodeProviderArgumentType codeProviderArgument);
 
         protected abstract CodeProviderCallArgument[] GetCodeProvidingMethodArguments(CodeProviderArgumentType codeProviderArgument);
@@ -81,39 +114,6 @@ namespace ExtensibleILRewriter.CodeInjection
             }
 
             return destinationModule.Import(method);
-        }
-
-        public void CheckCodeProvidingMethodArguments(CodeProviderCallArgument[] requiredParameters)
-        {
-            var stateParametersCount = requiredParameters.Count(p => p.Type == CodeProviderCallArgumentType.FieldDefinition);
-
-            if (HasState && stateParametersCount == 0)
-            {
-                throw new InvalidOperationException($"Code provider '{GetType().FullName}' declares it has state but contains zero FieldDefinition required parameters.");
-            }
-
-            if (stateParametersCount > 1)
-            {
-                throw new InvalidOperationException($"Code provider '{GetType().FullName}' contains more than one FieldDefinition required parameter.");
-            }
-        }
-
-        public CodeProviderInjectionInfo GetCallInfo(CodeProviderArgumentType codeProviderArgument, ModuleDefinition destinationModule)
-        {
-            var methodInfo = GetCodeProvidingMethod(codeProviderArgument);
-            var methodArguments = GetCodeProvidingMethodArguments(codeProviderArgument) ?? CodeProviderCallArgument.EmptyCollection;
-            var methodReference = GetAndCheckCodeProvidingMethodReference(methodInfo, methodArguments, destinationModule);
-
-            if (methodReference.ContainsGenericParameter)
-            {
-                var genericArgumentTypes = GetCodeProvidingMethodGenericArgumentTypes(codeProviderArgument);
-                var genericMethod = new GenericInstanceMethod(methodReference);
-                genericMethod.GenericArguments.AddRange(genericArgumentTypes);
-                methodReference = genericMethod;
-            }
-
-            CheckCodeProvidingMethodArguments(methodArguments);
-            return new CodeProviderInjectionInfo(methodReference, methodArguments);
         }
     }
 }

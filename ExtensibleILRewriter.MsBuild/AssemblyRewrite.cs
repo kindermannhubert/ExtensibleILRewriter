@@ -1,5 +1,7 @@
 ﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Logging;
 using ExtensibleILRewriter.MsBuild.Configuration;
+using ExtensibleILRewriter.Processors.Parameters;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
 using System;
@@ -8,9 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
-using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.Logging;
-
 using Ms = Microsoft.Build.Framework;
 
 namespace ExtensibleILRewriter.MsBuild

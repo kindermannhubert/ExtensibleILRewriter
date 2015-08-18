@@ -2,7 +2,6 @@
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
-using System;
 using System.Linq;
 
 namespace ExtensibleILRewriter.Extensions
@@ -22,24 +21,6 @@ namespace ExtensibleILRewriter.Extensions
             }
 
             return !AccessesThis(method.Body);
-        }
-
-        private static bool AccessesThis(MethodBody methodBody)
-        {
-            foreach (var ins in methodBody.Instructions)
-            {
-                if (ins.OpCode.Code == Code.Ldarg_0)
-                {
-                    return true;
-                }
-
-                if (ins.Operand as ParameterDefinition == methodBody.ThisParameter)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static void AddInstructionToBegining(this MethodBody body, Instruction newInstruction)
@@ -99,6 +80,24 @@ namespace ExtensibleILRewriter.Extensions
             }
 
             body.OptimizeMacros();
+        }
+
+        private static bool AccessesThis(MethodBody methodBody)
+        {
+            foreach (var ins in methodBody.Instructions)
+            {
+                if (ins.OpCode.Code == Code.Ldarg_0)
+                {
+                    return true;
+                }
+
+                if (ins.Operand as ParameterDefinition == methodBody.ThisParameter)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

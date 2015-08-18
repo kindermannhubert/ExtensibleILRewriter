@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Logging;
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
-using ExtensibleILRewriter.Extensions;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter
 {
@@ -109,7 +109,7 @@ namespace ExtensibleILRewriter
                 foreach (var field in fields)
                 {
                     ProcessField(field);
-                } 
+                }
             }
 
             if (type.HasProperties)

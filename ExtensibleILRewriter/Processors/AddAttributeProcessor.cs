@@ -1,6 +1,6 @@
-﻿using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.CodeInjection;
+﻿using ExtensibleILRewriter.CodeInjection;
 using ExtensibleILRewriter.Logging;
+using ExtensibleILRewriter.Processors.Parameters;
 
 namespace ExtensibleILRewriter.Processors
 {

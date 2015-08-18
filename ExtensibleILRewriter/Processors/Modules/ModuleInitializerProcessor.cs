@@ -1,16 +1,16 @@
-﻿using Mono.Cecil;
+﻿using ExtensibleILRewriter.Extensions;
+using ExtensibleILRewriter.Logging;
+using ExtensibleILRewriter.Processors.Parameters;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Linq;
-using Mono.Cecil.Cil;
-using ExtensibleILRewriter.Extensions;
-using ExtensibleILRewriter.Processors.Parameters;
-using ExtensibleILRewriter.Logging;
 
 namespace ExtensibleILRewriter.Processors.Modules
 {
     public class ModuleInitializerProcessor : ComponentProcessor<ComponentProcessorConfiguration.EmptyConfiguration>
     {
-        private readonly static string ModuleInitializerAttributeFullName = typeof(ModuleInitializerAttribute).FullName;
+        private static readonly string ModuleInitializerAttributeFullName = typeof(ModuleInitializerAttribute).FullName;
 
         public ModuleInitializerProcessor([NotNull]ComponentProcessorConfiguration.EmptyConfiguration configuration, [NotNull]ILogger logger)
             : base(configuration, logger)
@@ -31,6 +31,26 @@ namespace ExtensibleILRewriter.Processors.Modules
             {
                 ProcessModuleInitializerAttribute(attribute, module);
             }
+        }
+
+        public static MethodDefinition FindOrCreateInitializer([NotNull]ModuleDefinition module)
+        {
+            var moduleType = module.GetType("<Module>");
+            if (moduleType == null)
+            {
+                throw new InvalidOperationException($"ModuleInitializerProcessor cannot find type '<Module>' in '{module.FullyQualifiedName}' module.");
+            }
+
+            var cctor = moduleType.Methods.FirstOrDefault(x => x.Name == ".cctor");
+            if (cctor == null)
+            {
+                var attributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+                cctor = new MethodDefinition(".cctor", attributes, moduleType.Module.TypeSystem.Void);
+                moduleType.Methods.Add(cctor);
+                cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+            }
+
+            return cctor;
         }
 
         private void ProcessModuleInitializerAttribute([NotNull]CustomAttribute attribute, [NotNull]ModuleProcessableComponent module)
@@ -75,26 +95,6 @@ namespace ExtensibleILRewriter.Processors.Modules
             var cctor = FindOrCreateInitializer(moduleDefinition);
 
             cctor.Body.AddInstructionToBegining(Instruction.Create(OpCodes.Call, method));
-        }
-
-        public static MethodDefinition FindOrCreateInitializer([NotNull]ModuleDefinition module)
-        {
-            var moduleType = module.GetType("<Module>");
-            if (moduleType == null)
-            {
-                throw new InvalidOperationException($"ModuleInitializerProcessor cannot find type '<Module>' in '{module.FullyQualifiedName}' module.");
-            }
-
-            var cctor = moduleType.Methods.FirstOrDefault(x => x.Name == ".cctor");
-            if (cctor == null)
-            {
-                var attributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
-                cctor = new MethodDefinition(".cctor", attributes, moduleType.Module.TypeSystem.Void);
-                moduleType.Methods.Add(cctor);
-                cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-            }
-
-            return cctor;
         }
     }
 }

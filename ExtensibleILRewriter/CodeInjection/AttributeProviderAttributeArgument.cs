@@ -61,43 +61,6 @@ namespace ExtensibleILRewriter.CodeInjection
             }
         }
 
-        private Type GetElementClrType()
-        {
-            switch (Type)
-            {
-                case AttributeProviderAttributeArgumentType.Byte:
-                    return typeof(Byte);
-                case AttributeProviderAttributeArgumentType.SByte:
-                    return typeof(SByte);
-                case AttributeProviderAttributeArgumentType.Int16:
-                    return typeof(Int16);
-                case AttributeProviderAttributeArgumentType.UInt16:
-                    return typeof(UInt16);
-                case AttributeProviderAttributeArgumentType.Char:
-                    return typeof(Char);
-                case AttributeProviderAttributeArgumentType.Int32:
-                    return typeof(Int32);
-                case AttributeProviderAttributeArgumentType.UInt32:
-                    return typeof(UInt32);
-                case AttributeProviderAttributeArgumentType.Single:
-                    return typeof(Single);
-                case AttributeProviderAttributeArgumentType.Int64:
-                    return typeof(Int64);
-                case AttributeProviderAttributeArgumentType.UInt64:
-                    return typeof(UInt64);
-                case AttributeProviderAttributeArgumentType.Double:
-                    return typeof(Double);
-                case AttributeProviderAttributeArgumentType.Type:
-                    return typeof(Type);
-                case AttributeProviderAttributeArgumentType.Enum:
-                    return typeof(Enum);
-                case AttributeProviderAttributeArgumentType.String:
-                    return typeof(String);
-                default:
-                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
-            }
-        }
-
         public static AttributeProviderAttributeArgument CreateParameterArgument([NotNull]string name, Byte value)
         {
             return new AttributeProviderAttributeArgument(name, AttributeProviderAttributeArgumentType.Byte, value);
@@ -249,6 +212,43 @@ namespace ExtensibleILRewriter.CodeInjection
             else
             {
                 return GenerateElementCustomAttributeArgument(destinationModule, elementType, Value);
+            }
+        }
+
+        private Type GetElementClrType()
+        {
+            switch (Type)
+            {
+                case AttributeProviderAttributeArgumentType.Byte:
+                    return typeof(Byte);
+                case AttributeProviderAttributeArgumentType.SByte:
+                    return typeof(SByte);
+                case AttributeProviderAttributeArgumentType.Int16:
+                    return typeof(Int16);
+                case AttributeProviderAttributeArgumentType.UInt16:
+                    return typeof(UInt16);
+                case AttributeProviderAttributeArgumentType.Char:
+                    return typeof(Char);
+                case AttributeProviderAttributeArgumentType.Int32:
+                    return typeof(Int32);
+                case AttributeProviderAttributeArgumentType.UInt32:
+                    return typeof(UInt32);
+                case AttributeProviderAttributeArgumentType.Single:
+                    return typeof(Single);
+                case AttributeProviderAttributeArgumentType.Int64:
+                    return typeof(Int64);
+                case AttributeProviderAttributeArgumentType.UInt64:
+                    return typeof(UInt64);
+                case AttributeProviderAttributeArgumentType.Double:
+                    return typeof(Double);
+                case AttributeProviderAttributeArgumentType.Type:
+                    return typeof(Type);
+                case AttributeProviderAttributeArgumentType.Enum:
+                    return typeof(Enum);
+                case AttributeProviderAttributeArgumentType.String:
+                    return typeof(String);
+                default:
+                    throw new NotImplementedException($"Unknown {nameof(CodeProviderCallArgument)} type '{Type}'.");
             }
         }
 

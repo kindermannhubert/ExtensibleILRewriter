@@ -1,6 +1,6 @@
-﻿using System;
-using ExtensibleILRewriter.Logging;
+﻿using ExtensibleILRewriter.Logging;
 using ExtensibleILRewriter.Processors.Parameters;
+using System;
 using System.Collections.Generic;
 
 namespace ExtensibleILRewriter
@@ -22,14 +22,14 @@ namespace ExtensibleILRewriter
 
         public IReadOnlyCollection<ProcessableComponentType> SupportedComponents { get { return supportedComponents; } }
 
-        protected void AddSupportedComponent(ProcessableComponentType componentType)
-        {
-            supportedComponents.Add(componentType);
-        }
-
         public virtual void Process([NotNull]IProcessableComponent component)
         {
             throw new NotImplementedException();
+        }
+
+        protected void AddSupportedComponent(ProcessableComponentType componentType)
+        {
+            supportedComponents.Add(componentType);
         }
     }
 }

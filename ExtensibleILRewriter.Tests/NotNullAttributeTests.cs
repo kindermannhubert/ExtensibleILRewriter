@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ExtensibleILRewriter.Processors.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ExtensibleILRewriter.Processors.Parameters;
+using System;
 
 namespace ExtensibleILRewriter.Tests
 {
