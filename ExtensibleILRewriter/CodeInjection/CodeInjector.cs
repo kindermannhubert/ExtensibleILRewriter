@@ -19,6 +19,8 @@ namespace ExtensibleILRewriter.CodeInjection
             this.codeProvider = codeProvider;
         }
 
+        public delegate void CustomInstructionsInjection(MethodBody body, Collection<Instruction> newInstructions);
+
         public bool ShouldBeCallInjected(CodeProviderArgumentType codeProviderArgument)
         {
             return codeProvider.ShouldBeInjected(codeProviderArgument);
@@ -26,23 +28,23 @@ namespace ExtensibleILRewriter.CodeInjection
 
         public void InjectAtBegining(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
         {
-            var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
-
-            if (!method.HasBody)
-            {
-                throw new ArgumentException("Method does not contain body.");
-            }
-
-            logger.Notice($"Injecting method call at begining of method '{method.FullName}'.");
-
-            newInstructions.Clear();
-
-            InjectCall(newInstructions, callInfo.MethodReferenceToBeCalled, callInfo.CallArguments);
-
-            method.Body.AddInstructionsToBegining(newInstructions);
+            Inject(
+                method,
+                codeProviderArgument,
+                logger,
+                (body, newInstructions) => body.AddInstructionsToBegining(newInstructions));
         }
 
         public void InjectBeforeExit(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger)
+        {
+            Inject(
+                method,
+                codeProviderArgument,
+                logger,
+                (body, newInstructions) => body.AddInstructionsBeforeExit(newInstructions));
+        }
+
+        public void Inject(MethodDefinition method, CodeProviderArgumentType codeProviderArgument, ILogger logger, CustomInstructionsInjection injectNewInstructions)
         {
             var callInfo = codeProvider.GetCallInfo(codeProviderArgument, method.Module);
 
@@ -55,12 +57,12 @@ namespace ExtensibleILRewriter.CodeInjection
 
             newInstructions.Clear();
 
-            InjectCall(newInstructions, callInfo.MethodReferenceToBeCalled, callInfo.CallArguments);
+            GenerateInstructionsForInjectedCall(newInstructions, callInfo.MethodReferenceToBeCalled, callInfo.CallArguments);
 
-            method.Body.AddInstructionsBeforeExit(newInstructions);
+            injectNewInstructions(method.Body, newInstructions);
         }
 
-        private static void InjectCall(Collection<Instruction> instructions, MethodReference methodCall, CodeProviderCallArgument[] arguments)
+        private static void GenerateInstructionsForInjectedCall(Collection<Instruction> instructions, MethodReference methodCall, CodeProviderCallArgument[] arguments)
         {
             foreach (var arg in arguments)
             {

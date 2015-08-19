@@ -18,6 +18,8 @@ namespace ExtensibleILRewriter.Processors.Methods
             AddSupportedComponent(ProcessableComponentType.Method);
         }
 
+        protected CodeInjector<MethodCodeInjectingCodeProviderArgument>.CustomInstructionsInjection CustomInstructionsInjection { get; set; }
+
         public override void Process([NotNull]IProcessableComponent component)
         {
             if (component.Type != ProcessableComponentType.Method)
@@ -51,6 +53,14 @@ namespace ExtensibleILRewriter.Processors.Methods
                         break;
                     case MethodInjectionPlace.Exit:
                         moduleData.CodeInjector.InjectBeforeExit(method.UnderlyingComponent, codeProviderArgument, Logger);
+                        break;
+                    case MethodInjectionPlace.Custom:
+                        if (CustomInstructionsInjection == null)
+                        {
+                            throw new InvalidOperationException($"If you want to use {nameof(MethodInjectionPlace)}.{nameof(MethodInjectionPlace.Custom)} you need to set value to {nameof(CustomInstructionsInjection)} property.");
+                        }
+
+                        moduleData.CodeInjector.Inject(method.UnderlyingComponent, codeProviderArgument, Logger, CustomInstructionsInjection);
                         break;
                     default:
                         throw new InvalidOperationException($"Unknown injection place '{injectionPlace}' specified.");

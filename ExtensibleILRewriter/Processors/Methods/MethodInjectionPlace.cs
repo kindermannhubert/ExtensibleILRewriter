@@ -3,6 +3,7 @@
     public enum MethodInjectionPlace
     {
         Begining,
-        Exit
+        Exit,
+        Custom
     }
 }
