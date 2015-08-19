@@ -8,8 +8,8 @@ namespace ExtensibleILRewriter
     public static class StateInstancesManager
     {
         private static readonly object Sync = new object();
-        private static readonly Dictionary<string, object> Instaces = new Dictionary<string, object>();
-        private static readonly Dictionary<string, IntPtr> InstanceHolderFieldAddresses = new Dictionary<string, IntPtr>();
+        private static readonly Dictionary<StateInstanceId, object> Instaces = new Dictionary<StateInstanceId, object>();
+        private static readonly Dictionary<StateInstanceId, IntPtr> InstanceHolderFieldAddresses = new Dictionary<StateInstanceId, IntPtr>();
         private static Action<IntPtr, object> setInstanceToStaticFieldAddress;
 
         public static void ClearInstanceRegistrations()
@@ -25,39 +25,39 @@ namespace ExtensibleILRewriter
             }
         }
 
-        public static void RegisterInstance(string instanceName, object instance)
+        public static void RegisterInstance(StateInstanceId id, object instance)
         {
             lock (Sync)
             {
-                if (Instaces.ContainsKey(instanceName))
+                if (Instaces.ContainsKey(id))
                 {
-                    throw new InvalidOperationException($"Instance with name '{instanceName}' was already registered.");
+                    throw new InvalidOperationException($"Instance with {nameof(id)} = '{id}' was already registered.");
                 }
 
-                Instaces.Add(instanceName, instance);
+                Instaces.Add(id, instance);
 
                 IntPtr staticFieldAddress;
-                if (InstanceHolderFieldAddresses.TryGetValue(instanceName, out staticFieldAddress))
+                if (InstanceHolderFieldAddresses.TryGetValue(id, out staticFieldAddress))
                 {
                     SetInstanceToStaticFieldAddress(staticFieldAddress, instance);
                 }
             }
         }
 
-        public static void RegisterInstanceHolderFieldAddress(string instanceName, IntPtr instanceHolderFieldAddress)
+        public static void RegisterInstanceHolderFieldAddress(StateInstanceId id, IntPtr instanceHolderFieldAddress)
         {
             lock (Sync)
             {
-                if (InstanceHolderFieldAddresses.ContainsKey(instanceName))
+                if (InstanceHolderFieldAddresses.ContainsKey(id))
                 {
-                    throw new InvalidOperationException($"Instance holder field address was already added for instanceName = '{instanceName}'.");
+                    throw new InvalidOperationException($"Instance holder field address was already added for {nameof(id)} = '{id}'.");
                 }
                 else
                 {
-                    InstanceHolderFieldAddresses.Add(instanceName, instanceHolderFieldAddress);
+                    InstanceHolderFieldAddresses.Add(id, instanceHolderFieldAddress);
 
                     object alreadyExistingInstance;
-                    if (Instaces.TryGetValue(instanceName, out alreadyExistingInstance))
+                    if (Instaces.TryGetValue(id, out alreadyExistingInstance))
                     {
                         SetInstanceToStaticFieldAddress(instanceHolderFieldAddress, alreadyExistingInstance);
                     }

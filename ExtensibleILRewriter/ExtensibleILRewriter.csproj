@@ -70,6 +70,7 @@
     <Compile Include="CodeInjection\CodeProvider.cs" />
     <Compile Include="CodeInjection\CodeProviderInjectionInfo.cs" />
     <Compile Include="Extensions\TypeReferenceExtensions.cs" />
+    <Compile Include="StateInstanceId.cs" />
     <Compile Include="StateInstancesCodeGenerator.cs" />
     <Compile Include="CodeInjection\CodeInjector.cs" />
     <Compile Include="Processors\Methods\MethodCodeInjectingCodeProviderArgument.cs" />

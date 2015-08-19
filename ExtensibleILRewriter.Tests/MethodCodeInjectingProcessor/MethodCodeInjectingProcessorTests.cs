@@ -12,7 +12,7 @@ namespace ExtensibleILRewriter.Tests.MethodCodeInjectingProcessor
         public void Initialize()
         {
             StateInstancesManager.ClearInstanceRegistrations();
-            StateInstancesManager.RegisterInstance("TestsInjectionState", state);
+            StateInstancesManager.RegisterInstance(new StateInstanceId("TestsInjectionState"), state);
         }
 
         [TestMethod]
